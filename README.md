@@ -41,10 +41,28 @@ protected const LOAD = [
     
     // DataGrid (Optional)
     CycleBridge\DataGridBootloader::class,
+    
+    // Database Token Storage (Optional)
+    CycleBridge\AuthTokensBootloader::class,
 ];
 ```
 
-If you are migration from Spiral Framework 2.8 you need to replace some of bootloaders with provided by the package.
+### Migration from Spiral Framework v2.8
+
+If you are migrating from Spiral Framework 2.8 at first, you have to get rid of old packages in composer.json:
+
+```json
+"require": {
+    "spiral/database": "^2.3",
+    "spiral/migrations": "^2.0",
+    "cycle/orm": "^1.0",
+    "cycle/proxy-factory": "^1.0",
+    "cycle/annotated": "^2.0",
+    "cycle/migrations": "^1.0"
+},
+```
+
+Then you need to replace some of bootloaders with provided by the package.
 
 ```php
 use Spiral\Cycle\Bootloader as CycleBridge;
@@ -81,8 +99,17 @@ protected const LOAD = [
     
     // NEW
     CycleBridge\DataGridBootloader::class,
+    
+    // Database Token Storage (Optional)
+    // OLD
+    // Framework\Auth\TokenStorage\CycleTokensBootloader::class,
+    
+    // NEW
+    CycleBridge\AuthTokensBootloader::class,
 ];
 ```
+
+That's it!
 
 ## Configuration
 
@@ -91,6 +118,8 @@ protected const LOAD = [
 You can create config file `app/config/database.php` if you want to configure Cycle Database:
 
 ```php
+use Cycle\Database\Config;
+
 return [
     /**
      * Database logger configuration
@@ -128,8 +157,8 @@ return [
      * the driver class and its connection options.
      */
     'drivers' => [
-        'sqlite' => new Database\Config\SQLiteDriverConfig(
-            connection: new Database\Config\SQLite\FileConnectionConfig(
+        'sqlite' => new Config\SQLiteDriverConfig(
+            connection: new Config\SQLite\FileConnectionConfig(
                 database: env('DB_DATABASE', directory('root') . 'runtime/app.db')
             ),
             queryCache: true,
@@ -159,9 +188,33 @@ return [
             SchemaInterface::TYPECAST_HANDLER => [
                 \Cycle\ORM\Parser\Typecast::class
             ],
-        ]
+        ],
+        'collections' => [
+            'default' => 'array',
+            'factories' => [
+                'array' => new \Cycle\ORM\Collection\ArrayCollectionFactory(),
+                // 'doctrine' => new \Cycle\ORM\Collection\DoctrineCollectionFactory(),
+                // 'illuminate' => new \Cycle\ORM\Collection\IlluminateCollectionFactory(),
+            ],
+        ],
     ],
 ];
+```
+
+If you want to use specific collection type in your relation< you can specify it via attributes
+
+```php
+// array
+#[HasMany(target: User::class, nullable: true, outerKey:  'userId', collection: 'array')]
+private array $friends = [];
+
+// doctrine
+#[HasMany(target: User::class, nullable: true, outerKey:  'userId', collection: 'doctrine')]
+private \Doctrine\Common\Collections\Collection $friends;
+
+// illuminate
+#[HasMany(target: User::class, nullable: true, outerKey:  'userId', collection: 'illuminate')]
+private \Illuminate\Support\Collection $friends;
 ```
 
 #### Migrations
