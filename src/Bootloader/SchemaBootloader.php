@@ -86,12 +86,16 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
      */
     protected function schema(MemoryInterface $memory): SchemaInterface
     {
+        $config = $this->config->getConfig('cycle');
+
+        $cache = (bool) ($config['schema']['cache'] ?? false);
+
         $schemaCompiler = Compiler::fromMemory($memory);
-        if ($schemaCompiler->isEmpty()) {
+        if ($schemaCompiler->isEmpty() || ! $cache) {
             $schemaCompiler = Compiler::compile(
                 $this->container->get(Registry::class),
                 $this->getGenerators(),
-                $this->config->getConfig('cycle')['schema']['defaults'] ?? []
+                $config['schema']['defaults'] ?? []
             );
 
             $schemaCompiler->toMemory($memory);

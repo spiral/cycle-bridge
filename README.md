@@ -178,6 +178,15 @@ use Cycle\ORM\SchemaInterface;
 return [
     'schema' => [
         /**
+         * true (Default) - Schema will be stored in a cache after compilation. 
+         * It won't be changed after entity modification.
+         * 
+         * false - Schema won't be stored in a cache after compilation. 
+         * It will be automatically changed after entity modification. (Development mode)
+         */
+        'cache' => false,
+        
+        /**
          * The CycleORM provides the ability to manage default settings for 
          * every schema with not defined segments
          */

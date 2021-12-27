@@ -100,6 +100,7 @@ final class CycleOrmBootloader extends Bootloader
             'cycle',
             [
                 'schema' => [
+                    'cache' => true,
                     'defaults' => [],
                     'collections' => [
                         'default' => 'array',
