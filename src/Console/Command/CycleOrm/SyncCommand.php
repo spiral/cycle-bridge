@@ -10,6 +10,7 @@ use Cycle\Schema\Registry;
 use Spiral\Boot\MemoryInterface;
 use Spiral\Command\Cycle\Generator\ShowChanges;
 use Spiral\Console\Command;
+use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\SchemaCompiler;
 
 final class SyncCommand extends Command
@@ -19,6 +20,7 @@ final class SyncCommand extends Command
 
     public function perform(
         SchemaBootloader $bootloader,
+        CycleConfig $config,
         Registry $registry,
         MemoryInterface $memory
     ): void {
@@ -26,7 +28,7 @@ final class SyncCommand extends Command
 
         $schemaCompiler = SchemaCompiler::compile(
             $registry,
-            array_merge($bootloader->getGenerators(), [$show, new SyncTables()])
+            array_merge($bootloader->getGenerators($config), [$show, new SyncTables()])
         );
         $schemaCompiler->toMemory($memory);
 

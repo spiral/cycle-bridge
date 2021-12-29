@@ -6,10 +6,10 @@ namespace Spiral\Cycle;
 
 use Cycle\Database\Driver\DriverInterface;
 use Cycle\Database\LoggerFactoryInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Spiral\Core\ConfigsInterface;
-use Spiral\Core\FactoryInterface;
 use Spiral\Logger\LogsInterface;
 
 final class LoggerFactory implements LoggerFactoryInterface
@@ -17,7 +17,7 @@ final class LoggerFactory implements LoggerFactoryInterface
     private array $config;
 
     public function __construct(
-        private FactoryInterface $container,
+        private ContainerInterface $container,
         ConfigsInterface $configs
     ) {
         $this->config = $configs->getConfig('database')['logger'] ?? [];

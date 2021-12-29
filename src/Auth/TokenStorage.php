@@ -70,7 +70,7 @@ final class TokenStorage implements TokenStorageInterface
 
             return $token;
         } catch (Throwable $e) {
-            throw new TokenStorageException('Unable to create token', $e->getCode(), $e);
+            throw new TokenStorageException('Unable to create token', (int)$e->getCode(), $e);
         }
     }
 
@@ -81,7 +81,7 @@ final class TokenStorage implements TokenStorageInterface
             $this->em->delete($token);
             $this->em->run();
         } catch (Throwable $e) {
-            throw new TokenStorageException('Unable to delete token', $e->getCode(), $e);
+            throw new TokenStorageException('Unable to delete token', (int)$e->getCode(), $e);
         }
     }
 

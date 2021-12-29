@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Console\Command\CycleOrm;
 
 use Spiral\Cycle\Bootloader\SchemaBootloader;
+use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Console\Command\CycleOrm\Generator\ShowChanges;
 use Spiral\Cycle\Console\Command\Migrate\AbstractCommand;
 use Cycle\Migrations\State;
@@ -27,6 +28,7 @@ final class MigrateCommand extends AbstractCommand
 
     public function perform(
         SchemaBootloader $bootloader,
+        CycleConfig $config,
         Registry $registry,
         MemoryInterface $memory,
         GenerateMigrations $migrations,
@@ -45,7 +47,7 @@ final class MigrateCommand extends AbstractCommand
         $show = new ShowChanges($this->output);
         $schemaCompiler = SchemaCompiler::compile(
             $registry,
-            array_merge($bootloader->getGenerators(), [$show])
+            array_merge($bootloader->getGenerators($config), [$show])
         );
 
         $schemaCompiler->toMemory($memory);

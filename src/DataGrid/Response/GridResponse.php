@@ -8,8 +8,8 @@ use Spiral\DataGrid\GridInterface;
 
 final class GridResponse implements \JsonSerializable, GridResponseInterface
 {
-    private GridInterface $grid;
-    private array $data;
+    private ?GridInterface $grid = null;
+    private array $data = [];
     private array $options = [];
 
     public function withGrid(GridInterface $grid, array $options = []): GridResponseInterface

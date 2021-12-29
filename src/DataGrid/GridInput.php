@@ -16,10 +16,10 @@ final class GridInput implements InputInterface
         $this->input = $input;
     }
 
-    public function withNamespace(string $prefix): InputInterface
+    public function withNamespace(string $namespace): InputInterface
     {
         $input = clone $this;
-        $input->input = $input->input->withPrefix($prefix);
+        $input->input = $input->input->withPrefix($namespace);
 
         return $input;
     }

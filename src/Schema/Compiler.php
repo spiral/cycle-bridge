@@ -52,6 +52,6 @@ final class Compiler
 
     private function isWriteableSchema(): bool
     {
-        return is_array($this->schema) && $this->schema !== self::EMPTY_SCHEMA;
+        return is_array($this->schema);
     }
 }
