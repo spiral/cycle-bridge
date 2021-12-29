@@ -1,7 +1,8 @@
 # Cycle ORM v2 bridge to Spiral Framework
 
 [![Latest Stable Version](https://poser.pugx.org/spiral/cycle-bridge/version)](https://packagist.org/packages/spiral/cycle-bridge)
-[![Build Status](https://github.com/spiral/cycle-bridge/workflows/build/badge.svg)](https://github.com/spiral/cycle-bridge/actions)
+[![Unit tests](https://github.com/spiral/cycle-bridge/actions/workflows/main.yml/badge.svg)](https://github.com/spiral/cycle-bridge/actions/workflows/main.yml)
+[![Static analysis](https://github.com/spiral/cycle-bridge/actions/workflows/static.yml/badge.svg)](https://github.com/spiral/cycle-bridge/actions/workflows/static.yml)
 [![Codecov](https://codecov.io/gh/spiral/cycle-bridge/graph/badge.svg)](https://codecov.io/gh/spiral/cycle-bridge)
 
 -----
