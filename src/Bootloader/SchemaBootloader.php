@@ -11,8 +11,8 @@ use Cycle\Schema\Registry;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Boot\MemoryInterface;
 use Spiral\Bootloader\TokenizerBootloader;
-use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
+use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Schema\Compiler;
 
 final class SchemaBootloader extends Bootloader implements Container\SingletonInterface
@@ -31,13 +31,12 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
     ];
 
     /** @var string[][]|GeneratorInterface[][] */
-    private array $generators = [];
+    private array $defaultGenerators;
 
     public function __construct(
-        private ConfiguratorInterface $config,
         private Container $container
     ) {
-        $this->generators = [
+        $this->defaultGenerators = [
             self::GROUP_INDEX => [
                 // find available entities
             ],
@@ -58,17 +57,24 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
 
     public function addGenerator(string $group, string $generator): void
     {
-        $this->generators[$group][] = $generator;
+        $this->defaultGenerators[$group][] = $generator;
     }
 
     /**
      * @return GeneratorInterface[]
      * @throws \Throwable
      */
-    public function getGenerators(): array
+    public function getGenerators(CycleConfig $config): array
     {
+        $generators = $config->getSchemaGenerators();
+        if (is_array($generators)) {
+            $generators = [self::GROUP_INDEX => $generators];
+        } else {
+            $generators = $this->defaultGenerators;
+        }
+
         $result = [];
-        foreach ($this->generators as $group) {
+        foreach ($generators as $group) {
             foreach ($group as $generator) {
                 if (is_object($generator) && ! $generator instanceof Container\Autowire) {
                     $result[] = $generator;
@@ -84,18 +90,16 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
     /**
      * @throws \Throwable
      */
-    protected function schema(MemoryInterface $memory): SchemaInterface
+    protected function schema(MemoryInterface $memory, CycleConfig $config): SchemaInterface
     {
-        $config = $this->config->getConfig('cycle');
-
-        $cache = (bool) ($config['schema']['cache'] ?? false);
+        $cache = $config->cacheSchema();
 
         $schemaCompiler = Compiler::fromMemory($memory);
         if ($schemaCompiler->isEmpty() || ! $cache) {
             $schemaCompiler = Compiler::compile(
                 $this->container->get(Registry::class),
-                $this->getGenerators(),
-                $config['schema']['defaults'] ?? []
+                $this->getGenerators($config),
+                $config->getSchemaDefaults()
             );
 
             $schemaCompiler->toMemory($memory);

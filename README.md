@@ -179,7 +179,7 @@ return [
     'schema' => [
         /**
          * true (Default) - Schema will be stored in a cache after compilation. 
-         * It won't be changed after entity modification.
+         * It won't be changed after entity modification. Use `php app.php cycle` to update schema.
          * 
          * false - Schema won't be stored in a cache after compilation. 
          * It will be automatically changed after entity modification. (Development mode)
@@ -198,6 +198,7 @@ return [
                 \Cycle\ORM\Parser\Typecast::class
             ],
         ],
+        
         'collections' => [
             'default' => 'array',
             'factories' => [
@@ -206,6 +207,26 @@ return [
                 // 'illuminate' => new \Cycle\ORM\Collection\IlluminateCollectionFactory(),
             ],
         ],
+        
+        /**
+         * Schema generators (Optional)
+         * null (default) - Will be used schema generators defined in bootloaders
+         */
+        'generators' => null,
+        
+        // 'generators' => [
+        //        \Cycle\Annotated\Embeddings::class,
+        //        \Cycle\Annotated\Entities::class,
+        //        \Cycle\Annotated\MergeColumns::class,
+        //        \Cycle\Schema\Generator\ResetTables::class,
+        //        \Cycle\Schema\Generator\GenerateRelations::class,
+        //        \Cycle\Schema\Generator\ValidateEntities::class,
+        //        \Cycle\Schema\Generator\RenderTables::class,
+        //        \Cycle\Schema\Generator\RenderRelations::class,
+        //        \Cycle\Annotated\TableInheritance::class,
+        //        \Cycle\Annotated\MergeIndexes::class
+        //        \Cycle\Schema\Generator\GenerateTypecast::class,
+        // ],
     ],
 ];
 ```

@@ -10,7 +10,7 @@ use DateTimeInterface;
 use Spiral\Auth\TokenInterface;
 
 #[Entity(table: 'auth_tokens')]
-final class Token implements TokenInterface
+class Token implements TokenInterface
 {
     #[Column(type: 'string(64)', primary: true)]
     private string $id;
@@ -24,7 +24,7 @@ final class Token implements TokenInterface
     private DateTimeInterface $createdAt;
 
     #[Column(type: 'datetime', nullable: true)]
-    private DateTimeInterface $expiresAt;
+    private ?DateTimeInterface $expiresAt = null;
 
     #[Column(type: 'blob')]
     private $payload;
@@ -34,7 +34,7 @@ final class Token implements TokenInterface
         string $secretValue,
         array $payload,
         DateTimeInterface $createdAt,
-        DateTimeInterface $expiresAt = null
+        ?DateTimeInterface $expiresAt = null
     ) {
         $this->id = $id;
 

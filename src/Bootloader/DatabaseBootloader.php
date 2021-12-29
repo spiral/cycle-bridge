@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Bootloader;
 
 use Cycle\Database\Config\DatabaseConfig;
-use Cycle\Database\Database;
 use Cycle\Database\DatabaseInterface;
 use Cycle\Database\DatabaseManager;
 use Cycle\Database\DatabaseProviderInterface;
@@ -21,21 +20,16 @@ final class DatabaseBootloader extends Bootloader implements SingletonInterface
     ];
 
     protected const BINDINGS = [
-        DatabaseInterface::class => Database::class,
+        DatabaseInterface::class => [self::class, 'getDefaultDatabase'],
     ];
-
-    public function __construct(
-        private ConfiguratorInterface $config
-    ) {
-    }
 
     /**
      * Init database config.
      */
-    public function boot(): void
+    public function boot(ConfiguratorInterface $config): void
     {
-        $this->config->setDefaults(
-            'database',
+        $config->setDefaults(
+            DatabaseConfig::CONFIG,
             [
                 'logger' => [
                     'default' => null,
@@ -49,11 +43,14 @@ final class DatabaseBootloader extends Bootloader implements SingletonInterface
         );
     }
 
-    protected function initManager(
-        DatabaseConfig $config,
-        LoggerFactory $loggerFactory
-    ): DatabaseProviderInterface {
+    protected function initManager(DatabaseConfig $config, LoggerFactory $loggerFactory): DatabaseProviderInterface
+    {
         return new DatabaseManager($config, $loggerFactory);
+    }
+
+    protected function getDefaultDatabase(DatabaseProviderInterface $manager): DatabaseInterface
+    {
+        return $manager->database();
     }
 }
 

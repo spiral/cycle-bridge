@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Bootloader;
 
 use Cycle\Database\DatabaseProviderInterface;
-use Cycle\ORM\Collection\ArrayCollectionFactory;
-use Cycle\ORM\Collection\CollectionFactoryInterface;
 use Cycle\ORM\Config\RelationConfig;
 use Cycle\ORM\EntityManager;
 use Cycle\ORM\EntityManagerInterface;
@@ -22,6 +20,7 @@ use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Boot\FinalizerInterface;
 use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
+use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\RepositoryInjector;
 
 final class CycleOrmBootloader extends Bootloader
@@ -29,6 +28,7 @@ final class CycleOrmBootloader extends Bootloader
     protected const DEPENDENCIES = [
         DatabaseBootloader::class,
         SchemaBootloader::class,
+        AnnotatedBootloader::class,
     ];
 
     protected const BINDINGS = [
@@ -39,7 +39,7 @@ final class CycleOrmBootloader extends Bootloader
     protected const SINGLETONS = [
         ORMInterface::class => ORM::class,
         ORM::class => [self::class, 'orm'],
-        FactoryInterface::class => [self::class, 'factory']
+        FactoryInterface::class => [self::class, 'factory'],
     ];
 
     public function __construct(
@@ -72,22 +72,16 @@ final class CycleOrmBootloader extends Bootloader
     private function factory(
         DatabaseProviderInterface $dbal,
         Container $container,
+        CycleConfig $config
     ): FactoryInterface {
+        $factory = new Factory(
+            $dbal,
+            RelationConfig::getDefault(),
+            $container,
+            $config->getDefaultCollectionFactory()
+        );
 
-        $config = $this->config->getConfig('cycle');
-        $defaultSchema = $config['schema']['collections']['default'] ?? 'array';
-        if (
-            isset($config['schema']['collections']['factories'][$defaultSchema])
-            && $config['schema']['collections']['factories'][$defaultSchema] instanceof CollectionFactoryInterface
-        ) {
-            $collectionFactory = $config['schema']['collections']['factories'][$defaultSchema];
-        } else {
-            $collectionFactory = new ArrayCollectionFactory();
-        }
-
-        $factory = new Factory($dbal, RelationConfig::getDefault(), $container, $collectionFactory);
-
-        foreach ($config['schema']['collections']['factories'] as $alias => $collectionFactory) {
+        foreach ($config->getCollectionFactories() as $alias => $collectionFactory) {
             $factory = $factory->withCollectionFactory($alias, $collectionFactory);
         }
 
@@ -97,17 +91,13 @@ final class CycleOrmBootloader extends Bootloader
     private function initOrmConfig()
     {
         $this->config->setDefaults(
-            'cycle',
+            CycleConfig::CONFIG,
             [
                 'schema' => [
                     'cache' => true,
+                    'generators' => null,
                     'defaults' => [],
-                    'collections' => [
-                        'default' => 'array',
-                        'factories' => [
-                            'array' => new ArrayCollectionFactory(),
-                        ],
-                    ],
+                    'collections' => [],
                 ],
             ]
         );

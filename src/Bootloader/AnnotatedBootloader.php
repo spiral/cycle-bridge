@@ -6,6 +6,7 @@ namespace Spiral\Cycle\Bootloader;
 
 use Cycle\Annotated;
 use Spiral\Attributes\Factory;
+use Spiral\Attributes\ReaderInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Bootloader\TokenizerBootloader;
 use Spiral\Tokenizer\ClassesInterface;
@@ -18,6 +19,7 @@ final class AnnotatedBootloader extends Bootloader
     ];
 
     protected const BINDINGS = [
+        ReaderInterface::class => [self::class, 'initReader'],
         Annotated\Embeddings::class => [self::class, 'initEmbeddings'],
         Annotated\Entities::class => [self::class, 'initEntities'],
         Annotated\MergeColumns::class => [self::class, 'initMergeColumns'],
@@ -27,8 +29,6 @@ final class AnnotatedBootloader extends Bootloader
 
     public function boot(SchemaBootloader $schema): void
     {
-        // AnnotationRegistry::registerLoader('class_exists');
-
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Embeddings::class);
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Entities::class);
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\MergeColumns::class);
@@ -36,33 +36,34 @@ final class AnnotatedBootloader extends Bootloader
         $schema->addGenerator(SchemaBootloader::GROUP_RENDER, Annotated\MergeIndexes::class);
     }
 
-    private function initEmbeddings(ClassesInterface $classes): Annotated\Embeddings
+    private function initReader(): ReaderInterface
     {
-        return new Annotated\Embeddings(
-            $classes, (new Factory)->create()
-        );
+        return (new Factory)->create();
     }
 
-    public function initEntities(ClassesInterface $classes): Annotated\Entities
+    private function initEmbeddings(ClassesInterface $classes, ReaderInterface $reader): Annotated\Embeddings
     {
-        return new Annotated\Entities(
-            $classes, (new Factory)->create()
-        );
+        return new Annotated\Embeddings($classes, $reader);
     }
 
-    public function initMergeColumns(ClassesInterface $classes): Annotated\MergeColumns
+    public function initEntities(ClassesInterface $classes, ReaderInterface $reader): Annotated\Entities
     {
-        return new Annotated\MergeColumns((new Factory)->create());
+        return new Annotated\Entities($classes, $reader);
     }
 
-    public function initTableInheritance(ClassesInterface $classes): Annotated\TableInheritance
+    public function initMergeColumns(ClassesInterface $classes, ReaderInterface $reader): Annotated\MergeColumns
     {
-        return new Annotated\TableInheritance((new Factory)->create());
+        return new Annotated\MergeColumns($reader);
     }
 
-    public function initMergeIndexes(ClassesInterface $classes): Annotated\MergeIndexes
+    public function initTableInheritance(ClassesInterface $classes, ReaderInterface $reader): Annotated\TableInheritance
     {
-        return new Annotated\MergeIndexes((new Factory)->create());
+        return new Annotated\TableInheritance($reader);
+    }
+
+    public function initMergeIndexes(ClassesInterface $classes, ReaderInterface $reader): Annotated\MergeIndexes
+    {
+        return new Annotated\MergeIndexes($reader);
     }
 }
 

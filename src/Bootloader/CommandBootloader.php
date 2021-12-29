@@ -10,24 +10,10 @@ use Cycle\ORM\ORMInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Bootloader\ConsoleBootloader;
-use Spiral\Command\Encrypter;
-use Spiral\Command\GRPC;
-use Spiral\Command\Router;
-use Spiral\Command\Translator;
-use Spiral\Command\Views;
-use Spiral\Console;
-use Spiral\Console\Sequence\RuntimeDirectory;
 use Spiral\Core\Container;
 use Spiral\Cycle\Console\Command\CycleOrm;
 use Spiral\Cycle\Console\Command\Database;
 use Spiral\Cycle\Console\Command\Migrate;
-use Spiral\Encrypter\EncryptionInterface;
-use Spiral\Files\FilesInterface;
-use Spiral\Router\RouterInterface;
-use Spiral\Translator\Config\TranslatorConfig;
-use Spiral\Translator\TranslatorInterface;
-use Spiral\Views\ViewsInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 final class CommandBootloader extends Bootloader
 {
@@ -38,14 +24,6 @@ final class CommandBootloader extends Bootloader
 
     public function boot(ConsoleBootloader $console, Container $container): void
     {
-        $console->addCommand(Console\Command\ConfigureCommand::class);
-        $console->addCommand(Console\Command\UpdateCommand::class);
-
-        $console->addConfigureSequence(
-            [RuntimeDirectory::class, 'ensure'],
-            '<fg=magenta>[runtime]</fg=magenta> <fg=cyan>verify `runtime` directory access</fg=cyan>'
-        );
-
         $this->configureExtensions($console, $container);
     }
 
