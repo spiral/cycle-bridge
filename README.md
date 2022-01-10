@@ -22,7 +22,18 @@ To install the package:
 composer require spiral/cycle-bridge
 ```
 
-After package install you need to add bootloaders from the package in your application.
+After package install you need to add bootloader `Spiral\Cycle\Bootloader\BridgeBootloader` from the package in your
+application.
+
+```php
+use Spiral\Cycle\Bootloader as CycleBridge;
+protected const LOAD = [
+    CycleBridge\BridgeBootloader::class,
+];
+```
+
+You can exclude `Spiral\Cycle\Bootloader\BridgeBootloader` bootloader and select only needed bootloaders by writing them
+separately.
 
 ```php
 use Spiral\Cycle\Bootloader as CycleBridge;
@@ -33,6 +44,9 @@ protected const LOAD = [
     // Database
     CycleBridge\DatabaseBootloader::class,
     CycleBridge\MigrationsBootloader::class,
+    
+    // Close the database connection after every request automatically (Optional)
+    // CycleBridge\DisconnectsBootloader::class,
 
     // ORM
     CycleBridge\SchemaBootloader::class,
@@ -59,7 +73,8 @@ If you are migrating from Spiral Framework 2.8 at first, you have to get rid of 
     "cycle/orm": "^1.0",
     "cycle/proxy-factory": "^1.0",
     "cycle/annotated": "^2.0",
-    "cycle/migrations": "^1.0"
+    "cycle/migrations": "^1.0",
+    ...
 },
 ```
 
@@ -75,10 +90,13 @@ protected const LOAD = [
     // OLD
     // Framework\Database\DatabaseBootloader::class,
     // Framework\Database\MigrationsBootloader::class,
+    // Close the database connection after every request automatically (Optional)
+    // Framework\Database\DisconnectsBootloader::class,
     
     // NEW
     CycleBridge\DatabaseBootloader::class,
     CycleBridge\MigrationsBootloader::class,
+    CycleBridge\DisconnectsBootloader::class,
 
     // ORM
     // OLD
@@ -125,10 +143,15 @@ return [
     /**
      * Database logger configuration
      */
-    'logger' => [
-        'default' => null,
+    'loggers' => [
+        'default' => null, // Default log channel for all drivers (The lowest priority)
         'drivers' => [
-            'sqlite' => 'file' // Log channel for Sq
+            // By driver name (The highest priority)
+            // See https://spiral.dev/docs/extension-monolog 
+            'runtime' => 'sql_logs',
+            
+            // By driver class (Medium priority)
+            \Cycle\Database\Driver\MySQL\MySQLDriver::class => 'console',
         ],
     ],
      
@@ -147,7 +170,7 @@ return [
      */
     'databases' => [
         'default' => [
-            'driver' => 'sqlite',
+            'driver' => 'runtime',
         ],
     ],
 
@@ -158,7 +181,7 @@ return [
      * the driver class and its connection options.
      */
     'drivers' => [
-        'sqlite' => new Config\SQLiteDriverConfig(
+        'runtime' => new Config\SQLiteDriverConfig(
             connection: new Config\SQLite\FileConnectionConfig(
                 database: env('DB_DATABASE', directory('root') . 'runtime/app.db')
             ),
@@ -168,6 +191,40 @@ return [
     ],
 ];
 ```
+
+**Monolog channels definition example**
+
+You can create config file `app/config/monolog.php`:
+```php
+<?php
+
+declare(strict_types=1);
+
+use Monolog\Logger;
+
+return [
+    'globalLevel' => Logger::DEBUG,
+    'handlers' => [
+        'console' => [
+            [
+                'class' => \Monolog\Handler\SyslogHandler::class,
+                'options' => [
+                    'ident' => 'spiral-app',
+                ]
+            ]
+        ],
+        'sql_logs' => [
+            [
+                'class' => \Monolog\Handler\RotatingFileHandler::class,
+                'options' => [
+                    'filename' => __DIR__ . '/../../runtime/logs/sql.log'
+                ]
+            ]
+        ]
+    ],
+];
+```
+
 
 #### Cycle ORM
 
@@ -229,6 +286,16 @@ return [
         //        \Cycle\Schema\Generator\GenerateTypecast::class,
         // ],
     ],
+    
+    /**
+     * Custom relation types for entities
+     */
+    'customRelations' => [
+        \Cycle\ORM\Relation::EMBEDDED => [
+            \Cycle\ORM\Config\RelationConfig::LOADER => \Cycle\ORM\Select\Loader\EmbeddedLoader::class,
+            \Cycle\ORM\Config\RelationConfig::RELATION => \Cycle\ORM\Relation\Embedded::class,
+        ]
+    ]
 ];
 ```
 

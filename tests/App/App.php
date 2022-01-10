@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Spiral\App;
 
+use Spiral\Boot\BootloadManager;
 use Spiral\Bootloader as Framework;
+use Spiral\Console\Console;
 use Spiral\Core\Container;
 use Spiral\Cycle\Bootloader as CycleBridge;
 use Spiral\Framework\Kernel;
@@ -12,6 +14,10 @@ use Spiral\Framework\Kernel;
 class App extends Kernel
 {
     protected const LOAD = [
+        // Framework commands
+        Framework\ConsoleBootloader::class,
+        Framework\CommandBootloader::class,
+
         // Databases
         CycleBridge\DatabaseBootloader::class,
         CycleBridge\MigrationsBootloader::class,
@@ -29,9 +35,6 @@ class App extends Kernel
 
         // Auth
         CycleBridge\AuthTokensBootloader::class,
-
-        // Framework commands
-        Framework\CommandBootloader::class,
     ];
 
     /**
@@ -40,6 +43,16 @@ class App extends Kernel
     public function get(string $alias, string $context = null)
     {
         return $this->container->get($alias, $context);
+    }
+
+    public function getBootloadManager(): BootloadManager
+    {
+        return $this->bootloader;
+    }
+
+    public function console(): Console
+    {
+        return $this->get(Console::class);
     }
 
     public function getContainer(): Container

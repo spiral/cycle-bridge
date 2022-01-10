@@ -7,6 +7,7 @@ namespace Spiral\Cycle\DataGrid\Writer;
 use Cycle\Database\Injection\Parameter;
 use Cycle\Database\Query\SelectQuery;
 use Cycle\ORM\Select;
+use Spiral\Cycle\DataGrid\Specification\Filter\InjectionFilter;
 use Spiral\Cycle\DataGrid\Specification\Sorter\InjectionSorter;
 use Spiral\DataGrid\Compiler;
 use Spiral\DataGrid\Exception\CompilerException;
@@ -92,7 +93,7 @@ class QueryWriter implements WriterInterface
             });
         }
 
-        if ($filter instanceof Specification\Filter\InjectionFilter) {
+        if ($filter instanceof InjectionFilter) {
             $expression = $filter->getFilter();
             if ($expression instanceof Specification\Filter\Expression) {
                 return $source->where(

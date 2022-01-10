@@ -49,4 +49,9 @@ final class CycleConfig extends InjectableConfig
     {
         return (bool)($this->config['schema']['cache'] ?? false);
     }
+
+    public function getCustomRelations(): array
+    {
+        return (array)($this->config['customRelations'] ?? []);
+    }
 }

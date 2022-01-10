@@ -27,7 +27,7 @@ final class DataGridBootloader extends Bootloader
         InputInterface::class => GridInput::class,
         GridInterface::class => Grid::class,
         GridFactoryInterface::class => GridFactory::class,
-        GridFactory::class => GridFactory::class, // Deprecated behaviour
+        GridFactory::class => GridFactory::class, // Deprecated behavior
         Compiler::class => [self::class, 'compiler'],
         GridResponseInterface::class => GridResponse::class,
     ];

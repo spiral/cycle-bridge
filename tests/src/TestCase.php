@@ -29,6 +29,8 @@ abstract class TestCase extends BaseTestCase
     private array $beforeBootload = [];
     private array $afterBootload = [];
 
+    public const ENV = [];
+
     public function beforeBootload(\Closure $callback): void
     {
         $this->beforeBootload[] = $callback;
@@ -43,7 +45,7 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->app = $this->makeApp();
+        $this->app = $this->makeApp(static::ENV);
     }
 
     public function getOrm(): ORMInterface

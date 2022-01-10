@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Console\Command\Database;
 
-use Spiral\Console\Command;
 use Cycle\Database\Database;
-use Cycle\Database\DatabaseManager;
+use Cycle\Database\DatabaseProviderInterface;
 use Cycle\Database\Driver\DriverInterface;
 use Cycle\Database\Exception\DBALException;
 use Cycle\Database\Injection\FragmentInterface;
 use Cycle\Database\Query\QueryParameters;
 use Cycle\Database\Schema\AbstractColumn;
 use Cycle\Database\Schema\AbstractTable;
+use Cycle\Database\Table;
+use Spiral\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -29,12 +30,14 @@ final class TableCommand extends Command
 
     private const SKIP = '<comment>---</comment>';
 
-    public function perform(DatabaseManager $dbal): void
+    public function perform(DatabaseProviderInterface $dbal): void
     {
         $database = $dbal->database($this->option('database'));
-        $schema = $database->table($this->argument('table'))->getSchema();
+        /** @var Table $table */
+        $table = $database->table($this->argument('table'));
+        $schema = $table->getSchema();
 
-        if (!$schema->exists()) {
+        if (! $schema->exists()) {
             throw new DBALException(
                 "Table {$database->getName()}.{$this->argument('table')} does not exists."
             );
@@ -48,11 +51,11 @@ final class TableCommand extends Command
 
         $this->describeColumns($schema);
 
-        if (!empty($indexes = $schema->getIndexes())) {
+        if (! empty($indexes = $schema->getIndexes())) {
             $this->describeIndexes($database, $indexes);
         }
 
-        if (!empty($foreignKeys = $schema->getForeignKeys())) {
+        if (! empty($foreignKeys = $schema->getForeignKeys())) {
             $this->describeForeignKeys($database, $foreignKeys);
         }
 

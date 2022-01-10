@@ -34,7 +34,7 @@ final class Compiler
 
     public function isEmpty(): bool
     {
-        return empty($this->schema);
+        return empty($this->schema) || $this->schema === self::EMPTY_SCHEMA;
     }
 
     public function toSchema(): SchemaInterface

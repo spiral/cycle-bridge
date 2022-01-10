@@ -6,6 +6,7 @@ namespace Spiral\Cycle;
 
 use Cycle\Database\Driver\DriverInterface;
 use Cycle\Database\LoggerFactoryInterface;
+use Cycle\Database\NamedInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -29,9 +30,15 @@ final class LoggerFactory implements LoggerFactoryInterface
             return new NullLogger();
         }
 
-        $channel = $this->config['drivers'][strtolower($driver->getType())]
-            ?? $this->config['default']
-            ?? $driver::class;
+        $channel = $driver::class;
+
+        if ($driver instanceof NamedInterface && isset($this->config['drivers'][$driver->getName()])) {
+            $channel = $this->config['drivers'][$driver->getName()];
+        } else if (isset($this->config['drivers'][$driver::class])) {
+            $channel = $this->config['drivers'][$driver::class];
+        } else if (isset($this->config['default']) && $this->config['default'] !== null) {
+            $channel = $this->config['default'];
+        }
 
         return $this->container->get(LogsInterface::class)->getLogger($channel);
     }

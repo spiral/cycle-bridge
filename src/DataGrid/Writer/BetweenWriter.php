@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Spiral\Cycle\DataGrid\Writer;
 
 use Cycle\Database\Injection\Parameter;
+use Spiral\Cycle\DataGrid\Specification\Filter\InjectionFilter;
 use Spiral\DataGrid\Compiler;
 use Spiral\DataGrid\Specification\Filter;
 use Spiral\DataGrid\SpecificationInterface;
@@ -37,14 +38,14 @@ class BetweenWriter implements WriterInterface
             }
         }
 
-        if ($specification instanceof Filter\InjectionFilter) {
+        if ($specification instanceof InjectionFilter) {
             $expression = $specification->getFilter();
             if ($expression instanceof Filter\Between) {
                 $filters = $expression->getFilters($this->asOriginal);
                 if (count($filters) > 1) {
                     $filters = array_map(
-                        static function (SpecificationInterface $filter) use ($specification): Filter\InjectionFilter {
-                            return Filter\InjectionFilter::createFrom($specification, $filter);
+                        static function (SpecificationInterface $filter) use ($specification): InjectionFilter {
+                            return InjectionFilter::createFrom($specification, $filter);
                         },
                         $filters
                     );

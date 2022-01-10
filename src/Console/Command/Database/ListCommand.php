@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Console\Command\Database;
 
+use Cycle\Database\DatabaseProviderInterface;
 use Spiral\Console\Command;
 use Cycle\Database\Config\DatabaseConfig;
 use Cycle\Database\Database;
-use Cycle\Database\DatabaseManager;
 use Cycle\Database\Driver\Driver;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -21,11 +21,7 @@ final class ListCommand extends Command
         ['db', InputArgument::OPTIONAL, 'Database name'],
     ];
 
-    /**
-     * @param  DatabaseConfig  $config
-     * @param  DatabaseManager  $dbal
-     */
-    public function perform(DatabaseConfig $config, DatabaseManager $dbal): void
+    public function perform(DatabaseConfig $config, DatabaseProviderInterface $dbal): void
     {
         if ($this->argument('db')) {
             $databases = [$this->argument('db')];

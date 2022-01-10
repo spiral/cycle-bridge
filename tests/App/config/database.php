@@ -15,7 +15,7 @@ return [
     /**
      * Default database connection
      */
-    'default'   => 'default',
+    'default' => 'default',
 
     /**
      * The Spiral/Database module provides support to manage multiple databases
@@ -27,7 +27,7 @@ return [
      */
     'databases' => [
         'default' => [
-            'driver' => 'sqlite',
+            'driver' => 'runtime',
         ],
     ],
 
@@ -38,10 +38,14 @@ return [
      * the driver class and its connection options.
      */
     'drivers' => [
-        'sqlite' => new Config\SQLiteDriverConfig(
+        'runtime' => new Config\SQLiteDriverConfig(
             connection: new Config\SQLite\MemoryConnectionConfig(),
             queryCache: true
         ),
-        // ...
+        'other' => new Config\PostgresDriverConfig(
+            connection: new Config\Postgres\DsnConnectionConfig(
+                dsn: 'pgsql:host=127.0.0.1;dbname=database'
+            )
+        ),
     ],
 ];

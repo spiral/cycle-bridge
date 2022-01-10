@@ -17,7 +17,6 @@ use Spiral\Tests\TestCase;
 
 final class DatabaseBootloaderTest extends TestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -91,7 +90,7 @@ final class DatabaseBootloaderTest extends TestCase
                 'default', ['foo' => 'bar']
             ],
             'driver' => [
-                'bar', ['sqlite' => 'bar']
+                'bar', ['test' => 'bar']
             ]
         ];
     }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Console\Command\Migrate;
 
-use Spiral\Files\FilesInterface;
 use Cycle\Migrations\State;
 
 /**
@@ -16,7 +15,7 @@ final class StatusCommand extends AbstractCommand
     protected const DESCRIPTION = 'Get list of all available migrations and their statuses';
     protected const PENDING = '<fg=red>not executed yet</fg=red>';
 
-    public function perform(FilesInterface $files): void
+    public function perform(): void
     {
         $this->migrator->configure();
 

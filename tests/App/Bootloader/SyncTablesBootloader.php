@@ -6,6 +6,7 @@ namespace Spiral\App\Bootloader;
 
 use Cycle\Schema\Generator\SyncTables;
 use Spiral\Boot\Bootloader\Bootloader;
+use Spiral\Boot\EnvironmentInterface;
 use Spiral\Cycle\Bootloader\SchemaBootloader;
 
 final class SyncTablesBootloader extends Bootloader
@@ -14,8 +15,13 @@ final class SyncTablesBootloader extends Bootloader
         SchemaBootloader::class,
     ];
 
-    public function boot(SchemaBootloader $schema): void
+    public function boot(SchemaBootloader $schema, EnvironmentInterface $env): void
     {
-        $schema->addGenerator(SchemaBootloader::GROUP_POSTPROCESS, SyncTables::class);
+        if (! $env->get('USE_MIGRATIONS')) {
+            $schema->addGenerator(
+                SchemaBootloader::GROUP_POSTPROCESS,
+                SyncTables::class
+            );
+        }
     }
 }

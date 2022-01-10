@@ -17,6 +17,7 @@ use Cycle\ORM\SchemaInterface;
 use Cycle\ORM\Transaction;
 use Cycle\ORM\TransactionInterface;
 use Spiral\Boot\Bootloader\Bootloader;
+use Spiral\Boot\EnvironmentInterface;
 use Spiral\Boot\FinalizerInterface;
 use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
@@ -47,7 +48,11 @@ final class CycleOrmBootloader extends Bootloader
     ) {
     }
 
-    public function boot(Container $container, FinalizerInterface $finalizer): void
+    public function boot(
+        Container $container,
+        FinalizerInterface $finalizer,
+        EnvironmentInterface $env
+    ): void
     {
         $finalizer->addFinalizer(
             function () use ($container): void {
@@ -59,7 +64,7 @@ final class CycleOrmBootloader extends Bootloader
 
         $container->bindInjector(RepositoryInterface::class, RepositoryInjector::class);
 
-        $this->initOrmConfig();
+        $this->initOrmConfig($env);
     }
 
     private function orm(
@@ -74,9 +79,13 @@ final class CycleOrmBootloader extends Bootloader
         Container $container,
         CycleConfig $config
     ): FactoryInterface {
+        $relationConfig = new RelationConfig(
+            RelationConfig::getDefault()->toArray() + $config->getCustomRelations()
+        );
+
         $factory = new Factory(
             $dbal,
-            RelationConfig::getDefault(),
+            $relationConfig,
             $container,
             $config->getDefaultCollectionFactory()
         );
@@ -88,7 +97,7 @@ final class CycleOrmBootloader extends Bootloader
         return $factory;
     }
 
-    private function initOrmConfig()
+    private function initOrmConfig(EnvironmentInterface $env)
     {
         $this->config->setDefaults(
             CycleConfig::CONFIG,

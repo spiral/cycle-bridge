@@ -8,9 +8,9 @@ use Spiral\Cycle\Bootloader\SchemaBootloader;
 use Cycle\Schema\Generator\SyncTables;
 use Cycle\Schema\Registry;
 use Spiral\Boot\MemoryInterface;
-use Spiral\Command\Cycle\Generator\ShowChanges;
 use Spiral\Console\Command;
 use Spiral\Cycle\Config\CycleConfig;
+use Spiral\Cycle\Console\Command\CycleOrm\Generator\ShowChanges;
 use Spiral\Cycle\SchemaCompiler;
 
 final class SyncCommand extends Command

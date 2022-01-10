@@ -14,10 +14,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 class User
 {
     #[Column(type: 'primary')]
-    private int $id;
+    public int $id;
 
     #[Column(type: 'int', name: 'user_id', nullable: true)]
-    private ?int $userId = null;
+    public ?int $userId = null;
 
     #[BelongsTo(target: User::class, nullable: true, innerKey: 'userId')]
     public ?User $friend = null;

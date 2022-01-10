@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Console\Command\CycleOrm;
 
+use Cycle\Database\DatabaseProviderInterface;
 use Spiral\Cycle\Bootloader\SchemaBootloader;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Console\Command\CycleOrm\Generator\ShowChanges;
 use Spiral\Cycle\Console\Command\Migrate\AbstractCommand;
 use Cycle\Migrations\State;
 use Cycle\Schema\Generator\Migrations\GenerateMigrations;
-use Cycle\Schema\Compiler;
+use Spiral\Cycle\Schema\Compiler;
 use Cycle\Schema\Registry;
 use Spiral\Boot\MemoryInterface;
 use Spiral\Console\Console;
-use Spiral\Cycle\SchemaCompiler;
 use Cycle\Migrations\Migrator;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -44,16 +44,17 @@ final class MigrateCommand extends AbstractCommand
             }
         }
 
-        $show = new ShowChanges($this->output);
-        $schemaCompiler = SchemaCompiler::compile(
+        $schemaCompiler = Compiler::compile(
             $registry,
-            array_merge($bootloader->getGenerators($config), [$show])
+            array_merge($bootloader->getGenerators($config), [
+                $show = new ShowChanges($this->output)
+            ])
         );
 
         $schemaCompiler->toMemory($memory);
 
         if ($show->hasChanges()) {
-            (new Compiler())->compile($registry, [$migrations]);
+            (new \Cycle\Schema\Compiler())->compile($registry, [$migrations]);
 
             if ($this->option('run')) {
                 $console->run('migrate', [], $this->output);
