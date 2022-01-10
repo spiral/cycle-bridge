@@ -8,7 +8,9 @@ use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\FactoryInterface;
 use Cycle\ORM\ORM;
 use Cycle\ORM\ORMInterface;
+use Cycle\ORM\Transaction\CommandGeneratorInterface;
 use Cycle\ORM\TransactionInterface;
+use Mockery as m;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Tests\TestCase;
 
@@ -24,6 +26,24 @@ final class CycleOrmBootloaderTest extends TestCase
         $this->assertInstanceOf(
             ORMInterface::class,
             $this->app->get(ORM::class)
+        );
+    }
+
+    public function testGetsOrmWithCustomCommandGenerator(): void
+    {
+        $this->app->getContainer()->bind(
+            CommandGeneratorInterface::class,
+            $commandGenerator = m::mock(CommandGeneratorInterface::class)
+        );
+
+        $this->assertInstanceOf(
+            ORMInterface::class,
+            $orm = $this->app->get(ORMInterface::class)
+        );
+
+        $this->assertSame(
+            $commandGenerator,
+            $orm->getCommandGenerator()
         );
     }
 

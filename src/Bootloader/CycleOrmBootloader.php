@@ -39,7 +39,6 @@ final class CycleOrmBootloader extends Bootloader
 
     protected const SINGLETONS = [
         ORMInterface::class => ORM::class,
-        ORM::class => [self::class, 'orm'],
         FactoryInterface::class => [self::class, 'factory'],
     ];
 
@@ -65,13 +64,6 @@ final class CycleOrmBootloader extends Bootloader
         $container->bindInjector(RepositoryInterface::class, RepositoryInjector::class);
 
         $this->initOrmConfig($env);
-    }
-
-    private function orm(
-        FactoryInterface $factory,
-        SchemaInterface $schema = null
-    ): ORMInterface {
-        return new ORM($factory, $schema);
     }
 
     private function factory(
