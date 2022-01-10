@@ -9,9 +9,9 @@ use Psr\Container\ContainerInterface;
 use Spiral\Core\CoreInterceptorInterface;
 use Spiral\Core\CoreInterface;
 use Spiral\Cycle\DataGrid\Annotation\DataGrid;
+use Spiral\Cycle\DataGrid\Response\GridResponseInterface;
 use Spiral\DataGrid\GridFactory;
 use Spiral\DataGrid\GridFactoryInterface;
-use Spiral\Cycle\DataGrid\Response\GridResponseInterface;
 
 /**
  * Automatically render grids using schema declared in annotation.
@@ -62,9 +62,12 @@ final class GridInterceptor implements CoreInterceptorInterface
         if (is_iterable($result)) {
             $schema = $this->getSchema($controller, $action);
             if ($schema !== null) {
-                $grid = $this->makeFactory($schema)
-                    ->withDefaults($schema['defaults'])
-                    ->create($result, $schema['grid']);
+                $factory = $this->makeFactory($schema);
+                if (method_exists($factory, 'withDefaults')) {
+                    $factory = $factory->withDefaults($schema['defaults']);
+                }
+
+                $grid = $factory->create($result, $schema['grid']);
 
                 if ($schema['view'] !== null) {
                     $grid = $grid->withView($schema['view']);
