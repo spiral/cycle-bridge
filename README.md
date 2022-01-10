@@ -363,10 +363,10 @@ use Spiral\Boot\Bootloader\Bootloader;
 
 final class EntityBehaviorBootloader extends Bootloader
 {
-protected const BINDINGS = [
-    CommandGeneratorInterface::class => \Cycle\ORM\Entity\Behavior\EventDrivenCommandGenerator::class,
-    ...
-];
+    protected const BINDINGS = [
+        CommandGeneratorInterface::class => \Cycle\ORM\Entity\Behavior\EventDrivenCommandGenerator::class,
+    ];
+}
 ```
 
 And then you need to register a new bootloader in your application:
