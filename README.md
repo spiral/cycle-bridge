@@ -346,8 +346,9 @@ The package is available via composer and can be installed using the following c
 composer require cycle/entity-behavior
 ```
 
-At first, you need to bind `Cycle\ORM\Transaction\CommandGeneratorInterface` with `\Cycle\ORM\Entity\Behavior\EventDrivenCommandGenerator` via
-spiral container. You can do it via Bootloader.
+At first, you need to bind `Cycle\ORM\Transaction\CommandGeneratorInterface` with `\Cycle\ORM\Entity\Behavior\EventDrivenCommandGenerator`. 
+
+You can do it via spiral bootloader.
 
 ```php
 <?php
@@ -358,7 +359,6 @@ namespace App\Bootloader;
 
 use Cycle\ORM\Transaction\CommandGeneratorInterface;
 use Cycle\ORM\Entity\Behavior\EventDrivenCommandGenerator;
-use Cycle\ORM\Config\RelationConfig;
 use Spiral\Boot\Bootloader\Bootloader;
 
 final class EntityBehaviorBootloader extends Bootloader
