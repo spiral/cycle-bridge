@@ -337,3 +337,43 @@ return [
     'safe' => env('SPIRAL_ENV') == 'develop',
 ];
 ```
+
+## Integration with `cycle/entity-behavior` package
+
+The package is available via composer and can be installed using the following command:
+
+```bash
+composer require cycle/entity-behavior
+```
+
+At first, you need to bind `Cycle\ORM\Transaction\CommandGeneratorInterface` with `\Cycle\ORM\Entity\Behavior\EventDrivenCommandGenerator` via
+spiral container. You can do it via Bootloader.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Bootloader;
+
+use Cycle\ORM\Transaction\CommandGeneratorInterface;
+use Cycle\ORM\Entity\Behavior\EventDrivenCommandGenerator;
+use Cycle\ORM\Config\RelationConfig;
+use Spiral\Boot\Bootloader\Bootloader;
+
+final class EntityBehaviorBootloader extends Bootloader
+{
+    protected const BINDINGS = [
+        CommandGeneratorInterface::class => \Cycle\ORM\Entity\Behavior\EventDrivenCommandGenerator::class,
+    ];
+}
+```
+
+And then you need to register a new bootloader in your application:
+
+```php
+protected const LOAD = [
+    \App\Bootloader\EntityBehaviorBootloader::class,
+    ...
+],
+```
