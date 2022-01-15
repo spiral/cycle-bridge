@@ -143,7 +143,7 @@ return [
     /**
      * Database logger configuration
      */
-    'loggers' => [
+    'logger' => [
         'default' => null, // Default log channel for all drivers (The lowest priority)
         'drivers' => [
             // By driver name (The highest priority)
