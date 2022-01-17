@@ -44,9 +44,11 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
                 // render tables and relations
                 Generator\ResetTables::class,
                 Generator\GenerateRelations::class,
+                Generator\GenerateModifiers::class,
                 Generator\ValidateEntities::class,
                 Generator\RenderTables::class,
                 Generator\RenderRelations::class,
+                Generator\RenderModifiers::class,
             ],
             self::GROUP_POSTPROCESS => [
                 // post processing
