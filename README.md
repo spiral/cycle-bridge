@@ -273,16 +273,18 @@ return [
         'generators' => null,
         
         // 'generators' => [
+        //        \Cycle\Schema\Generator\ResetTables::class,
         //        \Cycle\Annotated\Embeddings::class,
         //        \Cycle\Annotated\Entities::class,
+        //        \Cycle\Annotated\TableInheritance::class,
         //        \Cycle\Annotated\MergeColumns::class,
-        //        \Cycle\Schema\Generator\ResetTables::class,
         //        \Cycle\Schema\Generator\GenerateRelations::class,
+        //        \Cycle\Schema\Generator\GenerateModifiers::class,
         //        \Cycle\Schema\Generator\ValidateEntities::class,
         //        \Cycle\Schema\Generator\RenderTables::class,
         //        \Cycle\Schema\Generator\RenderRelations::class,
-        //        \Cycle\Annotated\TableInheritance::class,
-        //        \Cycle\Annotated\MergeIndexes::class
+        //        \Cycle\Schema\Generator\RenderModifiers::class,
+        //        \Cycle\Annotated\MergeIndexes::class,
         //        \Cycle\Schema\Generator\GenerateTypecast::class,
         // ],
     ],
@@ -291,10 +293,10 @@ return [
      * Custom relation types for entities
      */
     'customRelations' => [
-        \Cycle\ORM\Relation::EMBEDDED => [
-            \Cycle\ORM\Config\RelationConfig::LOADER => \Cycle\ORM\Select\Loader\EmbeddedLoader::class,
-            \Cycle\ORM\Config\RelationConfig::RELATION => \Cycle\ORM\Relation\Embedded::class,
-        ]
+        // \Cycle\ORM\Relation::EMBEDDED => [
+        //     \Cycle\ORM\Config\RelationConfig::LOADER => \Cycle\ORM\Select\Loader\EmbeddedLoader::class,
+        //    \Cycle\ORM\Config\RelationConfig::RELATION => \Cycle\ORM\Relation\Embedded::class,
+        // ]
     ]
 ];
 ```

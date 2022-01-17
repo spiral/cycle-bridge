@@ -34,7 +34,7 @@ final class SchemaBootloaderTest extends TestCase
     {
         $generators = $this->bootloader->getGenerators($this->app->get(CycleConfig::class));
 
-        $this->assertCount(12, $generators);
+        $this->assertCount(14, $generators);
         $this->assertContainsOnlyInstancesOf(GeneratorInterface::class, $generators);
     }
 
