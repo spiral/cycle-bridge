@@ -319,7 +319,7 @@ private \Illuminate\Support\Collection $friends;
 
 #### Migrations
 
-You can create config file `app/config/migrations.php` if you want to configure Cycle ORM Migrations:
+You can create config file `app/config/migration.php` if you want to configure Cycle ORM Migrations:
 
 ```php
 return [
