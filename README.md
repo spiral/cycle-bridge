@@ -108,7 +108,6 @@ protected const LOAD = [
     CycleBridge\SchemaBootloader::class,
     CycleBridge\CycleOrmBootloader::class,
     CycleBridge\AnnotatedBootloader::class,
-    CycleBridge\CommandBootloader::class,
     
     // ...
     
@@ -125,8 +124,15 @@ protected const LOAD = [
     
     // NEW
     CycleBridge\AuthTokensBootloader::class,
+    
+    // Framework commands
+    // ...
+    CycleBridge\CommandBootloader::class,
 ];
 ```
+
+> Note: `CycleBridge\CommandBootloader` should be added after the `\Spiral\Bootloader\CommandBootloader`
+> to replace Cycle ORM 1 commands with new ones
 
 That's it!
 
@@ -295,13 +301,13 @@ return [
     'customRelations' => [
         // \Cycle\ORM\Relation::EMBEDDED => [
         //     \Cycle\ORM\Config\RelationConfig::LOADER => \Cycle\ORM\Select\Loader\EmbeddedLoader::class,
-        //    \Cycle\ORM\Config\RelationConfig::RELATION => \Cycle\ORM\Relation\Embedded::class,
+        //     \Cycle\ORM\Config\RelationConfig::RELATION => \Cycle\ORM\Relation\Embedded::class,
         // ]
     ]
 ];
 ```
 
-If you want to use specific collection type in your relation< you can specify it via attributes
+If you want to use specific collection type in your relation, you can specify it via attributes
 
 ```php
 // array
@@ -379,3 +385,32 @@ protected const LOAD = [
     ...
 ],
 ```
+
+## Console commands
+
+### Migrations
+
+| Command            | Description                                                                                |
+|--------------------|--------------------------------------------------------------------------------------------|
+| `migrate`          | Perform one or all outstanding migrations<br/>`--one` Execute only one (first) migration   |
+| `migrate:replay`   | Replay (down, up) one or multiple migrations<br/>`--all` Replay all migrations             |
+| `migrate:rollback` | Rollback one (default) or multiple migrations<br/>`--all` Rollback all executed migrations |
+| `migrate:init`     | Init migrations component (create migrations table)                                        |
+| `migrate:status`   | Get list of all available migrations and their statuses                                    |
+
+### Database
+
+| Command            | Description                                                                                                   |
+|--------------------|---------------------------------------------------------------------------------------------------------------|
+| `db:list [db]`     | Get list of available databases, their tables and records count<br/>`db` database name                        |
+| `db:table <table>` | Describe table schema of specific database<br/>`table` Table name (required)<br/>`--database` Source database |
+
+### ORM and Schema
+
+| Command         | Description                                                                         |
+|-----------------|-------------------------------------------------------------------------------------|
+| `cycle`         | Update (init) cycle schema from database and annotated classes                      |
+| `cycle:migrate` | Generate ORM schema migrations<br/>`--run` Automatically run generated migration    |
+| `cycle:render`  | Render available CycleORM schemas<br/>`--no-color` Display output without colors    |
+| `cycle:sync`    | Sync Cycle ORM schema with database without intermediate migration (risk operation) |
+
