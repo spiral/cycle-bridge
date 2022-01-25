@@ -11,7 +11,6 @@ use Psr\Container\ContainerInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Bootloader\ConsoleBootloader;
 use Spiral\Config\ConfiguratorInterface;
-use Spiral\Config\Patch\Set;
 use Spiral\Core\Container;
 use Spiral\Cycle\Console\Command\CycleOrm;
 use Spiral\Cycle\Console\Command\Database;
@@ -29,7 +28,6 @@ final class CommandBootloader extends Bootloader
         ConfiguratorInterface $config,
         Container $container
     ): void {
-        $this->removeDeprecatedCommands($config);
         $this->configureExtensions($console, $container);
     }
 
@@ -78,21 +76,5 @@ final class CommandBootloader extends Bootloader
         $console->addCommand(Migrate\MigrateCommand::class);
         $console->addCommand(Migrate\RollbackCommand::class);
         $console->addCommand(Migrate\ReplayCommand::class);
-    }
-
-    /**
-     * @deprecated since 2.9
-     */
-    private function removeDeprecatedCommands(ConfiguratorInterface $config)
-    {
-        $commands = $config->getConfig('console')['commands'] ?? [];
-        $filterCommands = [
-
-        ];
-
-        $config->modify(
-            'console',
-            new Set('commands', array_diff($commands, $filterCommands))
-        );
     }
 }
