@@ -41,6 +41,8 @@ class PostgresQueryWriter implements WriterInterface
     /**
      * @param mixed $target
      * @return bool
+     *
+     * @psalm-suppress InternalMethod
      */
     protected function targetAcceptable($target): bool
     {
