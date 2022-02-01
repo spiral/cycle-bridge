@@ -29,11 +29,7 @@ final class GridInput implements InputInterface
         return $this->input->input($option) !== null;
     }
 
-    /**
-     * @param mixed  $default
-     * @return mixed|null
-     */
-    public function getValue(string $option, $default = null)
+    public function getValue(string $option, mixed $default = null): mixed
     {
         return $this->input->input($option, $default);
     }
