@@ -35,6 +35,8 @@ class App extends Kernel
 
         // Auth
         CycleBridge\AuthTokensBootloader::class,
+        // Validation
+        CycleBridge\ValidationBootloader::class,
     ];
 
     /**
