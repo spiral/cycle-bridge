@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Spiral\Tests\Console\Command\Migrate;
 
 use Cycle\Database\DatabaseInterface;
-use Spiral\Tests\ConsoleTestCase;
+use Spiral\Tests\ConsoleTest;
 
-final class RollbackCommandTest extends ConsoleTestCase
+final class RollbackCommandTest extends ConsoleTest
 {
     public const ENV = [
         'SAFE_MIGRATIONS' => true,

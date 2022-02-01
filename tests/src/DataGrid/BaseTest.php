@@ -10,7 +10,7 @@ use Spiral\DataGrid\Compiler;
 use Spiral\DataGrid\SpecificationInterface;
 use Spiral\Cycle\DataGrid\Writer\QueryWriter;
 
-abstract class TestCase extends \Spiral\Tests\TestCase
+abstract class BaseTest extends \Spiral\Tests\BaseTest
 {
     protected DatabaseInterface $db;
 

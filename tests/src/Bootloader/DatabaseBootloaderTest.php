@@ -13,9 +13,9 @@ use Cycle\Database\Driver\DriverInterface;
 use Mockery as m;
 use Psr\Log\LoggerInterface;
 use Spiral\Logger\LogsInterface;
-use Spiral\Tests\TestCase;
+use Spiral\Tests\BaseTest;
 
-final class DatabaseBootloaderTest extends TestCase
+final class DatabaseBootloaderTest extends BaseTest
 {
     protected function setUp(): void
     {

@@ -8,9 +8,9 @@ use Cycle\Migrations\FileRepository;
 use Cycle\Migrations\Migrator;
 use Cycle\Migrations\RepositoryInterface;
 use Spiral\Boot\DirectoriesInterface;
-use Spiral\Tests\TestCase;
+use Spiral\Tests\BaseTest;
 
-final class MigrationsBootloaderTest extends TestCase
+final class MigrationsBootloaderTest extends BaseTest
 {
     public function testGetsMigrator(): void
     {

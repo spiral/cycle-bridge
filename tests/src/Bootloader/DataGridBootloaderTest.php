@@ -14,9 +14,9 @@ use Spiral\DataGrid\GridFactoryInterface;
 use Spiral\DataGrid\GridInterface;
 use Spiral\DataGrid\InputInterface;
 use Spiral\DataGrid\WriterInterface;
-use Spiral\Tests\TestCase;
+use Spiral\Tests\BaseTest;
 
-final class DataGridBootloaderTest extends TestCase
+final class DataGridBootloaderTest extends BaseTest
 {
     public function testGetsGridInput(): void
     {

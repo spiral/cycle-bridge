@@ -12,9 +12,9 @@ use Spiral\DataGrid\Specification\Value\StringValue;
 use Spiral\DataGrid\SpecificationInterface;
 use Spiral\Cycle\DataGrid\Writer\BetweenWriter;
 use Spiral\Cycle\DataGrid\Writer\QueryWriter;
-use Spiral\Tests\DataGrid\TestCase;
+use Spiral\Tests\DataGrid\BaseTest;
 
-class WriteOriginalTest extends TestCase
+class WriteOriginalTest extends BaseTest
 {
     public function testBetween(): void
     {

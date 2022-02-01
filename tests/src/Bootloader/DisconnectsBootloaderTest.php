@@ -7,9 +7,9 @@ namespace Spiral\Tests\Bootloader;
 use Cycle\Database\DatabaseInterface;
 use Spiral\Boot\FinalizerInterface;
 use Spiral\Cycle\Bootloader\DisconnectsBootloader;
-use Spiral\Tests\TestCase;
+use Spiral\Tests\BaseTest;
 
-final class DisconnectsBootloaderTest extends TestCase
+final class DisconnectsBootloaderTest extends BaseTest
 {
     public function testConnected(): void
     {

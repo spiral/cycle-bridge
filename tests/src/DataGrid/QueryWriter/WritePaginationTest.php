@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Spiral\Tests\DataGrid\QueryWriter;
 
 use Spiral\DataGrid\Specification\Pagination;
-use Spiral\Tests\DataGrid\TestCase;
+use Spiral\Tests\DataGrid\BaseTest;
 
-class WritePaginationTest extends TestCase
+class WritePaginationTest extends BaseTest
 {
     public function testLimit(): void
     {

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Console\Command\CycleOrm;
 
-use Spiral\Tests\ConsoleTestCase;
+use Spiral\Tests\ConsoleTest;
 use Cycle\ORM\SchemaInterface;
 
-final class RenderCommandTest extends ConsoleTestCase
+final class RenderCommandTest extends ConsoleTest
 {
     public function testRenderSchema()
     {

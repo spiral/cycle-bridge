@@ -7,10 +7,10 @@ namespace Spiral\Tests\Bootloader;
 use Spiral\Auth\TokenStorageInterface;
 use Spiral\Boot\DirectoriesInterface;
 use Spiral\Cycle\Auth\Token;
-use Spiral\Tests\TestCase;
+use Spiral\Tests\BaseTest;
 use Spiral\Cycle\Auth\TokenStorage as CycleStorage;
 
-final class AuthTokensBootloaderTest extends TestCase
+final class AuthTokensBootloaderTest extends BaseTest
 {
     public function testGetsTokenStorage()
     {

@@ -7,9 +7,9 @@ namespace Spiral\Tests\Bootloader;
 use Spiral\Cycle\Console\Command\CycleOrm;
 use Spiral\Cycle\Console\Command\Database;
 use Spiral\Cycle\Console\Command\Migrate;
-use Spiral\Tests\TestCase;
+use Spiral\Tests\BaseTest;
 
-final class CommandBootloaderTest extends TestCase
+final class CommandBootloaderTest extends BaseTest
 {
     public function testCommandsShouldBeRegistered()
     {

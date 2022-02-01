@@ -8,7 +8,7 @@ use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use PHPUnit\Framework\TestCase as BaseTestCase;
+use PHPUnit\Framework\TestCase;
 use Spiral\App\App;
 use Spiral\Boot\AbstractKernel;
 use Spiral\Boot\DirectoriesInterface;
@@ -20,7 +20,7 @@ use Spiral\Core\ConfigsInterface;
 use Spiral\Core\Container;
 use Spiral\Files\Files;
 
-abstract class TestCase extends BaseTestCase
+abstract class BaseTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 

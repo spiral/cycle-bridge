@@ -9,9 +9,9 @@ use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\GeneratorInterface;
 use Spiral\Cycle\Bootloader\SchemaBootloader;
 use Spiral\Cycle\Config\CycleConfig;
-use Spiral\Tests\TestCase;
+use Spiral\Tests\BaseTest;
 
-final class SchemaBootloaderTest extends TestCase
+final class SchemaBootloaderTest extends BaseTest
 {
     private SchemaBootloader $bootloader;
 

@@ -11,9 +11,9 @@ use Spiral\DataGrid\Compiler;
 use Spiral\DataGrid\Specification\Filter;
 use Spiral\DataGrid\Specification\Value\StringValue;
 use Spiral\DataGrid\SpecificationInterface;
-use Spiral\Tests\DataGrid\TestCase;
+use Spiral\Tests\DataGrid\BaseTest;
 
-class WriteConvertedTest extends TestCase
+class WriteConvertedTest extends BaseTest
 {
     public function testBetween(): void
     {
