@@ -10,7 +10,7 @@ use Mockery as m;
 use PHPUnit\Framework\TestCase;
 use Spiral\Cycle\Validation\EntityChecker;
 
-final class EntityCheckerTest extends TestCase
+final class EntityCheckerUnitTest extends TestCase
 {
     public function testExistsWithEmptyDatabase(): void
     {
