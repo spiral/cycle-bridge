@@ -7,6 +7,7 @@ namespace Spiral\Cycle\Bootloader;
 use Cycle\Database\DatabaseInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\Bootloader\Bootloader;
+use Spiral\Bootloader\AttributesBootloader;
 use Spiral\Config\ConfiguratorInterface;
 use Spiral\Cycle\DataGrid\Config\GridConfig;
 use Spiral\Cycle\DataGrid\GridInput;
@@ -23,6 +24,10 @@ use Spiral\DataGrid\InputInterface;
 
 final class DataGridBootloader extends Bootloader
 {
+    protected const DEPENDENCIES = [
+        AttributesBootloader::class
+    ];
+
     protected const SINGLETONS = [
         InputInterface::class => GridInput::class,
         GridInterface::class => Grid::class,
