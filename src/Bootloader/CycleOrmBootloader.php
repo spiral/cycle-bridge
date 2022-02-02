@@ -13,7 +13,6 @@ use Cycle\ORM\FactoryInterface;
 use Cycle\ORM\ORM;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
-use Cycle\ORM\SchemaInterface;
 use Cycle\ORM\Transaction;
 use Cycle\ORM\TransactionInterface;
 use Spiral\Boot\Bootloader\Bootloader;
@@ -22,7 +21,7 @@ use Spiral\Boot\FinalizerInterface;
 use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
 use Spiral\Cycle\Config\CycleConfig;
-use Spiral\Cycle\RepositoryInjector;
+use Spiral\Cycle\Injector\RepositoryInjector;
 
 final class CycleOrmBootloader extends Bootloader
 {
