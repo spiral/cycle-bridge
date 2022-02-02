@@ -41,8 +41,17 @@ class App extends Kernel
 
     /**
      * Get object from the container.
+     *
+     * @template T
+     *
+     * @param class-string<T>|string $alias
+     *
+     * @return T
+     * @psalm-return ($alias is class-string ? T : mixed)
+     *
+     * @throws \Throwable
      */
-    public function get(string $alias, string $context = null)
+    public function get(string $alias, string $context = null): mixed
     {
         return $this->container->get($alias, $context);
     }

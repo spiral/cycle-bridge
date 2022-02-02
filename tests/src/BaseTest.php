@@ -24,7 +24,7 @@ abstract class BaseTest extends TestCase
 {
     use MockeryPHPUnitIntegration;
 
-    protected KernelInterface $app;
+    protected App $app;
     protected \Spiral\Core\Container $container;
     private array $beforeBootload = [];
     private array $afterBootload = [];

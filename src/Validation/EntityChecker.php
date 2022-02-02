@@ -11,6 +11,9 @@ use Cycle\ORM\Select\Repository;
 use Spiral\Core\Container\SingletonInterface;
 use Spiral\Validation\AbstractChecker;
 
+/**
+ * Cycle ORM specific checker
+ */
 class EntityChecker extends AbstractChecker implements SingletonInterface
 {
     /**
@@ -26,6 +29,12 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
     ) {
     }
 
+    /**
+     * Checks if the entity exists by a given field
+     *
+     * @param string $role Entity class or role
+     * @param null|string $field Mapped field
+     */
     public function exists(mixed $value, string $role, ?string $field = null, bool $ignoreCase = false): bool
     {
         $repository = $this->orm->getRepository($role);
