@@ -25,9 +25,7 @@ final class AuthTokensBootloaderTest extends BaseTest
         $config = $this->getConfig('tokenizer');
         $dirs = $this->app->get(DirectoriesInterface::class);
 
-        $this->assertSame([
-            $dirs->get('app'),
-            dirname((new \ReflectionClass(Token::class))->getFileName())
-        ], $config['directories']);
+        $this->assertContains($dirs->get('app'), $config['directories']);
+        $this->assertContains(\dirname((new \ReflectionClass(Token::class))->getFileName()), $config['directories']);
     }
 }
