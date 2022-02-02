@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Validation;
 
+use Cycle\ORM\Heap\Heap;
 use Cycle\ORM\ORMInterface;
 use Mockery as m;
 use Spiral\Tests\BaseTest;
@@ -116,6 +117,8 @@ final class EntityCheckerTest extends BaseTest
         $orm->shouldReceive('getRepository')
             ->with(self::ENTITY_ROLE)
             ->andReturn($this->makeRepository($repositoryData, self::ENTITY_PK));
+        $orm->shouldReceive('getHeap')
+            ->andReturn(new Heap());
         $this->app->getContainer()->bind(ORMInterface::class, $orm);
     }
 }
