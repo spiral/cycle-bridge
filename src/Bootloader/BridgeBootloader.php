@@ -6,6 +6,9 @@ namespace Spiral\Cycle\Bootloader;
 
 use Spiral\Boot\Bootloader\Bootloader;
 
+/**
+ * Contains all Cycle Bridge package bootloaders
+ */
 final class BridgeBootloader extends Bootloader
 {
     protected const DEPENDENCIES = [

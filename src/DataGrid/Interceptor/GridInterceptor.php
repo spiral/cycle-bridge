@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\DataGrid\Interceptor;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Psr\Container\ContainerInterface;
+use Spiral\Attributes\ReaderInterface;
 use Spiral\Core\CoreInterceptorInterface;
 use Spiral\Core\CoreInterface;
 use Spiral\Cycle\DataGrid\Annotation\DataGrid;
@@ -20,42 +20,20 @@ use Spiral\DataGrid\GridFactoryInterface;
  */
 final class GridInterceptor implements CoreInterceptorInterface
 {
-    /** @var GridResponseInterface */
-    private $response;
+    private array $cache = [];
 
-    /** @var ContainerInterface */
-    private $container;
-
-    /** @var GridFactory */
-    private $gridFactory;
-
-    /** @var array */
-    private $cache = [];
-
-    /**
-     * @param GridResponseInterface $response
-     * @param ContainerInterface    $container
-     * @param GridFactory           $gridFactory
-     */
     public function __construct(
-        GridResponseInterface $response,
-        ContainerInterface $container,
-        GridFactory $gridFactory
+        private GridResponseInterface $response,
+        private ContainerInterface $container,
+        private GridFactory $gridFactory,
+        private ReaderInterface $reader
     ) {
-        $this->response = $response;
-        $this->container = $container;
-        $this->gridFactory = $gridFactory;
     }
 
     /**
-     * @param string        $controller
-     * @param string        $action
-     * @param array         $parameters
-     * @param CoreInterface $core
-     * @return mixed
      * @throws \Throwable
      */
-    public function process(string $controller, string $action, array $parameters, CoreInterface $core)
+    public function process(string $controller, string $action, array $parameters, CoreInterface $core): mixed
     {
         $result = $core->callAction($controller, $action, $parameters);
 
@@ -81,9 +59,6 @@ final class GridInterceptor implements CoreInterceptorInterface
     }
 
     /**
-     * @param string $controller
-     * @param string $action
-     * @return array|null
      * @throws \Doctrine\Common\Annotations\AnnotationException
      */
     private function getSchema(string $controller, string $action): ?array
@@ -100,10 +75,8 @@ final class GridInterceptor implements CoreInterceptorInterface
             return null;
         }
 
-        $reader = new AnnotationReader();
-
-        /** @var DataGrid $dataGrid */
-        $dataGrid = $reader->getMethodAnnotation($method, DataGrid::class);
+        /** @var null|DataGrid $dataGrid */
+        $dataGrid = $this->reader->firstFunctionMetadata($method, DataGrid::class);
         if ($dataGrid === null) {
             return null;
         }
@@ -111,10 +84,6 @@ final class GridInterceptor implements CoreInterceptorInterface
         return $this->cache[$key] = $this->makeSchema($dataGrid);
     }
 
-    /**
-     * @param DataGrid $dataGrid
-     * @return array
-     */
     private function makeSchema(DataGrid $dataGrid): array
     {
         $schema = [
