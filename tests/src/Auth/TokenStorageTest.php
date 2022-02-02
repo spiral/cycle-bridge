@@ -7,9 +7,9 @@ namespace Spiral\Tests\Auth;
 use Spiral\Auth\TokenInterface;
 use Spiral\Auth\TokenStorageInterface;
 use Spiral\Cycle\Auth\TokenStorage;
-use Spiral\Tests\TestCase;
+use Spiral\Tests\BaseTest;
 
-final class TokenStorageTest extends TestCase
+final class TokenStorageTest extends BaseTest
 {
     private TokenStorage $storage;
 

@@ -22,7 +22,13 @@ final class BridgeBootloader extends Bootloader
         AnnotatedBootloader::class,
         CommandBootloader::class,
 
+        // Validation (Optional)
+        ValidationBootloader::class,
+
         // DataGrid (Optional)
         DataGridBootloader::class,
+
+        // Database Token Storage (Optional)
+        AuthTokensBootloader::class,
     ];
 }

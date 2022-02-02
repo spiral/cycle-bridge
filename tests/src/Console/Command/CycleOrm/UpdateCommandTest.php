@@ -8,9 +8,9 @@ use Cycle\ORM\Schema;
 use Cycle\ORM\SchemaInterface;
 use Mockery as m;
 use Spiral\Boot\MemoryInterface;
-use Spiral\Tests\ConsoleTestCase;
+use Spiral\Tests\ConsoleTest;
 
-final class UpdateCommandTest extends ConsoleTestCase
+final class UpdateCommandTest extends ConsoleTest
 {
     public const ENV = [
         'SAFE_MIGRATIONS' => true,

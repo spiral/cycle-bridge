@@ -13,7 +13,7 @@ use Spiral\Core\ConfigsInterface;
 use Spiral\Cycle\LoggerFactory;
 use Spiral\Logger\LogsInterface;
 
-final class LoggerFactoryTest extends TestCase
+final class LoggerFactoryTest extends BaseTest
 {
     protected ConfigsInterface $config;
 

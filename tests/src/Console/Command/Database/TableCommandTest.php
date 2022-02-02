@@ -7,9 +7,9 @@ namespace Spiral\Tests\Console\Command\Database;
 use Cycle\Database\Database;
 use Cycle\Database\DatabaseInterface;
 use Cycle\Database\Exception\DBALException;
-use Spiral\Tests\ConsoleTestCase;
+use Spiral\Tests\ConsoleTest;
 
-final class TableCommandTest extends ConsoleTestCase
+final class TableCommandTest extends ConsoleTest
 {
     public function testDescribeWrongDB(): void
     {

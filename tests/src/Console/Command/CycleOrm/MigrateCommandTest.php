@@ -7,9 +7,9 @@ namespace Spiral\Tests\Console\Command\CycleOrm;
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Entity;
 use Spiral\Files\Files;
-use Spiral\Tests\ConsoleTestCase;
+use Spiral\Tests\ConsoleTest;
 
-final class MigrateCommandTest extends ConsoleTestCase
+final class MigrateCommandTest extends ConsoleTest
 {
     public const ENV = [
         'SAFE_MIGRATIONS' => true,

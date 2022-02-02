@@ -7,10 +7,10 @@ namespace Spiral\Tests\Bootloader;
 use Spiral\Auth\TokenStorageInterface;
 use Spiral\Boot\DirectoriesInterface;
 use Spiral\Cycle\Auth\Token;
-use Spiral\Tests\TestCase;
+use Spiral\Tests\BaseTest;
 use Spiral\Cycle\Auth\TokenStorage as CycleStorage;
 
-final class AuthTokensBootloaderTest extends TestCase
+final class AuthTokensBootloaderTest extends BaseTest
 {
     public function testGetsTokenStorage()
     {
@@ -25,9 +25,7 @@ final class AuthTokensBootloaderTest extends TestCase
         $config = $this->getConfig('tokenizer');
         $dirs = $this->app->get(DirectoriesInterface::class);
 
-        $this->assertSame([
-            $dirs->get('app'),
-            dirname((new \ReflectionClass(Token::class))->getFileName())
-        ], $config['directories']);
+        $this->assertContains($dirs->get('app'), $config['directories']);
+        $this->assertContains(\dirname((new \ReflectionClass(Token::class))->getFileName()), $config['directories']);
     }
 }

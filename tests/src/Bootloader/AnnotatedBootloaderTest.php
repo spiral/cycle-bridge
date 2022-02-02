@@ -7,9 +7,9 @@ namespace Spiral\Tests\Bootloader;
 use Cycle\Annotated;
 use Cycle\Schema\GeneratorInterface;
 use Spiral\Attributes\ReaderInterface;
-use Spiral\Tests\TestCase;
+use Spiral\Tests\BaseTest;
 
-final class AnnotatedBootloaderTest extends TestCase
+final class AnnotatedBootloaderTest extends BaseTest
 {
     public function testGetsReader(): void
     {

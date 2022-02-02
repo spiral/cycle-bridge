@@ -9,9 +9,9 @@ use Spiral\Cycle\DataGrid\Specification\Filter\FragmentInjectionFilter;
 use Spiral\DataGrid\Exception\CompilerException;
 use Spiral\DataGrid\Specification\Filter;
 use Spiral\DataGrid\Specification\Value\IntValue;
-use Spiral\Tests\DataGrid\TestCase;
+use Spiral\Tests\DataGrid\BaseTest;
 
-class WriteFilterTest extends TestCase
+class WriteFilterTest extends BaseTest
 {
     public function testEquals(): void
     {

@@ -8,9 +8,9 @@ use Cycle\Database\Database;
 use Cycle\Database\DatabaseInterface;
 use Cycle\Database\DatabaseManager;
 use Cycle\Database\DatabaseProviderInterface;
-use Spiral\Tests\ConsoleTestCase;
+use Spiral\Tests\ConsoleTest;
 
-final class ListCommandTest extends ConsoleTestCase
+final class ListCommandTest extends ConsoleTest
 {
     public function testList(): void
     {

@@ -44,7 +44,7 @@ protected const LOAD = [
     // Database
     CycleBridge\DatabaseBootloader::class,
     CycleBridge\MigrationsBootloader::class,
-    
+
     // Close the database connection after every request automatically (Optional)
     // CycleBridge\DisconnectsBootloader::class,
 
@@ -53,10 +53,13 @@ protected const LOAD = [
     CycleBridge\CycleOrmBootloader::class,
     CycleBridge\AnnotatedBootloader::class,
     CycleBridge\CommandBootloader::class,
-    
+
+    // Validation (Optional)
+    CycleBridge\ValidationBootloader::class,
+
     // DataGrid (Optional)
     CycleBridge\DataGridBootloader::class,
-    
+
     // Database Token Storage (Optional)
     CycleBridge\AuthTokensBootloader::class,
 ];
@@ -108,23 +111,23 @@ protected const LOAD = [
     CycleBridge\SchemaBootloader::class,
     CycleBridge\CycleOrmBootloader::class,
     CycleBridge\AnnotatedBootloader::class,
-    
+
     // ...
-    
+
     // DataGrid (Optional)
     // OLD
     // \Spiral\DataGrid\Bootloader\GridBootloader::class,
-    
+
     // NEW
     CycleBridge\DataGridBootloader::class,
-    
+
     // Database Token Storage (Optional)
     // OLD
     // Framework\Auth\TokenStorage\CycleTokensBootloader::class,
-    
+
     // NEW
     CycleBridge\AuthTokensBootloader::class,
-    
+
     // Framework commands
     // ...
     CycleBridge\CommandBootloader::class,
@@ -155,12 +158,12 @@ return [
             // By driver name (The highest priority)
             // See https://spiral.dev/docs/extension-monolog 
             'runtime' => 'sql_logs',
-            
+
             // By driver class (Medium priority)
             \Cycle\Database\Driver\MySQL\MySQLDriver::class => 'console',
         ],
     ],
-     
+
     /**
      * Default database connection
      */
@@ -413,4 +416,3 @@ protected const LOAD = [
 | `cycle:migrate` | Generate ORM schema migrations.<br/>`--run` Automatically run generated migration.   |
 | `cycle:render`  | Render available CycleORM schemas.<br/>`--no-color` Display output without colors.   |
 | `cycle:sync`    | Sync Cycle ORM schema with database without intermediate migration (risk operation). |
-

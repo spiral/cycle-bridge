@@ -13,7 +13,7 @@ use Spiral\DataGrid\Specification\Pagination\PagePaginator;
 use Spiral\DataGrid\Specification\Sorter\Sorter;
 use Spiral\DataGrid\Writer\QueryWriter;
 
-final class GeneratorTest extends TestCase
+final class GeneratorTest extends BaseTest
 {
     public function setUp(): void
     {

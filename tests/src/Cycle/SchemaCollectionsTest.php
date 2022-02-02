@@ -10,9 +10,9 @@ use Cycle\ORM\Collection\IlluminateCollectionFactory;
 use Doctrine\Common\Collections\ArrayCollection;
 use Illuminate\Support\Collection;
 use Spiral\App\Entities\User;
-use Spiral\Tests\TestCase;
+use Spiral\Tests\BaseTest;
 
-final class SchemaCollectionsTest extends TestCase
+final class SchemaCollectionsTest extends BaseTest
 {
     protected function setUp(): void
     {

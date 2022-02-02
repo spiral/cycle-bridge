@@ -7,9 +7,9 @@ namespace Spiral\Tests\DataGrid\QueryWriter;
 use Spiral\Cycle\DataGrid\Specification\Sorter\ExpressionInjectionSorter;
 use Spiral\Cycle\DataGrid\Specification\Sorter\FragmentInjectionSorter;
 use Spiral\DataGrid\Specification\Sorter;
-use Spiral\Tests\DataGrid\TestCase;
+use Spiral\Tests\DataGrid\BaseTest;
 
-class WriteSorterTest extends TestCase
+class WriteSorterTest extends BaseTest
 {
     public function testSort(): void
     {

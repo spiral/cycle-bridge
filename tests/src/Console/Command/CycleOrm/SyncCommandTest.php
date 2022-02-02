@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Spiral\Tests\Console\Command\CycleOrm;
 
 use Spiral\App\Entities\User;
-use Spiral\Tests\ConsoleTestCase;
+use Spiral\Tests\ConsoleTest;
 use Symfony\Component\Console\Output\BufferedOutput;
 
-final class SyncCommandTest extends ConsoleTestCase
+final class SyncCommandTest extends ConsoleTest
 {
     public const ENV = [
         'SAFE_MIGRATIONS' => true,

@@ -12,9 +12,9 @@ use Cycle\ORM\Transaction\CommandGeneratorInterface;
 use Cycle\ORM\TransactionInterface;
 use Mockery as m;
 use Spiral\Cycle\Config\CycleConfig;
-use Spiral\Tests\TestCase;
+use Spiral\Tests\BaseTest;
 
-final class CycleOrmBootloaderTest extends TestCase
+final class CycleOrmBootloaderTest extends BaseTest
 {
     public function testGetsOrm(): void
     {
