@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\App;
 
+use Spiral\App\Bootloader\AppBootloader;
 use Spiral\Boot\BootloadManager;
 use Spiral\Bootloader as Framework;
 use Spiral\Console\Console;
@@ -37,6 +38,10 @@ class App extends Kernel
         CycleBridge\AuthTokensBootloader::class,
         // Validation
         CycleBridge\ValidationBootloader::class,
+    ];
+
+    public const APP = [
+        AppBootloader::class
     ];
 
     /**

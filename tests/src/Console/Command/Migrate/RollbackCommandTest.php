@@ -31,7 +31,7 @@ final class RollbackCommandTest extends ConsoleTest
 
         $this->runCommandDebug('migrate');
 
-        $this->assertCount(3, $db->getTables());
+        $this->assertCount(4, $db->getTables());
 
         $this->runCommandDebug('migrate:rollback');
 
