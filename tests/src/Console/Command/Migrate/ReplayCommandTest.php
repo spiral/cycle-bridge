@@ -29,9 +29,9 @@ final class ReplayCommandTest extends ConsoleTest
         $this->assertCount(1, $db->getTables());
 
         $this->runCommandDebug('migrate');
-        $this->assertCount(3, $db->getTables());
+        $this->assertCount(4, $db->getTables());
 
         $this->runCommandDebug('migrate:replay');
-        $this->assertCount(3, $db->getTables());
+        $this->assertCount(4, $db->getTables());
     }
 }

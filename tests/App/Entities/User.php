@@ -31,6 +31,9 @@ class User
     #[HasMany(target: User::class, nullable: true, outerKey: 'userId', collection: 'doctrine')]
     public \Doctrine\Common\Collections\Collection $friendsAsDoctrineCollection;
 
+    #[HasMany(target: Role::class)]
+    public \Doctrine\Common\Collections\Collection $roles;
+
     #[HasMany(target: User::class, nullable: true, outerKey: 'userId', collection: 'illuminate')]
     public \Illuminate\Support\Collection $friendsAsIlluminateCollection;
 
@@ -39,6 +42,7 @@ class User
         private string $name
     ) {
         $this->friendsAsDoctrineCollection = new ArrayCollection();
+        $this->roles = new ArrayCollection();
         $this->friendsAsIlluminateCollection = new \Illuminate\Support\Collection();
     }
 
@@ -46,5 +50,10 @@ class User
     {
         $this->friendsAsArray[] = $user;
         $user->friend = $this;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 }
