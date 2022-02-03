@@ -7,7 +7,7 @@ namespace Spiral\Cycle\Injector;
 use Cycle\ORM\Exception\ORMException;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
-use Cycle\ORM\Schema;
+use Cycle\ORM\SchemaInterface;
 use Cycle\ORM\Select;
 use ReflectionClass;
 use Spiral\Core\Container\InjectorInterface;
@@ -24,7 +24,7 @@ final class RepositoryInjector implements InjectorInterface
         $schema = $this->orm->getSchema();
 
         foreach ($schema->getRoles() as $role) {
-            $repository = $schema->define($role, Schema::REPOSITORY);
+            $repository = $schema->define($role, SchemaInterface::REPOSITORY);
 
             if ($repository !== Select\Repository::class && $repository === $class->getName()) {
                 return $this->orm->getRepository($role);
