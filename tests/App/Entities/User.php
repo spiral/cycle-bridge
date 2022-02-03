@@ -9,8 +9,9 @@ use Cycle\Annotated\Annotation\Entity;
 use Cycle\Annotated\Annotation\Relation\BelongsTo;
 use Cycle\Annotated\Annotation\Relation\HasMany;
 use Doctrine\Common\Collections\ArrayCollection;
+use Spiral\App\Repositories\UserRepository;
 
-#[Entity]
+#[Entity(repository: UserRepository::class)]
 class User
 {
     #[Column(type: 'primary')]
