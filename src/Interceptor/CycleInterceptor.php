@@ -17,6 +17,10 @@ class CycleInterceptor implements CoreInterceptorInterface
     // when only one entity is presented the default parameter will be checked
     protected const DEFAULT_PARAMETER = 'id';
 
+    /**
+     * [class:method][parameter] = resolved role
+     * @var array<non-empty-string, array<non-empty-string, non-empty-string>>
+     */
     private array $cache = [];
 
     public function __construct(
@@ -30,10 +34,10 @@ class CycleInterceptor implements CoreInterceptorInterface
 
         $contextCandidates = [];
         foreach ($entities as $parameter => $role) {
-            $value = $this->getParameter($parameter, $parameters, count($entities) === 1);
+            $value = $this->getParameter($parameter, $parameters, \count($entities) === 1);
             if ($value === null) {
                 throw new ControllerException(
-                    "Entity `{$parameter}` can not be found",
+                    "Entity `{$parameter}` can not be found.",
                     ControllerException::NOT_FOUND
                 );
             }
@@ -50,7 +54,7 @@ class CycleInterceptor implements CoreInterceptorInterface
             $entity = $this->resolveEntity($role, $value);
             if ($entity === null) {
                 throw new ControllerException(
-                    "Entity `{$parameter}` can not be found",
+                    "Entity `{$parameter}` can not be found.",
                     ControllerException::NOT_FOUND
                 );
             }
@@ -60,7 +64,7 @@ class CycleInterceptor implements CoreInterceptorInterface
         }
 
         if (!isset($parameters['@context']) && \count($contextCandidates) === 1) {
-            $parameters['@context'] = current($contextCandidates);
+            $parameters['@context'] = \current($contextCandidates);
         }
 
         return $core->callAction($controller, $action, $parameters);
@@ -80,9 +84,12 @@ class CycleInterceptor implements CoreInterceptorInterface
         return $this->orm->getRepository($role)->findByPK($parameter);
     }
 
+    /**
+     * @return array<non-empty-string, non-empty-string>
+     */
     private function getDeclaredEntities(string $controller, string $action): array
     {
-        $key = sprintf('%s:%s', $controller, $action);
+        $key = \sprintf('%s:%s', $controller, $action);
         if (\array_key_exists($key, $this->cache)) {
             return $this->cache[$key];
         }
@@ -90,7 +97,7 @@ class CycleInterceptor implements CoreInterceptorInterface
         $this->cache[$key] = [];
         try {
             $method = new \ReflectionMethod($controller, $action);
-        } catch (\ReflectionException $e) {
+        } catch (\ReflectionException) {
             return [];
         }
 
