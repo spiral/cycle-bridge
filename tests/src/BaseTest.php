@@ -94,6 +94,7 @@ abstract class BaseTest extends TestCase
 
         $runtime = $this->app->get(DirectoriesInterface::class)->get('runtime');
         if ($fs->isDirectory($runtime)) {
+            $fs->deleteDirectory($runtime, true);
             $fs->deleteDirectory($runtime);
         }
     }

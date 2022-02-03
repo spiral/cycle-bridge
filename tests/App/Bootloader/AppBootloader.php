@@ -6,7 +6,7 @@ namespace Spiral\App\Bootloader;
 
 use Spiral\Bootloader\DomainBootloader;
 use Spiral\Core\CoreInterface;
-use Spiral\Domain\CycleInterceptor;
+use Spiral\Cycle\Interceptor\CycleInterceptor;
 
 final class AppBootloader extends DomainBootloader
 {
