@@ -62,6 +62,9 @@ protected const LOAD = [
 
     // Database Token Storage (Optional)
     CycleBridge\AuthTokensBootloader::class,
+    
+    // Migrations and Cycle Scaffolders (Optional)
+    CycleBridge\ScaffolderBootloader::class,
 ];
 ```
 

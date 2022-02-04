@@ -36,8 +36,12 @@ class App extends Kernel
 
         // Auth
         CycleBridge\AuthTokensBootloader::class,
+
         // Validation
         CycleBridge\ValidationBootloader::class,
+
+        // Scaffolder
+        CycleBridge\ScaffolderBootloader::class
     ];
 
     public const APP = [

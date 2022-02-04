@@ -7,6 +7,7 @@ namespace Spiral\Tests\Bootloader;
 use Spiral\Cycle\Console\Command\CycleOrm;
 use Spiral\Cycle\Console\Command\Database;
 use Spiral\Cycle\Console\Command\Migrate;
+use Spiral\Cycle\Console\Command\Scaffolder;
 use Spiral\Tests\BaseTest;
 
 final class CommandBootloaderTest extends BaseTest
@@ -25,6 +26,9 @@ final class CommandBootloaderTest extends BaseTest
             Migrate\MigrateCommand::class,
             Migrate\RollbackCommand::class,
             Migrate\ReplayCommand::class,
+            Scaffolder\MigrationCommand::class,
+            Scaffolder\EntityCommand::class,
+            Scaffolder\RepositoryCommand::class,
         ];
 
         $registeredCommands = $this->getConfig('console')['commands'] ?? [];
