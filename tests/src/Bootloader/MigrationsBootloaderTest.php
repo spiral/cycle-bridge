@@ -14,24 +14,18 @@ final class MigrationsBootloaderTest extends BaseTest
 {
     public function testGetsMigrator(): void
     {
-        $this->assertInstanceOf(
-            Migrator::class,
-            $this->app->get(Migrator::class)
-        );
+        $this->assertContainerBound(Migrator::class);
     }
 
     public function testGetsRepository(): void
     {
-        $this->assertInstanceOf(
-            FileRepository::class,
-            $this->app->get(RepositoryInterface::class)
-        );
+        $this->assertContainerBound(RepositoryInterface::class, FileRepository::class);
     }
 
     public function testGetsDefaultConfig(): void
     {
         $config = $this->getConfig('migration');
-        $dirs = $this->app->get(DirectoriesInterface::class);
+        $dirs = $this->getContainer()->get(DirectoriesInterface::class);
 
         $this->assertSame([
             'directory' => $dirs->get('migrations'),

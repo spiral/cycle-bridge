@@ -28,15 +28,12 @@ final class SyncCommandTest extends ConsoleTest
 
     public function testSyncDebug(): void
     {
-        $output = $this->runCommand(
-            'cycle:sync',
-            verbosityLevel: BufferedOutput::VERBOSITY_VERY_VERBOSE
-        );
-
-        $this->assertStringContainsString('default.users', $output);
-        $this->assertStringContainsString('create table', $output);
-        $this->assertStringContainsString('add column', $output);
-        $this->assertStringContainsString('add index', $output);
+        $this->assertConsoleCommandOutputContainsStrings('cycle:sync', ['-vvv'], [
+            'default.users',
+            'create table',
+            'add column',
+            'add index',
+        ]);
 
         $u = new User('Antony');
         $this->getEntityManager()->persist($u)->run();

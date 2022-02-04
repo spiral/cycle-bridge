@@ -13,49 +13,31 @@ final class AnnotatedBootloaderTest extends BaseTest
 {
     public function testGetsReader(): void
     {
-        $this->assertInstanceOf(
-            ReaderInterface::class,
-            $this->app->get(ReaderInterface::class)
-        );
+        $this->assertContainerBound(ReaderInterface::class);
     }
 
     public function testGetsAnnotatedEmbeddings(): void
     {
-        $this->assertInstanceOf(
-            GeneratorInterface::class,
-            $this->app->get(Annotated\Embeddings::class)
-        );
+        $this->assertContainerBound(Annotated\Embeddings::class, GeneratorInterface::class);
     }
 
     public function testGetsAnnotatedEntities(): void
     {
-        $this->assertInstanceOf(
-            GeneratorInterface::class,
-            $this->app->get(Annotated\Entities::class)
-        );
+        $this->assertContainerBound(Annotated\Entities::class, GeneratorInterface::class);
     }
 
     public function testGetsAnnotatedMergeColumns(): void
     {
-        $this->assertInstanceOf(
-            GeneratorInterface::class,
-            $this->app->get(Annotated\MergeColumns::class)
-        );
+        $this->assertContainerBound(Annotated\MergeColumns::class, GeneratorInterface::class);
     }
 
     public function testGetsAnnotatedTableInheritance(): void
     {
-        $this->assertInstanceOf(
-            GeneratorInterface::class,
-            $this->app->get(Annotated\TableInheritance::class)
-        );
+        $this->assertContainerBound(Annotated\TableInheritance::class, GeneratorInterface::class);
     }
 
     public function testGetsAnnotatedMergeIndexes(): void
     {
-        $this->assertInstanceOf(
-            GeneratorInterface::class,
-            $this->app->get(Annotated\MergeIndexes::class)
-        );
+        $this->assertContainerBound(Annotated\MergeIndexes::class, GeneratorInterface::class);
     }
 }

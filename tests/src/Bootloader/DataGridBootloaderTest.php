@@ -20,38 +20,25 @@ final class DataGridBootloaderTest extends BaseTest
 {
     public function testGetsGridInput(): void
     {
-        $this->assertInstanceOf(
-            GridInput::class,
-            $this->app->get(InputInterface::class)
-        );
+        $this->assertContainerBound(InputInterface::class, GridInput::class);
     }
 
     public function testGetsGrid(): void
     {
-        $this->assertInstanceOf(
-            Grid::class,
-            $this->app->get(GridInterface::class)
-        );
+        $this->assertContainerBound(GridInterface::class, Grid::class);
     }
 
     public function testGetsGridFactory(): void
     {
-        $this->assertInstanceOf(
-            GridFactory::class,
-            $this->app->get(GridFactoryInterface::class)
-        );
-
-        $this->assertInstanceOf(
-            GridFactory::class,
-            $this->app->get(GridFactory::class)
-        );
+        $this->assertContainerBound(GridFactoryInterface::class, GridFactory::class);
+        $this->assertContainerBound(GridFactory::class);
     }
 
     public function testGetsCompilerWithDefaultWriters(): void
     {
         $this->assertInstanceOf(
             Compiler::class,
-            $compiler = $this->app->get(Compiler::class)
+            $compiler = $this->getContainer()->get(Compiler::class)
         );
 
         $writers = $this->accessProtected($compiler, 'writers');
@@ -65,7 +52,7 @@ final class DataGridBootloaderTest extends BaseTest
         $this->updateConfig('dataGrid.writers', []);
         $this->assertInstanceOf(
             Compiler::class,
-            $compiler = $this->app->get(Compiler::class)
+            $compiler = $this->getContainer()->get(Compiler::class)
         );
 
         $writers = $this->accessProtected($compiler, 'writers');
@@ -75,9 +62,6 @@ final class DataGridBootloaderTest extends BaseTest
 
     public function testGetsGridResponse(): void
     {
-        $this->assertInstanceOf(
-            GridResponse::class,
-            $this->app->get(GridResponseInterface::class)
-        );
+        $this->assertContainerBound(GridResponseInterface::class, GridResponse::class);
     }
 }

@@ -11,7 +11,7 @@ use Spiral\Boot\MemoryInterface;
 use Spiral\Console\Command;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Console\Command\CycleOrm\Generator\ShowChanges;
-use Spiral\Cycle\SchemaCompiler;
+use Spiral\Cycle\Schema\Compiler;
 
 final class SyncCommand extends Command
 {
@@ -26,9 +26,9 @@ final class SyncCommand extends Command
     ): void {
         $show = new ShowChanges($this->output);
 
-        $schemaCompiler = SchemaCompiler::compile(
+        $schemaCompiler = Compiler::compile(
             $registry,
-            array_merge($bootloader->getGenerators($config), [$show, new SyncTables()])
+            \array_merge($bootloader->getGenerators($config), [$show, new SyncTables()])
         );
         $schemaCompiler->toMemory($memory);
 

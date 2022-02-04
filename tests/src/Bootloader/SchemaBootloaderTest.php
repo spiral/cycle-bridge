@@ -19,20 +19,17 @@ final class SchemaBootloaderTest extends BaseTest
     {
         parent::setUp();
 
-        $this->bootloader = $this->app->get(SchemaBootloader::class);
+        $this->bootloader = $this->getContainer()->get(SchemaBootloader::class);
     }
 
     public function testGetsSchema(): void
     {
-        $this->assertInstanceOf(
-            SchemaInterface::class,
-            $this->app->get(SchemaInterface::class)
-        );
+        $this->assertContainerBound(SchemaInterface::class);
     }
 
     public function testGetsDefaultSchemaGenerators(): void
     {
-        $generators = $this->bootloader->getGenerators($this->app->get(CycleConfig::class));
+        $generators = $this->bootloader->getGenerators($this->getContainer()->get(CycleConfig::class));
 
         $this->assertCount(14, $generators);
         $this->assertContainsOnlyInstancesOf(GeneratorInterface::class, $generators);
@@ -44,7 +41,7 @@ final class SchemaBootloaderTest extends BaseTest
             Entities::class,
         ]);
 
-        $generators = $this->bootloader->getGenerators($this->app->get(CycleConfig::class));
+        $generators = $this->bootloader->getGenerators($this->getContainer()->get(CycleConfig::class));
 
         $this->assertCount(1, $generators);
         $this->assertContainsOnlyInstancesOf(GeneratorInterface::class, $generators);
@@ -54,7 +51,7 @@ final class SchemaBootloaderTest extends BaseTest
     {
         $this->updateConfig('cycle.schema.generators', []);
 
-        $generators = $this->bootloader->getGenerators($this->app->get(CycleConfig::class));
+        $generators = $this->bootloader->getGenerators($this->getContainer()->get(CycleConfig::class));
 
         $this->assertCount(0, $generators);
     }

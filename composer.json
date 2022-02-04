@@ -25,13 +25,14 @@
     "cycle/orm": "^2.0.2",
     "cycle/schema-migrations-generator": "^2.0",
     "cycle/schema-renderer": "^1.1",
-    "spiral/attributes": "2.9",
+    "spiral/attributes": "^2.9",
     "spiral/framework": "^2.9"
   },
   "require-dev": {
     "doctrine/collections": "^1.6",
     "illuminate/collections": "^8.77",
     "spiral/roadrunner": "^1.4",
+    "spiral/testing": "dev-master",
     "phpunit/phpunit": "^9.5",
     "vimeo/psalm": "^4.9",
     "mockery/mockery": "^1.3"

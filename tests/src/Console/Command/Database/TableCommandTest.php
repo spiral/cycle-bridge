@@ -34,7 +34,7 @@ final class TableCommandTest extends ConsoleTest
     public function testDescribeExisted(): void
     {
         /** @var Database $db */
-        $db = $this->app->get(DatabaseInterface::class);
+        $db = $this->getContainer()->get(DatabaseInterface::class);
 
         $table = $db->table('sample1')->getSchema();
         $table->primary('primary_id');

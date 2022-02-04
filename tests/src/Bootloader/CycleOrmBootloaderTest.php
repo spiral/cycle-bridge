@@ -8,9 +8,7 @@ use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\FactoryInterface;
 use Cycle\ORM\ORM;
 use Cycle\ORM\ORMInterface;
-use Cycle\ORM\Transaction\CommandGeneratorInterface;
 use Cycle\ORM\TransactionInterface;
-use Mockery as m;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Tests\BaseTest;
 
@@ -18,57 +16,23 @@ final class CycleOrmBootloaderTest extends BaseTest
 {
     public function testGetsOrm(): void
     {
-        $this->assertInstanceOf(
-            ORMInterface::class,
-            $this->app->get(ORMInterface::class)
-        );
-
-        $this->assertInstanceOf(
-            ORMInterface::class,
-            $this->app->get(ORM::class)
-        );
-    }
-
-    public function testGetsOrmWithCustomCommandGenerator(): void
-    {
-        $this->app->getContainer()->bind(
-            CommandGeneratorInterface::class,
-            $commandGenerator = m::mock(CommandGeneratorInterface::class)
-        );
-
-        $this->assertInstanceOf(
-            ORMInterface::class,
-            $orm = $this->app->get(ORMInterface::class)
-        );
-
-        $this->assertSame(
-            $commandGenerator,
-            $orm->getCommandGenerator()
-        );
+        $this->assertContainerBoundAsSingleton(ORMInterface::class, ORM::class);
+        $this->assertContainerBound(ORMInterface::class);
     }
 
     public function testGetsOrmFactory(): void
     {
-        $this->assertInstanceOf(
-            FactoryInterface::class,
-            $this->app->get(FactoryInterface::class)
-        );
+        $this->assertContainerBound(FactoryInterface::class);
     }
 
     public function testGetsTransaction(): void
     {
-        $this->assertInstanceOf(
-            TransactionInterface::class,
-            $this->app->get(TransactionInterface::class)
-        );
+        $this->assertContainerBound(TransactionInterface::class);
     }
 
     public function testGetsEntityManager(): void
     {
-        $this->assertInstanceOf(
-            EntityManagerInterface::class,
-            $this->app->get(EntityManagerInterface::class)
-        );
+        $this->assertContainerBound(EntityManagerInterface::class);
     }
 
     public function testGetsCycleConfig(): void
@@ -77,8 +41,10 @@ final class CycleOrmBootloaderTest extends BaseTest
             'default' => 'test',
         ]);
 
-        $config = $this->app->get(CycleConfig::class);
+        $config = $this->getContainer()->get(CycleConfig::class);
+        $configSource = $this->getConfig(CycleConfig::CONFIG);
 
         $this->assertSame('test', $config['schema']['collections']['default']);
+        $this->assertSame('test', $configSource['schema']['collections']['default']);
     }
 }

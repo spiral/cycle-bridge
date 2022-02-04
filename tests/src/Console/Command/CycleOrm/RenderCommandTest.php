@@ -9,20 +9,14 @@ use Cycle\ORM\SchemaInterface;
 
 final class RenderCommandTest extends ConsoleTest
 {
-    public function testRenderSchema()
+    public function testRenderSchema(): void
     {
-        $output = $this->runCommandDebug('cycle:render', ['--no-color' => true]);
-
-        $userOutput = [
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['--no-color' => true], [
             '[user] :: default.users',
             'Entity: Spiral\App\Entities\User',
             'Mapper: Cycle\ORM\Mapper\Mapper',
             'Repository: Cycle\ORM\Select\Repository'
-        ];
-
-        foreach ($userOutput as $line) {
-            $this->assertStringContainsString($line, $output);
-        }
+        ]);
     }
 
     public function testRedefineSchemaDefaults()
@@ -37,18 +31,12 @@ final class RenderCommandTest extends ConsoleTest
             ],
         ]);
 
-        $output = $this->runCommandDebug('cycle:render', ['--no-color' => true]);
-
-        $userOutput = [
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['--no-color' => true], [
             'Mapper: custom_mapper',
             'Repository: custom_repository',
             'Scope: custom_scope',
             'Typecast: Cycle\ORM\Parser\Typecast',
             'custom_typecast_handler'
-        ];
-
-        foreach ($userOutput as $line) {
-            $this->assertStringContainsString($line, $output);
-        }
+        ]);
     }
 }

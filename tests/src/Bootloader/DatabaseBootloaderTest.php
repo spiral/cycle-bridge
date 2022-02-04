@@ -36,10 +36,7 @@ final class DatabaseBootloaderTest extends BaseTest
 
     public function testGetsDatabaseManager(): void
     {
-        $this->assertInstanceOf(
-            DatabaseManager::class,
-            $this->app->get(DatabaseProviderInterface::class)
-        );
+        $this->assertContainerBound(DatabaseProviderInterface::class, DatabaseManager::class);
     }
 
     public function testGetsDatabase(): void
@@ -47,7 +44,7 @@ final class DatabaseBootloaderTest extends BaseTest
         /** @var DatabaseInterface $database */
         $this->assertInstanceOf(
             Database::class,
-            $database = $this->app->get(DatabaseInterface::class)
+            $database = $this->getContainer()->get(DatabaseInterface::class)
         );
 
         $this->assertSame('default', $database->getName());
@@ -59,10 +56,7 @@ final class DatabaseBootloaderTest extends BaseTest
      */
     public function testGetsDriverLogger(string $driverChannel, array $drivers): void
     {
-        $this->container->bind(
-            LogsInterface::class,
-            $logger = m::mock(LogsInterface::class)
-        );
+        $logger = $this->mockContainer(LogsInterface::class);
 
         $logger->shouldReceive('getLogger')
             ->once()
@@ -78,7 +72,7 @@ final class DatabaseBootloaderTest extends BaseTest
         ]);
 
         /** @var DriverInterface $driver */
-        $driver = $this->app->get(DatabaseInterface::class)->getDriver();
+        $driver = $this->getContainer()->get(DatabaseInterface::class)->getDriver();
 
         $this->accessProtected($driver, 'logger')->info('hello world');
     }
@@ -87,11 +81,13 @@ final class DatabaseBootloaderTest extends BaseTest
     {
         return [
             'default' => [
-                'default', ['foo' => 'bar']
+                'default',
+                ['foo' => 'bar'],
             ],
             'driver' => [
-                'bar', ['test' => 'bar']
-            ]
+                'bar',
+                ['test' => 'bar'],
+            ],
         ];
     }
 }

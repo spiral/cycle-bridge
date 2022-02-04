@@ -18,11 +18,11 @@ final class InitCommandTest extends ConsoleTest
     public function testMigrationTableShouldBeCreated(): void
     {
         /** @var Database $db */
-        $db = $this->app->get(DatabaseInterface::class);
+        $db = $this->getContainer()->get(DatabaseInterface::class);
 
         $this->assertCount(0, $db->getTables());
 
-        $this->runCommandDebug('migrate:init');
+        $this->runCommand('migrate:init');
 
         $this->assertCount(1, $db->getTables());
         $this->assertSame('migrations', $db->getTables()[0]->getName());

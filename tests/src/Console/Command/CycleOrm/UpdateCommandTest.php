@@ -19,10 +19,10 @@ final class UpdateCommandTest extends ConsoleTest
 
     public function testGetSchema(): void
     {
-        $this->app->console()->run('cycle');
+        $this->runCommand('cycle');
 
         /** @var SchemaInterface $schema */
-        $schema = $this->app->get(SchemaInterface::class);
+        $schema = $this->getContainer()->get(SchemaInterface::class);
 
         $this->assertTrue($schema->defines('user'));
 
@@ -35,14 +35,14 @@ final class UpdateCommandTest extends ConsoleTest
     public function testGetSchemaFromMemory(): void
     {
         $memory = m::mock(MemoryInterface::class);
-        $this->app->getContainer()->bind(MemoryInterface::class, $memory);
+        $this->getContainer()->bind(MemoryInterface::class, $memory);
 
         $memory->shouldReceive('saveData');
         $memory->shouldReceive('loadData')->once()->andReturn(new Schema([]));
-        $this->runCommandDebug('cycle');
+        $this->runCommand('cycle');
 
         /** @var SchemaInterface $schema */
-        $schema = $this->app->get(SchemaInterface::class);
+        $schema = $this->getContainer()->get(SchemaInterface::class);
 
         $this->assertFalse($schema->defines('user'));
     }
