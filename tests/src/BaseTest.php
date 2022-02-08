@@ -99,7 +99,7 @@ abstract class BaseTest extends TestCase
         }
     }
 
-    private function makeApp(array $env = []): KernelInterface
+    protected function makeApp(array $env = [], string $application = App::class): KernelInterface
     {
         $this->container = $container = new Container();
         $beforeBootload = $this->beforeBootload;
@@ -109,7 +109,7 @@ abstract class BaseTest extends TestCase
 
         $root = dirname(__DIR__);
 
-        $app = new App($this->container, [
+        $app = new $application($this->container, [
             'root' => $root,
             'app' => $root.'/App',
             'runtime' => $root.'/runtime/tests',

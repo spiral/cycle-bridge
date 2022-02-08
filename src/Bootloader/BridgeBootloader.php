@@ -30,5 +30,8 @@ final class BridgeBootloader extends Bootloader
 
         // Database Token Storage (Optional)
         AuthTokensBootloader::class,
+
+        // Prototyping (Optional)
+        PrototypeBootloader::class
     ];
 }

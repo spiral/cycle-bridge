@@ -26,7 +26,8 @@
     "cycle/schema-migrations-generator": "^2.0",
     "cycle/schema-renderer": "^1.0",
     "spiral/framework": "^2.8",
-    "spiral/attributes": "^2.8"
+    "spiral/attributes": "^2.8",
+    "spiral/prototype": "^2.8"
   },
   "require-dev": {
     "doctrine/collections": "^1.6",
