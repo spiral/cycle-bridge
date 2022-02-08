@@ -15,14 +15,14 @@ final class StatusCommand extends AbstractCommand
     protected const DESCRIPTION = 'Get list of all available migrations and their statuses';
     protected const PENDING = '<fg=red>not executed yet</fg=red>';
 
-    public function perform(): void
+    public function perform(): int
     {
         $this->migrator->configure();
 
         if (empty($this->migrator->getMigrations())) {
             $this->writeln('<comment>No migrations were found.</comment>');
 
-            return;
+            return self::FAILURE;
         }
 
         $table = $this->table(['Migration', 'Created at', 'Executed at']);
@@ -41,5 +41,7 @@ final class StatusCommand extends AbstractCommand
         }
 
         $table->render();
+
+        return self::SUCCESS;
     }
 }
