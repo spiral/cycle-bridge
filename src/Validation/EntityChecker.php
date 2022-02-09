@@ -53,7 +53,7 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
                 return $repository->findOne([$field => $value]) !== null;
             }
 
-            if (\is_array($value)) {
+            if (\is_array($value) && \method_exists($repository, 'select')) {
                 $select = $repository->select();
 
                 if ($field !== null) {
