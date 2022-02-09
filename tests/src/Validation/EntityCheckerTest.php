@@ -26,6 +26,7 @@ final class EntityCheckerTest extends BaseTest
     {
         $repoData = [
             [self::ENTITY_PK => 42, 'email' => 'test@mail.com', 'foo' => 'bar', 'value' => 'test value'],
+            [self::ENTITY_PK => 69, 'email' => 'test2@mail.com', 'company' => 'foo', 'value' => 'test value 2'],
         ];
         return [
             'pk found' => [
@@ -50,6 +51,54 @@ final class EntityCheckerTest extends BaseTest
                 'rules' => ['email' => [['entity::exists', self::ENTITY_ROLE, 'email']]],
                 'repositoryData' => $repoData,
                 'entityData' => [self::ENTITY_PK => 42, 'email' => 'undefined@mail.com'],
+                'valid' => false,
+            ],
+            'array pk found' => [
+                'rules' => [self::ENTITY_PK => [['entity::exists', self::ENTITY_ROLE]]],
+                'repositoryData' => $repoData,
+                'entityData' => [
+                    self::ENTITY_PK => [42, 69],
+                    'email' => [
+                        'test@mail.com',
+                        'test2@mail.com',
+                    ]
+                ],
+                'valid' => true,
+            ],
+            'array pk not found' => [
+                'rules' => [self::ENTITY_PK => [['entity::exists', self::ENTITY_ROLE]]],
+                'repositoryData' => $repoData,
+                'entityData' => [
+                    self::ENTITY_PK => [42, 1],
+                    'email' => [
+                        'test@mail.com',
+                        'test2@mail.com',
+                    ]
+                ],
+                'valid' => false,
+            ],
+            'array custom field - found' => [
+                'rules' => ['email' => [['entity::exists', self::ENTITY_ROLE, 'email']]],
+                'repositoryData' => $repoData,
+                'entityData' => [
+                    self::ENTITY_PK => [42, 69],
+                    'email' => [
+                        'test@mail.com',
+                        'test2@mail.com',
+                    ]
+                ],
+                'valid' => true,
+            ],
+            'array custom field - not found' => [
+                'rules' => ['email' => [['entity::exists', self::ENTITY_ROLE, 'email']]],
+                'repositoryData' => $repoData,
+                'entityData' => [
+                    self::ENTITY_PK => [42, 69],
+                    'email' => [
+                        'test@mail.com',
+                        'not-exist@mail.com',
+                    ]
+                ],
                 'valid' => false,
             ],
         ];

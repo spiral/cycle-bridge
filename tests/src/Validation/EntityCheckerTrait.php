@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Validation;
 
+use Cycle\Database\Injection\Parameter;
 use Cycle\ORM\RepositoryInterface;
 
 trait EntityCheckerTrait
@@ -55,6 +56,34 @@ trait EntityCheckerTrait
                     }
                 }
                 return $result;
+            }
+
+            public function select(): object
+            {
+                return new class($this->items) {
+                    /**
+                     * @param array<int, non-empty-array<non-empty-string, mixed>> $items
+                     */
+                    public function __construct(
+                        private array $items
+                    ) {
+                    }
+
+                    public function where(string $field, string $operator, Parameter $parameter): self
+                    {
+                        $this->items = array_filter(
+                            $this->items,
+                            fn(mixed $value) => \in_array($value[$field], (array)$parameter->getValue(), true)
+                        );
+
+                        return $this;
+                    }
+
+                    public function count(): int
+                    {
+                        return \count($this->items);
+                    }
+                };
             }
         };
     }
