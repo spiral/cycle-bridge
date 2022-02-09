@@ -39,7 +39,7 @@ final class MigrateCommand extends AbstractCommand
         foreach ($migrator->getMigrations() as $migration) {
             if ($migration->getState()->getStatus() !== State::STATUS_EXECUTED) {
                 $this->writeln('<fg=red>Outstanding migrations found, run `migrate` first.</fg=red>');
-                return self::FAILURE;
+                return self::SUCCESS;
             }
         }
 

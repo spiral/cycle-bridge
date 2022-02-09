@@ -22,7 +22,7 @@ final class StatusCommand extends AbstractCommand
         if (empty($this->migrator->getMigrations())) {
             $this->writeln('<comment>No migrations were found.</comment>');
 
-            return self::FAILURE;
+            return self::SUCCESS;
         }
 
         $table = $this->table(['Migration', 'Created at', 'Executed at']);

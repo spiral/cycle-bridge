@@ -32,7 +32,7 @@ final class ListCommand extends Command
         if (empty($databases)) {
             $this->writeln('<fg=red>No databases found.</fg=red>');
 
-            return self::FAILURE;
+            return self::SUCCESS;
         }
 
         $grid = $this->table(
