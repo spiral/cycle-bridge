@@ -17,10 +17,10 @@ final class MigrateCommand extends AbstractCommand
     /**
      * Execute one or multiple migrations.
      */
-    public function perform(): void
+    public function perform(): int
     {
         if (!$this->verifyEnvironment()) {
-            return;
+            return self::FAILURE;
         }
 
         $this->migrator->configure();
@@ -41,5 +41,7 @@ final class MigrateCommand extends AbstractCommand
         if (!$found) {
             $this->writeln('<fg=red>No outstanding migrations were found.</fg=red>');
         }
+
+        return self::SUCCESS;
     }
 }

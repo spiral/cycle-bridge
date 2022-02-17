@@ -21,7 +21,7 @@ final class ListCommand extends Command
         ['db', InputArgument::OPTIONAL, 'Database name'],
     ];
 
-    public function perform(DatabaseConfig $config, DatabaseProviderInterface $dbal): void
+    public function perform(DatabaseConfig $config, DatabaseProviderInterface $dbal): int
     {
         if ($this->argument('db')) {
             $databases = [$this->argument('db')];
@@ -32,7 +32,7 @@ final class ListCommand extends Command
         if (empty($databases)) {
             $this->writeln('<fg=red>No databases found.</fg=red>');
 
-            return;
+            return self::SUCCESS;
         }
 
         $grid = $this->table(
@@ -80,6 +80,8 @@ final class ListCommand extends Command
         }
 
         $grid->render();
+
+        return self::SUCCESS;
     }
 
     /**
