@@ -19,11 +19,11 @@ final class ReplayCommand extends AbstractCommand
      * @param  Console  $console
      * @throws \Throwable
      */
-    public function perform(Console $console): void
+    public function perform(Console $console): int
     {
         if (!$this->verifyEnvironment()) {
             //Making sure we can safely migrate in this environment
-            return;
+            return self::FAILURE;
         }
 
         $rollback = ['--force' => true];
@@ -42,5 +42,7 @@ final class ReplayCommand extends AbstractCommand
 
         $this->writeln('Executing outstanding migration(s)...');
         $console->run('migrate', $migrate, $this->output);
+
+        return self::SUCCESS;
     }
 }

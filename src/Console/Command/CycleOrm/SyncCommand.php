@@ -23,7 +23,7 @@ final class SyncCommand extends Command
         CycleConfig $config,
         Registry $registry,
         MemoryInterface $memory
-    ): void {
+    ): int {
         $show = new ShowChanges($this->output);
 
         $schemaCompiler = Compiler::compile(
@@ -35,5 +35,7 @@ final class SyncCommand extends Command
         if ($show->hasChanges()) {
             $this->writeln("\n<info>ORM Schema has been synchronized</info>");
         }
+
+        return self::SUCCESS;
     }
 }
