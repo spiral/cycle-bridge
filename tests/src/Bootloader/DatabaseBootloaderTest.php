@@ -14,6 +14,7 @@ use Mockery as m;
 use Psr\Log\LoggerInterface;
 use Spiral\Logger\LogsInterface;
 use Spiral\Tests\BaseTest;
+use Spiral\Tests\ConfigAttribute;
 
 final class DatabaseBootloaderTest extends BaseTest
 {
@@ -51,10 +52,21 @@ final class DatabaseBootloaderTest extends BaseTest
         $this->assertSame('SQLite', $database->getType());
     }
 
-    /**
-     * @dataProvider driverLoggerDataProvider
-     */
-    public function testGetsDriverLogger(string $driverChannel, array $drivers): void
+    #[ConfigAttribute(path: 'database.logger.default', value: 'default')]
+    #[ConfigAttribute(path: 'database.logger.drivers', value: ['foo' => 'bar'])]
+    public function testGetDefaultDriverLogger(): void
+    {
+        $this->runGetterTest('default');
+    }
+
+    #[ConfigAttribute(path: 'database.logger.default', value: 'default')]
+    #[ConfigAttribute(path: 'database.logger.drivers', value: ['test' => 'bar'])]
+    public function testGetBarDriverLogger(): void
+    {
+        $this->runGetterTest('bar');
+    }
+
+    private function runGetterTest(string $driverChannel): void
     {
         $logger = $this->mockContainer(LogsInterface::class);
 
@@ -66,28 +78,9 @@ final class DatabaseBootloaderTest extends BaseTest
         $log->shouldReceive('info')
             ->once()->with('hello world');
 
-        $this->updateConfig('database.logger', [
-            'default' => 'default',
-            'drivers' => $drivers,
-        ]);
-
-        /** @var DriverInterface $driver */
         $driver = $this->getContainer()->get(DatabaseInterface::class)->getDriver();
+        \assert($driver instanceof DriverInterface);
 
         $this->accessProtected($driver, 'logger')->info('hello world');
-    }
-
-    public function driverLoggerDataProvider(): array
-    {
-        return [
-            'default' => [
-                'default',
-                ['foo' => 'bar'],
-            ],
-            'driver' => [
-                'bar',
-                ['test' => 'bar'],
-            ],
-        ];
     }
 }

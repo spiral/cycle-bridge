@@ -36,7 +36,7 @@ abstract class BaseTest extends TestCase
     {
         try {
             $result = [];
-            $attributes = (new ReflectionMethod($this, $method ?? $this->getName()))->getAttributes($attribute);
+            $attributes = (new ReflectionMethod($this, $method ?? $this->getName(false)))->getAttributes($attribute);
             foreach ($attributes as $attr) {
                 $result[] = $attr->newInstance();
             }
