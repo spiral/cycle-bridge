@@ -52,7 +52,7 @@ final class MigrateCommandTest extends ConsoleTest
 
         $fs = new Files();
 
-        $entityPatch = __DIR__.'/../../../../App/Entities/Tag.php';
+        $entityPatch = __DIR__.'/../../../../app/Entities/Tag.php';
         file_put_contents(
             $entityPatch, <<<'PHP'
                 <?php
