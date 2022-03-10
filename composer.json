@@ -31,7 +31,7 @@
   "require-dev": {
     "doctrine/collections": "^1.6",
     "illuminate/collections": "^9.0",
-    "spiral/roadrunner": "^1.9",
+    "spiral/roadrunner": "^2.0",
     "spiral/testing": "^1.1.1",
     "phpunit/phpunit": "^9.5",
     "vimeo/psalm": "^4.9",
