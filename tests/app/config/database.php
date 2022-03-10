@@ -29,6 +29,12 @@ return [
         'default' => [
             'driver' => 'runtime',
         ],
+        'runtime' => [
+            'driver' => 'runtime',
+        ],
+        'other' => [
+            'driver' => 'other',
+        ],
     ],
 
     /**
@@ -47,5 +53,12 @@ return [
                 dsn: 'pgsql:host=127.0.0.1;dbname=database'
             )
         ),
+    ],
+
+    'aliases' => [
+        'dbRuntime' => 'runtime',
+        'dbOther' => 'other',
+        'dbSqlite' => 'runtime',
+        'dbPostgres' => 'other'
     ],
 ];

@@ -10,7 +10,9 @@ use Cycle\Database\DatabaseManager;
 use Cycle\Database\DatabaseProviderInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Config\ConfiguratorInterface;
+use Spiral\Core\Container;
 use Spiral\Core\Container\SingletonInterface;
+use Spiral\Cycle\Injector\DatabaseInjector;
 use Spiral\Cycle\LoggerFactory;
 
 final class DatabaseBootloader extends Bootloader implements SingletonInterface
@@ -20,14 +22,10 @@ final class DatabaseBootloader extends Bootloader implements SingletonInterface
         DatabaseProviderInterface::class => DatabaseManager::class,
     ];
 
-    protected const BINDINGS = [
-        DatabaseInterface::class => [self::class, 'getDefaultDatabase'],
-    ];
-
     /**
      * Init database config.
      */
-    public function boot(ConfiguratorInterface $config): void
+    public function boot(Container $container, ConfiguratorInterface $config): void
     {
         $config->setDefaults(
             DatabaseConfig::CONFIG,
@@ -42,16 +40,13 @@ final class DatabaseBootloader extends Bootloader implements SingletonInterface
                 'drivers' => [],
             ]
         );
+
+        $container->bindInjector(DatabaseInterface::class, DatabaseInjector::class);
     }
 
     protected function initManager(DatabaseConfig $config, LoggerFactory $loggerFactory): DatabaseProviderInterface
     {
         return new DatabaseManager($config, $loggerFactory);
-    }
-
-    protected function getDefaultDatabase(DatabaseProviderInterface $manager): DatabaseInterface
-    {
-        return $manager->database();
     }
 }
 
