@@ -7,15 +7,45 @@ namespace Spiral\Tests;
 use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
+use ReflectionMethod;
 use Spiral\App\Bootloader\AppBootloader;
 use Spiral\App\Bootloader\SyncTablesBootloader;
 use Spiral\Bootloader as Framework;
 use Spiral\Config\Patch\Set;
 use Spiral\Core\ConfigsInterface;
 use Spiral\Cycle\Bootloader as CycleBridge;
+use Spiral\Testing\TestCase;
 
-abstract class BaseTest extends \Spiral\Testing\TestCase
+abstract class BaseTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        $this->updateConfigFromAttribute();
+        parent::setUp();
+    }
+
+    /**
+     * @template TClass
+     *
+     * @param class-string<TClass> $attribute
+     * @param null|non-empty-string $method Method name
+     *
+     * @return array<int, TClass>
+     */
+    public function getTestAttributes(string $attribute, string $method = null): array
+    {
+        try {
+            $result = [];
+            $attributes = (new ReflectionMethod($this, $method ?? $this->getName()))->getAttributes($attribute);
+            foreach ($attributes as $attr) {
+                $result[] = $attr->newInstance();
+            }
+            return $result;
+        } catch (\Throwable) {
+            return [];
+        }
+    }
+
     public function rootDirectory(): string
     {
         return dirname(__DIR__ . '/../App');
@@ -71,11 +101,20 @@ abstract class BaseTest extends \Spiral\Testing\TestCase
     public function updateConfig(string $key, mixed $data): void
     {
         [$config, $key] = explode('.', $key, 2);
+        $this->beforeStarting(static function (ConfigsInterface $configs) use ($config, $key, $data) {
+            $configs->modify(
+                $config,
+                new Set($key, $data)
+            );
+        });
+    }
 
-        $this->getContainer()->get(ConfigsInterface::class)->modify(
-            $config,
-            new Set($key, $data)
-        );
+    protected function updateConfigFromAttribute(): void
+    {
+        foreach ($this->getTestAttributes(ConfigAttribute::class) as $attribute) {
+            \assert($attribute instanceof ConfigAttribute);
+            $this->updateConfig($attribute->path, $attribute->closure?->__invoke() ?? $attribute->value);
+        }
     }
 
     protected function tearDown(): void
@@ -83,13 +122,6 @@ abstract class BaseTest extends \Spiral\Testing\TestCase
         parent::tearDown();
 
         $this->cleanUpRuntimeDirectory();
-        // $fs = new Files();
-        //
-        // $runtime = $this->getContainer()->get(DirectoriesInterface::class)->get('runtime');
-        // if ($fs->isDirectory($runtime)) {
-        //     $fs->deleteDirectory($runtime, true);
-        //     $fs->deleteDirectory($runtime);
-        // }
     }
 
     protected function accessProtected(object $obj, string $prop)

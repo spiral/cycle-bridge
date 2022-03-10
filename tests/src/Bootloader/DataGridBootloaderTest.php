@@ -15,6 +15,7 @@ use Spiral\DataGrid\GridInterface;
 use Spiral\DataGrid\InputInterface;
 use Spiral\DataGrid\WriterInterface;
 use Spiral\Tests\BaseTest;
+use Spiral\Tests\ConfigAttribute;
 
 final class DataGridBootloaderTest extends BaseTest
 {
@@ -47,9 +48,9 @@ final class DataGridBootloaderTest extends BaseTest
         $this->assertContainsOnlyInstancesOf(WriterInterface::class, $writers);
     }
 
+    #[ConfigAttribute(path: 'dataGrid.writers', value: [])]
     public function testGetsCompilerWithWritersFromConfig(): void
     {
-        $this->updateConfig('dataGrid.writers', []);
         $this->assertInstanceOf(
             Compiler::class,
             $compiler = $this->getContainer()->get(Compiler::class)

@@ -19,8 +19,6 @@ final class DatabaseBootloaderTest extends BaseTest
 {
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->updateConfig('database.default', 'default');
         $this->updateConfig('database.databases', [
             'default' => [
@@ -32,6 +30,8 @@ final class DatabaseBootloaderTest extends BaseTest
                 connection: new Config\SQLite\MemoryConnectionConfig(),
             ),
         ]);
+
+        parent::setUp();
     }
 
     public function testGetsDatabaseManager(): void
@@ -41,11 +41,11 @@ final class DatabaseBootloaderTest extends BaseTest
 
     public function testGetsDatabase(): void
     {
-        /** @var DatabaseInterface $database */
         $this->assertInstanceOf(
             Database::class,
             $database = $this->getContainer()->get(DatabaseInterface::class)
         );
+        \assert($database instanceof DatabaseInterface);
 
         $this->assertSame('default', $database->getName());
         $this->assertSame('SQLite', $database->getType());

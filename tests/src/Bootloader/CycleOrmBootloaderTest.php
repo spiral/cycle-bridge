@@ -9,8 +9,10 @@ use Cycle\ORM\FactoryInterface;
 use Cycle\ORM\ORM;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\TransactionInterface;
+use Spiral\Core\ConfigsInterface;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Tests\BaseTest;
+use Spiral\Tests\ConfigAttribute;
 
 final class CycleOrmBootloaderTest extends BaseTest
 {
@@ -35,16 +37,21 @@ final class CycleOrmBootloaderTest extends BaseTest
         $this->assertContainerBound(EntityManagerInterface::class);
     }
 
+    #[ConfigAttribute(path: 'cycle.schema.collections', value: ['default' => 'test'])]
     public function testGetsCycleConfig(): void
     {
-        $this->updateConfig('cycle.schema.collections', [
-            'default' => 'test',
-        ]);
-
         $config = $this->getContainer()->get(CycleConfig::class);
         $configSource = $this->getConfig(CycleConfig::CONFIG);
 
         $this->assertSame('test', $config['schema']['collections']['default']);
         $this->assertSame('test', $configSource['schema']['collections']['default']);
+    }
+
+    public function testCycleConfigsSync(): void
+    {
+        $config = $this->getContainer()->get(CycleConfig::class)->toArray();
+        $configSource = $this->getContainer()->get(ConfigsInterface::class)->getConfig(CycleConfig::CONFIG);
+
+        $this->assertSame($config, $configSource);
     }
 }
