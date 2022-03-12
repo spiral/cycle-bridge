@@ -52,8 +52,7 @@ final class CycleOrmBootloader extends Bootloader
         Container $container,
         FinalizerInterface $finalizer,
         EnvironmentInterface $env
-    ): void
-    {
+    ): void {
         $finalizer->addFinalizer(
             static function () use ($container): void {
                 if ($container->hasInstance(ORMInterface::class)) {
@@ -67,16 +66,16 @@ final class CycleOrmBootloader extends Bootloader
         $this->initOrmConfig($env);
     }
 
-    public function start(AbstractKernel $kernel)
+    public function start(AbstractKernel $kernel): void
     {
-        # todo waiting for container
-        // $kernel->started(static function (AbstractKernel $app) {
-        //     $config = $app->get(CycleConfig::class);
-        //     $orm = $app->get(ORMInterface::class);
-        //     if ($config->warmup() && \method_exists($orm, 'prepareServices')) {
-        //         $orm->prepareServices();
-        //     }
-        // });
+        $kernel->started(static function (ContainerInterface $container, CycleConfig $config): void {
+            if ($config->warmup()) {
+                $orm = $container->get(ORMInterface::class);
+                if (\method_exists($orm, 'prepareServices')) {
+                    $orm->prepareServices();
+                }
+            }
+        });
     }
 
     private function factory(
@@ -102,7 +101,7 @@ final class CycleOrmBootloader extends Bootloader
         return $factory;
     }
 
-    private function initOrmConfig(EnvironmentInterface $env)
+    private function initOrmConfig(): void
     {
         $this->config->setDefaults(
             CycleConfig::CONFIG,

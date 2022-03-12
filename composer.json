@@ -31,11 +31,12 @@
   "require-dev": {
     "doctrine/collections": "^1.6",
     "illuminate/collections": "^9.0",
+    "infection/infection": "^0.26.6",
+    "mockery/mockery": "^1.5",
+    "phpunit/phpunit": "^9.5",
     "spiral/roadrunner": "^2.0",
     "spiral/testing": "^1.1.1",
-    "phpunit/phpunit": "^9.5",
-    "vimeo/psalm": "^4.9",
-    "mockery/mockery": "^1.5"
+    "vimeo/psalm": "^4.9"
   },
   "autoload": {
     "files": [
@@ -54,7 +55,8 @@
   "config": {
     "sort-packages": true,
     "allow-plugins": {
-      "spiral/composer-publish-plugin": false
+      "spiral/composer-publish-plugin": false,
+      "infection/extension-installer": false
     }
   },
   "minimum-stability": "dev",

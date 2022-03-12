@@ -54,4 +54,11 @@ final class CycleOrmBootloaderTest extends BaseTest
 
         $this->assertSame($config, $configSource);
     }
+
+    public function testOrmWarmupDefaultConfigValue(): void
+    {
+        $config = $this->getContainer()->get(CycleConfig::class);
+
+        $this->assertFalse($config->warmup());
+    }
 }

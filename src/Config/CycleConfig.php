@@ -57,6 +57,6 @@ final class CycleConfig extends InjectableConfig
 
     public function warmup(): bool
     {
-        return (bool)($this->config['schema']['warmup'] ?? false);
+        return (bool)($this->config['warmup'] ?? false);
     }
 }
