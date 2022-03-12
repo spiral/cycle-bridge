@@ -63,7 +63,7 @@ final class CycleOrmBootloader extends Bootloader
 
         $container->bindInjector(RepositoryInterface::class, RepositoryInjector::class);
 
-        $this->initOrmConfig($env);
+        $this->initOrmConfig();
     }
 
     public function start(AbstractKernel $kernel): void
