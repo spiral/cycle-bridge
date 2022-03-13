@@ -7,7 +7,6 @@ namespace Spiral\Tests\Bootloader;
 use Cycle\Migrations\FileRepository;
 use Cycle\Migrations\Migrator;
 use Cycle\Migrations\RepositoryInterface;
-use Spiral\Boot\DirectoriesInterface;
 use Spiral\Tests\BaseTest;
 
 final class MigrationsBootloaderTest extends BaseTest
@@ -25,10 +24,10 @@ final class MigrationsBootloaderTest extends BaseTest
     public function testGetsDefaultConfig(): void
     {
         $config = $this->getConfig('migration');
-        $dirs = $this->getContainer()->get(DirectoriesInterface::class);
 
+        $this->assertDirectoryAliasDefined('migrations');
         $this->assertSame([
-            'directory' => $dirs->get('migrations'),
+            'directory' => $this->getDirectoryByAlias('migrations'),
             'table' => 'migrations',
             'safe' => false,
         ], $config);
