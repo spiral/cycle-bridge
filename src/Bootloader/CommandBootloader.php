@@ -10,7 +10,6 @@ use Cycle\ORM\ORMInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Bootloader\ConsoleBootloader;
-use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
 use Spiral\Cycle\Console\Command\CycleOrm;
 use Spiral\Cycle\Console\Command\Database;
@@ -25,7 +24,6 @@ final class CommandBootloader extends Bootloader
 
     public function boot(
         ConsoleBootloader $console,
-        ConfiguratorInterface $config,
         Container $container
     ): void {
         $this->configureExtensions($console, $container);

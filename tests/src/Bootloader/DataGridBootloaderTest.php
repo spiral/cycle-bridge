@@ -21,18 +21,23 @@ final class DataGridBootloaderTest extends BaseTest
 {
     public function testGetsGridInput(): void
     {
-        $this->assertContainerBound(InputInterface::class, GridInput::class);
+        $this->assertContainerBoundAsSingleton(InputInterface::class, GridInput::class);
     }
 
     public function testGetsGrid(): void
     {
-        $this->assertContainerBound(GridInterface::class, Grid::class);
+        $this->assertContainerBoundAsSingleton(GridInterface::class, Grid::class);
     }
 
     public function testGetsGridFactory(): void
     {
-        $this->assertContainerBound(GridFactoryInterface::class, GridFactory::class);
-        $this->assertContainerBound(GridFactory::class);
+        $this->assertContainerBoundAsSingleton(GridFactoryInterface::class, GridFactory::class);
+        $this->assertContainerBound(GridFactory::class, GridFactory::class);
+    }
+
+    public function testGridResponse(): void
+    {
+        $this->assertContainerBoundAsSingleton(GridResponseInterface::class, GridResponse::class);
     }
 
     public function testGetsCompilerWithDefaultWriters(): void

@@ -14,7 +14,7 @@ final class AuthTokensBootloaderTest extends BaseTest
 {
     public function testGetsTokenStorage(): void
     {
-        $this->assertContainerBound(TokenStorageInterface::class, CycleStorage::class);
+        $this->assertContainerBoundAsSingleton(TokenStorageInterface::class, CycleStorage::class);
     }
 
     public function testTokenEntityShouldBeRegisterInTokenizer(): void

@@ -24,7 +24,7 @@ final class CycleOrmBootloaderTest extends BaseTest
 
     public function testGetsOrmFactory(): void
     {
-        $this->assertContainerBound(FactoryInterface::class);
+        $this->assertContainerBoundAsSingleton(FactoryInterface::class, \Cycle\ORM\Factory::class);
     }
 
     public function testGetsTransaction(): void

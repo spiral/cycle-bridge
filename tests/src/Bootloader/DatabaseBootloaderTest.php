@@ -37,7 +37,8 @@ final class DatabaseBootloaderTest extends BaseTest
 
     public function testGetsDatabaseManager(): void
     {
-        $this->assertContainerBound(DatabaseProviderInterface::class, DatabaseManager::class);
+        $this->assertContainerBoundAsSingleton(DatabaseProviderInterface::class, DatabaseManager::class);
+        $this->assertContainerBoundAsSingleton(DatabaseManager::class, DatabaseManager::class);
     }
 
     public function testGetsDatabase(): void

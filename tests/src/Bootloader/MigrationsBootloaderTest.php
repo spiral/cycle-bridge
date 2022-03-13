@@ -14,12 +14,12 @@ final class MigrationsBootloaderTest extends BaseTest
 {
     public function testGetsMigrator(): void
     {
-        $this->assertContainerBound(Migrator::class);
+        $this->assertContainerBoundAsSingleton(Migrator::class, Migrator::class);
     }
 
     public function testGetsRepository(): void
     {
-        $this->assertContainerBound(RepositoryInterface::class, FileRepository::class);
+        $this->assertContainerBoundAsSingleton(RepositoryInterface::class, FileRepository::class);
     }
 
     public function testGetsDefaultConfig(): void
