@@ -7,55 +7,90 @@ namespace Spiral\Tests;
 use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use PHPUnit\Framework\TestCase;
-use Spiral\App\App;
-use Spiral\Boot\AbstractKernel;
-use Spiral\Boot\DirectoriesInterface;
-use Spiral\Boot\Environment;
-use Spiral\Boot\EnvironmentInterface;
-use Spiral\Boot\KernelInterface;
+use ReflectionMethod;
+use Spiral\App\Bootloader\AppBootloader;
+use Spiral\App\Bootloader\SyncTablesBootloader;
+use Spiral\Bootloader as Framework;
 use Spiral\Config\Patch\Set;
 use Spiral\Core\ConfigsInterface;
-use Spiral\Core\Container;
-use Spiral\Files\Files;
+use Spiral\Cycle\Bootloader as CycleBridge;
+use Spiral\Testing\TestCase;
 
 abstract class BaseTest extends TestCase
 {
-    use MockeryPHPUnitIntegration;
-
-    protected App $app;
-    protected \Spiral\Core\Container $container;
-    private array $beforeBootload = [];
-    private array $afterBootload = [];
-
-    public const ENV = [];
-
-    public function beforeBootload(\Closure $callback): void
-    {
-        $this->beforeBootload[] = $callback;
-    }
-
-    public function afterBootload(\Closure $callback): void
-    {
-        $this->afterBootload[] = $callback;
-    }
-
     protected function setUp(): void
     {
+        $this->updateConfigFromAttribute();
         parent::setUp();
+    }
 
-        $this->app = $this->makeApp(static::ENV);
+    /**
+     * @template TClass
+     *
+     * @param class-string<TClass> $attribute
+     * @param null|non-empty-string $method Method name
+     *
+     * @return array<int, TClass>
+     */
+    public function getTestAttributes(string $attribute, string $method = null): array
+    {
+        try {
+            $result = [];
+            $attributes = (new ReflectionMethod($this, $method ?? $this->getName(false)))->getAttributes($attribute);
+            foreach ($attributes as $attr) {
+                $result[] = $attr->newInstance();
+            }
+            return $result;
+        } catch (\Throwable) {
+            return [];
+        }
+    }
+
+    public function rootDirectory(): string
+    {
+        return dirname(__DIR__ . '/../App');
+    }
+
+    public function defineBootloaders(): array
+    {
+        return [
+            // Framework commands
+            Framework\ConsoleBootloader::class,
+            Framework\CommandBootloader::class,
+
+            // Databases
+            CycleBridge\DatabaseBootloader::class,
+            CycleBridge\MigrationsBootloader::class,
+
+            // ORM
+            CycleBridge\SchemaBootloader::class,
+            CycleBridge\CycleOrmBootloader::class,
+            CycleBridge\AnnotatedBootloader::class,
+            CycleBridge\CommandBootloader::class,
+
+            SyncTablesBootloader::class,
+
+            // DataGrid
+            CycleBridge\DataGridBootloader::class,
+
+            // Auth
+            CycleBridge\AuthTokensBootloader::class,
+            // Validation
+            CycleBridge\ValidationBootloader::class,
+
+            // App
+            AppBootloader::class,
+        ];
     }
 
     public function getOrm(): ORMInterface
     {
-        return $this->app->get(ORMInterface::class);
+        return $this->getContainer()->get(ORMInterface::class);
     }
 
     public function getEntityManager(): EntityManagerInterface
     {
-        return $this->app->get(EntityManagerInterface::class);
+        return $this->getContainer()->get(EntityManagerInterface::class);
     }
 
     public function getRepository(string $role): RepositoryInterface
@@ -63,77 +98,30 @@ abstract class BaseTest extends TestCase
         return $this->getOrm()->getRepository($role);
     }
 
-    public function getConfig(string $config): array
-    {
-        return $this->app->get(ConfigsInterface::class)->getConfig($config);
-    }
-
-    public function setConfig(string $config, mixed $data): void
-    {
-        $this->app->get(ConfigsInterface::class)->setDefaults(
-            $config,
-            $data
-        );
-    }
-
     public function updateConfig(string $key, mixed $data): void
     {
         [$config, $key] = explode('.', $key, 2);
+        $this->beforeStarting(static function (ConfigsInterface $configs) use ($config, $key, $data) {
+            $configs->modify(
+                $config,
+                new Set($key, $data)
+            );
+        });
+    }
 
-        $this->app->get(ConfigsInterface::class)->modify(
-            $config,
-            new Set($key, $data)
-        );
+    protected function updateConfigFromAttribute(): void
+    {
+        foreach ($this->getTestAttributes(ConfigAttribute::class) as $attribute) {
+            \assert($attribute instanceof ConfigAttribute);
+            $this->updateConfig($attribute->path, $attribute->closure?->__invoke() ?? $attribute->value);
+        }
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
 
-        $fs = new Files();
-
-        $runtime = $this->app->get(DirectoriesInterface::class)->get('runtime');
-        if ($fs->isDirectory($runtime)) {
-            $fs->deleteDirectory($runtime, true);
-            $fs->deleteDirectory($runtime);
-        }
-    }
-
-    private function makeApp(array $env = []): KernelInterface
-    {
-        $this->container = $container = new Container();
-        $beforeBootload = $this->beforeBootload;
-        $afterBootload = $this->afterBootload;
-
-        $environment = new Environment($env);
-
-        $root = dirname(__DIR__);
-
-        $app = new App($this->container, [
-            'root' => $root,
-            'app' => $root.'/App',
-            'runtime' => $root.'/runtime/tests',
-            'cache' => $root.'/runtime/tests/cache',
-        ]);
-
-        // will protect any against env overwrite action
-        $this->container->runScope(
-            [EnvironmentInterface::class => $environment],
-            \Closure::bind(function () use ($container, $beforeBootload, $afterBootload): void {
-                foreach ($beforeBootload as $callback) {
-                    $callback($container);
-                }
-
-                $this->bootload();
-                $this->bootstrap();
-            }, $app, AbstractKernel::class)
-        );
-
-        foreach ($afterBootload as $callback) {
-            $callback($container);
-        }
-
-        return $app;
+        $this->cleanUpRuntimeDirectory();
     }
 
     protected function accessProtected(object $obj, string $prop)

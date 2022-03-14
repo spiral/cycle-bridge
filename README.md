@@ -95,7 +95,7 @@ protected const LOAD = [
     // Framework\Database\MigrationsBootloader::class,
     // Close the database connection after every request automatically (Optional)
     // Framework\Database\DisconnectsBootloader::class,
-    
+
     // NEW
     CycleBridge\DatabaseBootloader::class,
     CycleBridge\MigrationsBootloader::class,
@@ -156,7 +156,7 @@ return [
         'default' => null, // Default log channel for all drivers (The lowest priority)
         'drivers' => [
             // By driver name (The highest priority)
-            // See https://spiral.dev/docs/extension-monolog 
+            // See https://spiral.dev/docs/extension-monolog
             'runtime' => 'sql_logs',
 
             // By driver class (Medium priority)
@@ -245,16 +245,16 @@ use Cycle\ORM\SchemaInterface;
 return [
     'schema' => [
         /**
-         * true (Default) - Schema will be stored in a cache after compilation. 
+         * true (Default) - Schema will be stored in a cache after compilation.
          * It won't be changed after entity modification. Use `php app.php cycle` to update schema.
-         * 
-         * false - Schema won't be stored in a cache after compilation. 
+         *
+         * false - Schema won't be stored in a cache after compilation.
          * It will be automatically changed after entity modification. (Development mode)
          */
         'cache' => false,
-        
+
         /**
-         * The CycleORM provides the ability to manage default settings for 
+         * The CycleORM provides the ability to manage default settings for
          * every schema with not defined segments
          */
         'defaults' => [
@@ -265,7 +265,7 @@ return [
                 \Cycle\ORM\Parser\Typecast::class
             ],
         ],
-        
+
         'collections' => [
             'default' => 'array',
             'factories' => [
@@ -274,13 +274,13 @@ return [
                 // 'illuminate' => new \Cycle\ORM\Collection\IlluminateCollectionFactory(),
             ],
         ],
-        
+
         /**
          * Schema generators (Optional)
          * null (default) - Will be used schema generators defined in bootloaders
          */
         'generators' => null,
-        
+
         // 'generators' => [
         //        \Cycle\Schema\Generator\ResetTables::class,
         //        \Cycle\Annotated\Embeddings::class,
@@ -297,7 +297,7 @@ return [
         //        \Cycle\Schema\Generator\GenerateTypecast::class,
         // ],
     ],
-    
+
     /**
      * Custom relation types for entities
      */
@@ -306,7 +306,12 @@ return [
         //     \Cycle\ORM\Config\RelationConfig::LOADER => \Cycle\ORM\Select\Loader\EmbeddedLoader::class,
         //     \Cycle\ORM\Config\RelationConfig::RELATION => \Cycle\ORM\Relation\Embedded::class,
         // ]
-    ]
+    ],
+
+    /**
+     * Prepare all internal ORM services (mappers, repositories, typecasters...)
+     */
+    'warmup' => false,
 ];
 ```
 
@@ -357,7 +362,7 @@ The package is available via composer and can be installed using the following c
 composer require cycle/entity-behavior
 ```
 
-At first, you need to bind `Cycle\ORM\Transaction\CommandGeneratorInterface` with `\Cycle\ORM\Entity\Behavior\EventDrivenCommandGenerator`. 
+At first, you need to bind `Cycle\ORM\Transaction\CommandGeneratorInterface` with `\Cycle\ORM\Entity\Behavior\EventDrivenCommandGenerator`.
 
 You can do it via spiral bootloader.
 

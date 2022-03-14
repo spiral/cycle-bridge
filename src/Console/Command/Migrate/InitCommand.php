@@ -12,9 +12,11 @@ final class InitCommand extends AbstractCommand
     /**
      * Perform command.
      */
-    public function perform(): void
+    public function perform(): int
     {
         $this->migrator->configure();
         $this->writeln('<info>Migrations table were successfully created</info>');
+
+        return self::SUCCESS;
     }
 }

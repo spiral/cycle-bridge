@@ -151,7 +151,7 @@ final class EntityCheckerTest extends BaseTest
         bool $valid
     ): void {
         $this->makeAndBindOrm($repositoryData);
-        $validation = $this->app->get(ValidationInterface::class);
+        $validation = $this->getContainer()->get(ValidationInterface::class);
         $validator = $validation->validate($entityData, $rules);
 
         $this->assertSame($valid, $validator->isValid());
@@ -168,6 +168,6 @@ final class EntityCheckerTest extends BaseTest
             ->andReturn($this->makeRepository($repositoryData, self::ENTITY_PK));
         $orm->shouldReceive('getHeap')
             ->andReturn(new Heap());
-        $this->app->getContainer()->bind(ORMInterface::class, $orm);
+        $this->getContainer()->bind(ORMInterface::class, $orm);
     }
 }

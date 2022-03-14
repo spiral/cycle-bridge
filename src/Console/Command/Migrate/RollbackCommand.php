@@ -14,11 +14,11 @@ final class RollbackCommand extends AbstractCommand
         ['all', 'a', InputOption::VALUE_NONE, 'Rollback all executed migrations'],
     ];
 
-    public function perform(): void
+    public function perform(): int
     {
         if (!$this->verifyEnvironment()) {
             //Making sure we can safely migrate in this environment
-            return;
+            return self::FAILURE;
         }
 
         $this->migrator->configure();
@@ -37,5 +37,7 @@ final class RollbackCommand extends AbstractCommand
         if (!$found) {
             $this->writeln('<fg=red>No executed migrations were found.</fg=red>');
         }
+
+        return self::SUCCESS;
     }
 }

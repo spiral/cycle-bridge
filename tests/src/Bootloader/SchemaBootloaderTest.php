@@ -10,6 +10,7 @@ use Cycle\Schema\GeneratorInterface;
 use Spiral\Cycle\Bootloader\SchemaBootloader;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Tests\BaseTest;
+use Spiral\Tests\ConfigAttribute;
 
 final class SchemaBootloaderTest extends BaseTest
 {
@@ -18,43 +19,35 @@ final class SchemaBootloaderTest extends BaseTest
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->bootloader = $this->app->get(SchemaBootloader::class);
+        $this->bootloader = $this->getContainer()->get(SchemaBootloader::class);
     }
 
     public function testGetsSchema(): void
     {
-        $this->assertInstanceOf(
-            SchemaInterface::class,
-            $this->app->get(SchemaInterface::class)
-        );
+        $this->assertContainerBound(SchemaInterface::class);
     }
 
     public function testGetsDefaultSchemaGenerators(): void
     {
-        $generators = $this->bootloader->getGenerators($this->app->get(CycleConfig::class));
+        $generators = $this->bootloader->getGenerators($this->getContainer()->get(CycleConfig::class));
 
         $this->assertCount(14, $generators);
         $this->assertContainsOnlyInstancesOf(GeneratorInterface::class, $generators);
     }
 
+    #[ConfigAttribute(path: 'cycle.schema.generators', value: [Entities::class])]
     public function testGetsSchemaGeneratorsOverrideByConfig(): void
     {
-        $this->updateConfig('cycle.schema.generators', [
-            Entities::class,
-        ]);
-
-        $generators = $this->bootloader->getGenerators($this->app->get(CycleConfig::class));
+        $generators = $this->bootloader->getGenerators($this->getContainer()->get(CycleConfig::class));
 
         $this->assertCount(1, $generators);
         $this->assertContainsOnlyInstancesOf(GeneratorInterface::class, $generators);
     }
 
+    #[ConfigAttribute(path: 'cycle.schema.generators', value: [])]
     public function testGetsSchemaGeneratorsOverrideByConfigWithEmptyArray(): void
     {
-        $this->updateConfig('cycle.schema.generators', []);
-
-        $generators = $this->bootloader->getGenerators($this->app->get(CycleConfig::class));
+        $generators = $this->bootloader->getGenerators($this->getContainer()->get(CycleConfig::class));
 
         $this->assertCount(0, $generators);
     }

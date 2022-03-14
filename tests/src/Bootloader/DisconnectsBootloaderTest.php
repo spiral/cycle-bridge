@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Spiral\Tests\Bootloader;
 
 use Cycle\Database\DatabaseInterface;
+use Spiral\Boot\BootloadManager;
 use Spiral\Boot\FinalizerInterface;
 use Spiral\Cycle\Bootloader\DisconnectsBootloader;
 use Spiral\Tests\BaseTest;
@@ -13,7 +14,7 @@ final class DisconnectsBootloaderTest extends BaseTest
 {
     public function testConnected(): void
     {
-        $db = $this->app->get(DatabaseInterface::class);
+        $db = $this->getContainer()->get(DatabaseInterface::class);
 
         $db->begin();
         $this->assertTrue($db->getDriver(DatabaseInterface::READ)->isConnected());
@@ -22,18 +23,18 @@ final class DisconnectsBootloaderTest extends BaseTest
 
     public function testDisconnected(): void
     {
-        $db = $this->app->get(DatabaseInterface::class);
+        $db = $this->getContainer()->get(DatabaseInterface::class);
 
         $db->begin();
         $this->assertTrue($db->getDriver(DatabaseInterface::READ)->isConnected());
         $db->rollback();
 
-        $this->app->getBootloadManager()->bootload([
+        $this->getContainer()->get(BootloadManager::class)->bootload([
             DisconnectsBootloader::class
         ]);
 
         $this->assertTrue($db->getDriver(DatabaseInterface::READ)->isConnected());
-        $this->app->get(FinalizerInterface::class)->finalize();
+        $this->getContainer()->get(FinalizerInterface::class)->finalize();
         $this->assertFalse($db->getDriver(DatabaseInterface::READ)->isConnected());
     }
 }
