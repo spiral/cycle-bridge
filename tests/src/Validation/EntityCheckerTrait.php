@@ -6,6 +6,8 @@ namespace Spiral\Tests\Validation;
 
 use Cycle\Database\Injection\Parameter;
 use Cycle\ORM\RepositoryInterface;
+use Cycle\ORM\Select;
+use Cycle\ORM\Select\Repository;
 
 trait EntityCheckerTrait
 {
@@ -14,7 +16,7 @@ trait EntityCheckerTrait
      */
     private function makeRepository(array $items = [], string $pk = 'id'): RepositoryInterface
     {
-        return new class($items, $pk) implements RepositoryInterface {
+        return new class($items, $pk) extends Repository {
             /**
              * @param array<int, non-empty-array<non-empty-string, mixed>> $items
              */
@@ -47,7 +49,7 @@ trait EntityCheckerTrait
                 return null;
             }
 
-            public function findAll(array $scope = []): iterable
+            public function findAll(array $scope = [], array $orderBy = []): iterable
             {
                 $result = [];
                 foreach ($this->items as $item) {
@@ -58,9 +60,9 @@ trait EntityCheckerTrait
                 return $result;
             }
 
-            public function select(): object
+            public function select(): Select
             {
-                return new class($this->items) {
+                return new class($this->items) extends Select {
                     /**
                      * @param array<int, non-empty-array<non-empty-string, mixed>> $items
                      */
@@ -79,7 +81,7 @@ trait EntityCheckerTrait
                         return $this;
                     }
 
-                    public function count(): int
+                    public function count(string $column = null): int
                     {
                         return \count($this->items);
                     }
