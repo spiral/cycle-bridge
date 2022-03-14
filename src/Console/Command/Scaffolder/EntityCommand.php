@@ -128,7 +128,7 @@ class EntityCommand extends AbstractCommand
 
         if ($this->option('repository')) {
             $console->run('create:repository', [
-                'name' => $repository ?? $this->argument('name'),
+                'name' => !empty($repository) ? $repository : $this->argument('name'),
             ]);
         }
 

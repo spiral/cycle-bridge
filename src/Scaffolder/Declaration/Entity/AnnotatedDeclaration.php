@@ -41,10 +41,8 @@ class AnnotatedDeclaration extends AbstractEntityDeclaration
 
     /**
      * @psalm-suppress UndefinedDocblockClass
-     *
-     * @param CommentTrait $target
      */
-    protected function addCommentLine($target, string $comment): void
+    protected function addCommentLine(AbstractEntityDeclaration|Property $target, string $comment): void
     {
         $target->setComment(array_merge($this->getComment()->getLines(), [$comment]));
     }
