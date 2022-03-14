@@ -31,7 +31,7 @@ final class MigrationsBootloader extends Bootloader
         DirectoriesInterface $dirs
     ): void {
         if (! $dirs->has('migrations')) {
-            $dirs->set('migrations', $dirs->get('app').'migrations');
+            $dirs->set('migrations', $dirs->get('app') . 'migrations');
         }
 
         $config->setDefaults(

@@ -11,7 +11,7 @@ use Spiral\Tests\BaseTest;
 
 final class CommandBootloaderTest extends BaseTest
 {
-    public function testCommandsShouldBeRegistered()
+    public function testCommandsShouldBeRegistered(): void
     {
         $commands = [
             Database\ListCommand::class,

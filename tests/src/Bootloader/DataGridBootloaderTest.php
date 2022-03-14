@@ -15,43 +15,36 @@ use Spiral\DataGrid\GridInterface;
 use Spiral\DataGrid\InputInterface;
 use Spiral\DataGrid\WriterInterface;
 use Spiral\Tests\BaseTest;
+use Spiral\Tests\ConfigAttribute;
 
 final class DataGridBootloaderTest extends BaseTest
 {
     public function testGetsGridInput(): void
     {
-        $this->assertInstanceOf(
-            GridInput::class,
-            $this->app->get(InputInterface::class)
-        );
+        $this->assertContainerBoundAsSingleton(InputInterface::class, GridInput::class);
     }
 
     public function testGetsGrid(): void
     {
-        $this->assertInstanceOf(
-            Grid::class,
-            $this->app->get(GridInterface::class)
-        );
+        $this->assertContainerBoundAsSingleton(GridInterface::class, Grid::class);
     }
 
     public function testGetsGridFactory(): void
     {
-        $this->assertInstanceOf(
-            GridFactory::class,
-            $this->app->get(GridFactoryInterface::class)
-        );
+        $this->assertContainerBoundAsSingleton(GridFactoryInterface::class, GridFactory::class);
+        $this->assertContainerBound(GridFactory::class, GridFactory::class);
+    }
 
-        $this->assertInstanceOf(
-            GridFactory::class,
-            $this->app->get(GridFactory::class)
-        );
+    public function testGridResponse(): void
+    {
+        $this->assertContainerBoundAsSingleton(GridResponseInterface::class, GridResponse::class);
     }
 
     public function testGetsCompilerWithDefaultWriters(): void
     {
         $this->assertInstanceOf(
             Compiler::class,
-            $compiler = $this->app->get(Compiler::class)
+            $compiler = $this->getContainer()->get(Compiler::class)
         );
 
         $writers = $this->accessProtected($compiler, 'writers');
@@ -60,12 +53,12 @@ final class DataGridBootloaderTest extends BaseTest
         $this->assertContainsOnlyInstancesOf(WriterInterface::class, $writers);
     }
 
+    #[ConfigAttribute(path: 'dataGrid.writers', value: [])]
     public function testGetsCompilerWithWritersFromConfig(): void
     {
-        $this->updateConfig('dataGrid.writers', []);
         $this->assertInstanceOf(
             Compiler::class,
-            $compiler = $this->app->get(Compiler::class)
+            $compiler = $this->getContainer()->get(Compiler::class)
         );
 
         $writers = $this->accessProtected($compiler, 'writers');
@@ -75,9 +68,6 @@ final class DataGridBootloaderTest extends BaseTest
 
     public function testGetsGridResponse(): void
     {
-        $this->assertInstanceOf(
-            GridResponse::class,
-            $this->app->get(GridResponseInterface::class)
-        );
+        $this->assertContainerBound(GridResponseInterface::class, GridResponse::class);
     }
 }

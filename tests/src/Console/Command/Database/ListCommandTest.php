@@ -15,7 +15,7 @@ final class ListCommandTest extends ConsoleTest
     public function testList(): void
     {
         /** @var Database $db */
-        $db = $this->app->get(DatabaseInterface::class);
+        $db = $this->getContainer()->get(DatabaseInterface::class);
 
         $table = $db->table('sample')->getSchema();
         $table->primary('primary_id');
@@ -40,7 +40,7 @@ final class ListCommandTest extends ConsoleTest
     public function testBrokenList(): void
     {
         /** @var DatabaseManager $dm */
-        $dm = $this->app->get(DatabaseProviderInterface::class);
+        $dm = $this->getContainer()->get(DatabaseProviderInterface::class);
 
         $dm->addDatabase(
             new Database(

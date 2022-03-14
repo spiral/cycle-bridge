@@ -17,15 +17,15 @@ final class MigrateCommandTest extends ConsoleTest
     public function testMigrate(): void
     {
         /** @var DatabaseInterface $db */
-        $db = $this->app->get(DatabaseInterface::class);
+        $db = $this->getContainer()->get(DatabaseInterface::class);
         $this->assertSame([], $db->getTables());
 
-        $this->runCommandDebug('migrate:init');
-        $this->runCommandDebug('cycle:migrate');
+        $this->runCommand('migrate:init');
+        $this->runCommand('cycle:migrate');
 
         $this->assertCount(1, $db->getTables());
 
-        $this->runCommandDebug('migrate');
+        $this->runCommand('migrate');
         $this->assertCount(4, $db->getTables());
     }
 }

@@ -15,6 +15,8 @@ use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
 use Cycle\ORM\Transaction;
 use Cycle\ORM\TransactionInterface;
+use Psr\Container\ContainerInterface;
+use Spiral\Boot\AbstractKernel;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Boot\EnvironmentInterface;
 use Spiral\Boot\FinalizerInterface;
@@ -50,10 +52,9 @@ final class CycleOrmBootloader extends Bootloader
         Container $container,
         FinalizerInterface $finalizer,
         EnvironmentInterface $env
-    ): void
-    {
+    ): void {
         $finalizer->addFinalizer(
-            function () use ($container): void {
+            static function () use ($container): void {
                 if ($container->hasInstance(ORMInterface::class)) {
                     $container->get(ORMInterface::class)->getHeap()->clean();
                 }
@@ -62,7 +63,19 @@ final class CycleOrmBootloader extends Bootloader
 
         $container->bindInjector(RepositoryInterface::class, RepositoryInjector::class);
 
-        $this->initOrmConfig($env);
+        $this->initOrmConfig();
+    }
+
+    public function start(AbstractKernel $kernel): void
+    {
+        $kernel->started(static function (ContainerInterface $container, CycleConfig $config): void {
+            if ($config->warmup()) {
+                $orm = $container->get(ORMInterface::class);
+                if (\method_exists($orm, 'prepareServices')) {
+                    $orm->prepareServices();
+                }
+            }
+        });
     }
 
     private function factory(
@@ -88,7 +101,7 @@ final class CycleOrmBootloader extends Bootloader
         return $factory;
     }
 
-    private function initOrmConfig(EnvironmentInterface $env)
+    private function initOrmConfig(): void
     {
         $this->config->setDefaults(
             CycleConfig::CONFIG,

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Bootloader;
 
 use Cycle\Database\Config\DatabaseConfig;
-use Cycle\Database\Database;
 use Cycle\Database\DatabaseInterface;
 use Cycle\Database\DatabaseManager;
 use Cycle\Database\DatabaseProviderInterface;
@@ -18,7 +17,7 @@ final class DatabaseBootloader extends Bootloader implements SingletonInterface
 {
     protected const SINGLETONS = [
         DatabaseManager::class => [self::class, 'initManager'],
-        DatabaseProviderInterface::class => DatabaseManager::class
+        DatabaseProviderInterface::class => DatabaseManager::class,
     ];
 
     protected const BINDINGS = [
