@@ -5,12 +5,31 @@ declare(strict_types=1);
 namespace Spiral\Tests\Validation;
 
 use Cycle\Database\Injection\Parameter;
+use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
+use Cycle\ORM\SchemaInterface;
 use Cycle\ORM\Select;
 use Cycle\ORM\Select\Repository;
+use Mockery as m;
+use Mockery\LegacyMockInterface;
+use Mockery\MockInterface;
 
 trait EntityCheckerTrait
 {
+    private function makeOrm(array $primaryKeys = []): ORMInterface|MockInterface|LegacyMockInterface
+    {
+        $schema = m::mock(SchemaInterface::class);
+        $orm = m::mock(ORMInterface::class);
+
+        foreach ($primaryKeys as $role => $pk) {
+            $schema->shouldReceive('define')->withArgs([$role, SchemaInterface::PRIMARY_KEY])->andReturn($pk);
+        }
+        $orm->shouldReceive('getSchema')
+            ->andReturn($schema);
+
+        return $orm;
+    }
+
     /**
      * @param array<int, non-empty-array<non-empty-string, mixed>> $items
      */
@@ -29,7 +48,7 @@ trait EntityCheckerTrait
             public function findByPK(mixed $id): ?object
             {
                 foreach ($this->items as $item) {
-                    if ($item[$this->pk] === $id) {
+                    if ((array)$item[$this->pk] === (array)$id) {
                         return (object)$item;
                     }
                 }

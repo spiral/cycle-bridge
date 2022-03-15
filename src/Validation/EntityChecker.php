@@ -7,6 +7,7 @@ namespace Spiral\Cycle\Validation;
 use Cycle\Database\Injection\Expression;
 use Cycle\Database\Injection\Parameter;
 use Cycle\ORM\ORMInterface;
+use Cycle\ORM\SchemaInterface;
 use Cycle\ORM\Select;
 use Cycle\ORM\Select\Repository;
 use Spiral\Core\Container\SingletonInterface;
@@ -36,36 +37,44 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
      * @param string $role Entity class or role
      * @param null|string $field Mapped field
      */
-    public function exists(mixed $value, string $role, ?string $field = null, bool $ignoreCase = false): bool
-    {
+    public function exists(
+        mixed $value,
+        string $role,
+        ?string $field = null,
+        bool $ignoreCase = false,
+        bool $multiple = false
+    ): bool {
         $repository = $this->orm->getRepository($role);
+        $pk = (array)$this->orm->getSchema()->define($role, SchemaInterface::PRIMARY_KEY);
+        $isComposite = \count($pk) > 1;
+        $isPK = $field === null || (!$isComposite && $pk[0] === $field);
 
-        if (!empty($value)) {
-            if (is_scalar($value)) {
-                if ($field === null) {
-                    return $repository->findByPK($value) !== null;
-                }
+        $value = (array)$value;
 
-                if ($ignoreCase && $repository instanceof Repository) {
-                    return $this->addCaseInsensitiveWhere($repository->select(), $field, $value)->fetchOne() !== null;
-                }
-
-                return $repository->findOne([$field => $value]) !== null;
+        if ($isPK) {
+            if (!$multiple) {
+                return $repository->findByPK($value) !== null;
             }
-
-            if (\is_array($value) && $repository instanceof Repository) {
-                $select = $repository->select();
-
-                if ($field !== null) {
-                    return $select
-                            ->where($field, 'IN', new Parameter($value))
-                            ->count() === \count($value);
-                }
-
-                return $select
-                        ->where('id', 'IN', new Parameter($value))
-                        ->count() === \count($value);
+            if ($repository instanceof Repository) {
+                return $repository->select()->wherePK(...$value)->count() === \count($value);
             }
+            return false;
+        }
+
+        if (!$ignoreCase) {
+            if (!$multiple) {
+                return $repository->findOne([$field => \current($value)]) !== null;
+            }
+            if ($repository instanceof Repository) {
+                return $repository->select()
+                    ->where($field, 'IN', new Parameter($value))
+                    ->count() === \count($value);
+            }
+            return false;
+        }
+
+        if ($repository instanceof Repository) {
+            return $this->whereCaseInsensitive($repository->select(), $field, $value, $multiple)->fetchOne() !== null;
         }
 
         return false;
@@ -94,7 +103,7 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
             $select = $repository->select();
 
             foreach ($values as $key => $fieldValue) {
-                $this->addCaseInsensitiveWhere($select, $key, $fieldValue);
+                $this->whereCaseInsensitive($select, $key, $fieldValue, false);
             }
 
             return $select->fetchOne() === null;
@@ -137,18 +146,25 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
         return true;
     }
 
-    private function addCaseInsensitiveWhere(Select $select, string $field, mixed $value): Select
+    private function whereCaseInsensitive(Select $select, string $field, mixed $value, bool $multiple): Select
     {
-        if (!is_string($value)) {
-            return $select->where($field, $value);
+        $queryBuilder = $select->getBuilder();
+        $column = new Expression("LOWER({$queryBuilder->resolve($field)})");
+
+        if (!$multiple) {
+            $value = \current($value);
+            return $select->where($column, \is_string($value) ? \mb_strtolower($value) : $value);
         }
 
-        $queryBuilder = $select->getBuilder();
-
-        return $select
-            ->where(
-                new Expression("LOWER({$queryBuilder->resolve($field)})"),
-                mb_strtolower($value)
-            );
+        return $select->where(
+            new Expression("LOWER({$queryBuilder->resolve($field)})"),
+            'IN',
+            new Parameter(
+                \array_map(
+                    static fn($value) => \is_string($value) ? \mb_strtolower($value) : $value,
+                    $value
+                )
+            )
+        );
     }
 }

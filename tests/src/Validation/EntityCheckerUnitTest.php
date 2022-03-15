@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Spiral\Tests\Validation;
 
 use Cycle\ORM\ORMInterface;
+use Cycle\ORM\SchemaInterface;
 use Mockery as m;
+use Mockery\LegacyMockInterface;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Spiral\Cycle\Validation\EntityChecker;
 
@@ -15,7 +18,7 @@ final class EntityCheckerUnitTest extends TestCase
 
     public function testExistsWithEmptyDatabase(): void
     {
-        $orm = m::mock(ORMInterface::class);
+        $orm = $this->makeOrm(['test' => 'id']);
         $orm->shouldReceive('getRepository')
             ->andReturn($this->makeRepository());
         $checker = new EntityChecker($orm);
@@ -25,7 +28,7 @@ final class EntityCheckerUnitTest extends TestCase
 
     public function testExistsByPk(): void
     {
-        $orm = m::mock(ORMInterface::class);
+        $orm = $this->makeOrm(['test' => 'id']);
         $orm->shouldReceive('getRepository')
             ->andReturn(
                 $this->makeRepository([
@@ -39,7 +42,7 @@ final class EntityCheckerUnitTest extends TestCase
 
     public function testExistsByCustomField(): void
     {
-        $orm = m::mock(ORMInterface::class);
+        $orm = $this->makeOrm(['test' => 'id']);
         $orm->shouldReceive('getRepository')
             ->andReturn(
                 $this->makeRepository([
@@ -54,7 +57,7 @@ final class EntityCheckerUnitTest extends TestCase
 
     public function testNonExistByArrayPk(): void
     {
-        $orm = m::mock(ORMInterface::class);
+        $orm = $this->makeOrm(['test' => 'id']);
         $orm->shouldReceive('getRepository')
             ->andReturn($this->makeRepository());
         $checker = new EntityChecker($orm);
@@ -62,37 +65,22 @@ final class EntityCheckerUnitTest extends TestCase
         $this->assertFalse($checker->exists([42, 1], 'test'));
     }
 
-    public function testExistByArrayPk(): void
+    // public function testExistByPkMultiple(): void
+    // {
+    //     $orm = $this->makeOrm(['test' => 'id']);
+    //     $orm->shouldReceive('getRepository')
+    //         ->andReturn($this->makeRepository([
+    //             ['id' => 42, 'foo' => 'bar', 'value' => 'test value'],
+    //             ['id' => 1, 'foo' => 'bar', 'value' => 'test value'],
+    //         ]));
+    //     $checker = new EntityChecker($orm);
+    //
+    //     $this->assertTrue($checker->exists([42, 1], 'test', multiple: true));
+    // }
+
+    public function testNonExistsByCustomFieldMultiple(): void
     {
-        $orm = m::mock(ORMInterface::class);
-        $orm->shouldReceive('getRepository')
-            ->andReturn($this->makeRepository([
-                ['id' => 42, 'foo' => 'bar', 'value' => 'test value'],
-                ['id' => 1, 'foo' => 'bar', 'value' => 'test value'],
-            ]));
-        $checker = new EntityChecker($orm);
-
-        $this->assertTrue($checker->exists([42, 1], 'test'));
-    }
-
-    public function testNonExistsArrayByCustomField(): void
-    {
-        $orm = m::mock(ORMInterface::class);
-        $orm->shouldReceive('getRepository')
-            ->andReturn(
-                $this->makeRepository([
-                    ['id' => 42, 'foo' => 'bar', 'value' => 'test value'],
-                    ['id' => 1, 'foo' => 'baz', 'value' => 'test value'],
-                ])
-            );
-        $checker = new EntityChecker($orm);
-
-        $this->assertFalse($checker->exists(['bar', 'non-exist'], 'test', 'foo'));
-    }
-
-    public function testExistsArrayByCustomField(): void
-    {
-        $orm = m::mock(ORMInterface::class);
+        $orm = $this->makeOrm(['test' => 'id']);
         $orm->shouldReceive('getRepository')
             ->andReturn(
                 $this->makeRepository([
@@ -102,6 +90,21 @@ final class EntityCheckerUnitTest extends TestCase
             );
         $checker = new EntityChecker($orm);
 
-        $this->assertTrue($checker->exists(['bar', 'baz'], 'test', 'foo'));
+        $this->assertFalse($checker->exists(['bar', 'non-exist'], 'test', 'foo', multiple: true));
     }
+
+    // public function testExistsByCustomFieldMultiple(): void
+    // {
+    //     $orm = $this->makeOrm(['test' => 'id']);
+    //     $orm->shouldReceive('getRepository')
+    //         ->andReturn(
+    //             $this->makeRepository([
+    //                 ['id' => 42, 'foo' => 'bar', 'value' => 'test value'],
+    //                 ['id' => 1, 'foo' => 'baz', 'value' => 'test value'],
+    //             ])
+    //         );
+    //     $checker = new EntityChecker($orm);
+    //
+    //     $this->assertTrue($checker->exists(['bar', 'baz'], 'test', 'foo', multiple: true));
+    // }
 }
