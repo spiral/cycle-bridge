@@ -22,7 +22,9 @@ trait EntityCheckerTrait
         $orm = m::mock(ORMInterface::class);
 
         foreach ($primaryKeys as $role => $pk) {
-            $schema->shouldReceive('define')->withArgs([$role, SchemaInterface::PRIMARY_KEY])->andReturn($pk);
+            $schema->shouldReceive('define')
+                ->withArgs([$role, SchemaInterface::PRIMARY_KEY])
+                ->andReturn($pk);
         }
         $orm->shouldReceive('getSchema')
             ->andReturn($schema);

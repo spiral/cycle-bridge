@@ -60,6 +60,7 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
             }
             return false;
         }
+        \assert($field !== null);
 
         if (!$ignoreCase) {
             if (!$multiple) {
