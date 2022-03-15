@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Validation;
 
-use Cycle\ORM\ORMInterface;
-use Cycle\ORM\SchemaInterface;
-use Mockery as m;
-use Mockery\LegacyMockInterface;
-use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Spiral\Cycle\Validation\EntityChecker;
 
@@ -38,6 +33,24 @@ final class EntityCheckerUnitTest extends TestCase
         $checker = new EntityChecker($orm);
 
         $this->assertTrue($checker->exists(42, 'test'));
+    }
+
+    public function testExistsByCompositePk(): void
+    {
+        $pk = ['id1', 'id2'];
+        $orm = $this->makeOrm(['test' => $pk]);
+        $orm->shouldReceive('getRepository')
+            ->andReturn(
+                $this->makeRepository([
+                    ['id1' => 42, 'id2' => 69, 'value' => 'test value'],
+                ], $pk)
+            );
+        $checker = new EntityChecker($orm);
+
+        $this->assertTrue($checker->exists([42, 69], 'test'));
+        $this->assertFalse($checker->exists([69, 42], 'test'));
+        $this->assertFalse($checker->exists([42, 42], 'test'));
+        $this->assertFalse($checker->exists([42], 'test'));
     }
 
     public function testExistsByCustomField(): void

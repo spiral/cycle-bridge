@@ -33,24 +33,28 @@ trait EntityCheckerTrait
     /**
      * @param array<int, non-empty-array<non-empty-string, mixed>> $items
      */
-    private function makeRepository(array $items = [], string $pk = 'id'): RepositoryInterface
+    private function makeRepository(array $items = [], array|string $pk = 'id'): RepositoryInterface
     {
-        return new class($items, $pk) extends Repository {
+        return new class($items, (array)$pk) extends Repository {
             /**
              * @param array<int, non-empty-array<non-empty-string, mixed>> $items
              */
             public function __construct(
                 private array $items,
-                private string $pk
+                private array $pk
             ) {
             }
 
             public function findByPK(mixed $id): ?object
             {
+                $id = (array)$id;
                 foreach ($this->items as $item) {
-                    if ((array)$item[$this->pk] === (array)$id) {
-                        return (object)$item;
+                    foreach ($this->pk as $i => $pk) {
+                        if (!isset($id[$i]) || $item[$pk] !== $id[$i]) {
+                            continue 2;
+                        }
                     }
+                    return (object)$item;
                 }
                 return null;
             }
