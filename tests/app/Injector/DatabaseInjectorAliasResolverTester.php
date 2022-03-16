@@ -16,4 +16,9 @@ final class DatabaseInjectorAliasResolverTester
         public Database          $dbPostgres,
     ) {
     }
+
+    public static function getDefaultDatabase(DatabaseInterface $usingUndefinedAlias)
+    {
+        return $usingUndefinedAlias;
+    }
 }
