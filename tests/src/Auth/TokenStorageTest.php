@@ -17,7 +17,7 @@ final class TokenStorageTest extends BaseTest
     {
         parent::setUp();
 
-        $this->storage = $this->app->get(TokenStorageInterface::class);
+        $this->storage = $this->getContainer()->get(TokenStorageInterface::class);
     }
 
     public function testTokenShouldBeCreatedWithoutExpiration()

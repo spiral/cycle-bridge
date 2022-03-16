@@ -17,21 +17,20 @@ final class ReplayCommandTest extends ConsoleTest
     public function testMigrateReplay(): void
     {
         /** @var DatabaseInterface $db */
-        $db = $this->app->get(DatabaseInterface::class);
+        $db = $this->getContainer()->get(DatabaseInterface::class);
         $this->assertSame([], $db->getTables());
 
-        $this->runCommandDebug('migrate:init');
+        $this->runCommand('migrate:init');
 
-        $out = $this->runCommandDebug('migrate:replay');
-        $this->assertStringContainsString('No', $out);
+        $this->assertConsoleCommandOutputContainsStrings('migrate:replay', [], 'No');
 
-        $this->runCommandDebug('cycle:migrate');
+        $this->runCommand('cycle:migrate');
         $this->assertCount(1, $db->getTables());
 
-        $this->runCommandDebug('migrate');
+        $this->runCommand('migrate');
         $this->assertCount(4, $db->getTables());
 
-        $this->runCommandDebug('migrate:replay');
+        $this->runCommand('migrate:replay');
         $this->assertCount(4, $db->getTables());
     }
 }

@@ -23,15 +23,15 @@ final class LoggerFactoryTest extends BaseTest
 
         $this->logger = m::mock(LogsInterface::class);
         $this->config = m::mock(ConfigsInterface::class);
-        $this->container->bind(LogsInterface::class, $this->logger);
+        $this->getContainer()->bind(LogsInterface::class, $this->logger);
     }
 
     public function testIfLogsInterfaceIsNotRegisteredNullLoggerShouldBeUsed(): void
     {
-        $this->container->removeBinding(LogsInterface::class);
+        $this->getContainer()->removeBinding(LogsInterface::class);
 
         $this->config->shouldReceive('getConfig')->once()->with('database')->andReturn([]);
-        $factory = new LoggerFactory($this->container, $this->config);
+        $factory = new LoggerFactory($this->getContainer(), $this->config);
 
         $driver = m::mock(DriverInterface::class);
 
@@ -58,7 +58,7 @@ final class LoggerFactoryTest extends BaseTest
             ->with('bar')
             ->andReturn($logger = new NullLogger());
 
-        $factory = new LoggerFactory($this->container, $this->config);
+        $factory = new LoggerFactory($this->getContainer(), $this->config);
         $this->assertSame($logger, $factory->getLogger($driver));
     }
 
@@ -82,7 +82,7 @@ final class LoggerFactoryTest extends BaseTest
             ->with('baz')
             ->andReturn($logger = new NullLogger());
 
-        $factory = new LoggerFactory($this->container, $this->config);
+        $factory = new LoggerFactory($this->getContainer(), $this->config);
         $this->assertSame($logger, $factory->getLogger($driver));
     }
 
@@ -106,7 +106,7 @@ final class LoggerFactoryTest extends BaseTest
             ->with('foo')
             ->andReturn($logger = new NullLogger());
 
-        $factory = new LoggerFactory($this->container, $this->config);
+        $factory = new LoggerFactory($this->getContainer(), $this->config);
         $this->assertSame($logger, $factory->getLogger($driver));
     }
 
@@ -130,7 +130,7 @@ final class LoggerFactoryTest extends BaseTest
             ->with($driver::class)
             ->andReturn($logger = new NullLogger());
 
-        $factory = new LoggerFactory($this->container, $this->config);
+        $factory = new LoggerFactory($this->getContainer(), $this->config);
         $this->assertSame($logger, $factory->getLogger($driver));
     }
 }

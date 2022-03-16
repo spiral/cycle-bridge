@@ -18,27 +18,26 @@ final class StatusCommandTest extends ConsoleTest
     public function testCheckMigratinoStatus(): void
     {
         /** @var Database $db */
-        $db = $this->app->get(DatabaseInterface::class);
+        $db = $this->getContainer()->get(DatabaseInterface::class);
         $this->assertCount(0, $db->getTables());
 
-        $out = $this->runCommandDebug('migrate:status');
+        $this->assertConsoleCommandOutputContainsStrings('migrate:status', [], 'No migrations');
+
+        $this->runCommand('migrate:init');
+
+        $out = $this->runCommand('migrate:status');
         $this->assertStringContainsString('No migrations', $out);
 
-        $this->runCommandDebug('migrate:init');
-
-        $out = $this->runCommandDebug('migrate:status');
-        $this->assertStringContainsString('No migrations', $out);
-
-        $this->runCommandDebug('cycle:migrate');
+        $this->runCommand('cycle:migrate');
         $this->assertCount(1, $db->getTables());
 
-        $out = $this->runCommandDebug('migrate:status');
+        $out = $this->runCommand('migrate:status');
         $this->assertStringContainsString('not executed yet', $out);
 
-        $this->runCommandDebug('migrate');
+        $this->runCommand('migrate');
         $this->assertCount(4, $db->getTables());
 
-        $out2 = $this->runCommandDebug('migrate:status');
+        $out2 = $this->runCommand('migrate:status');
         $this->assertNotSame($out, $out2);
     }
 }

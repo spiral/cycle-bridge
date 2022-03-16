@@ -17,7 +17,7 @@ abstract class BaseTest extends \Spiral\Tests\BaseTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->db = $this->app->get(DatabaseInterface::class);
+        $this->db = $this->getContainer()->get(DatabaseInterface::class);
     }
 
 
@@ -37,8 +37,8 @@ abstract class BaseTest extends \Spiral\Tests\BaseTest
     protected function assertEqualSQL(string $expected, SelectQuery $compiled): void
     {
         $this->assertSame(
-            preg_replace("/\s+/", '', $expected),
-            preg_replace("/\s+/", '', (string)$compiled)
+            \preg_replace("/\s+/", '', $expected),
+            \preg_replace("/\s+/", '', (string)$compiled)
         );
     }
 }

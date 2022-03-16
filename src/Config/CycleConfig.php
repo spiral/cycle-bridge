@@ -54,4 +54,9 @@ final class CycleConfig extends InjectableConfig
     {
         return (array)($this->config['customRelations'] ?? []);
     }
+
+    public function warmup(): bool
+    {
+        return (bool)($this->config['warmup'] ?? false);
+    }
 }
