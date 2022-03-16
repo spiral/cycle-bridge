@@ -14,8 +14,6 @@ final class DatabaseInjectorTest extends BaseTest
 {
     public function testInjectRepository(): void
     {
-        // $this->assertTrue($this->getContainer()->has(DatabaseInterface::class));
-        // $this->assertContainerBoundAsSingleton(DatabaseInterface::class, Database::class);
         $this->assertInstanceOf(DatabaseInterface::class, $this->getContainer()->get(DatabaseInterface::class));
         $this->assertInstanceOf(Database::class, $this->getContainer()->get(Database::class));
     }

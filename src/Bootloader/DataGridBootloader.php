@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Bootloader;
 
-use Cycle\Database\DatabaseInterface;
+use Cycle\Database\DatabaseManager;
+use Cycle\Database\DatabaseProviderInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Bootloader\AttributesBootloader;
@@ -55,7 +56,7 @@ final class DataGridBootloader extends Bootloader
 
     public function compiler(ContainerInterface $container, Compiler $compiler, GridConfig $config): Compiler
     {
-        if ($container->has(DatabaseInterface::class)) {
+        if ($container->has(DatabaseProviderInterface::class)) {
             foreach ($config->getWriters() as $writer) {
                 $compiler->addWriter($container->get($writer));
             }
