@@ -7,45 +7,45 @@ namespace Spiral\Tests\Bootloader;
 use Cycle\Database\DatabaseInterface;
 use Cycle\Database\DatabaseProviderInterface;
 use Cycle\ORM\ORMInterface;
-use Spiral\App\AppWithPrototype;
 use Spiral\App\Repositories\UserRepository;
+use Spiral\Cycle\Bootloader\PrototypeBootloader;
 use Spiral\Prototype\PrototypeRegistry;
 use Spiral\Tests\BaseTest;
 
 final class PrototypeBootloaderTest extends BaseTest
 {
-    protected function setUp(): void
+    public function defineBootloaders(): array
     {
-        parent::setUp();
-
-        $this->app = $this->makeApp(static::ENV, AppWithPrototype::class);
+        return \array_merge(parent::defineBootloaders(), [
+            PrototypeBootloader::class,
+        ]);
     }
 
     public function testBindProperties(): void
     {
-        $registry = $this->container->get(PrototypeRegistry::class);
+        $registry = $this->getContainer()->get(PrototypeRegistry::class);
 
         $this->assertInstanceOf(
             DatabaseInterface::class,
-            $this->container->get($registry->resolveProperty('db')->type->name())
+            $this->getContainer()->get($registry->resolveProperty('db')->type->name())
         );
         $this->assertInstanceOf(
             DatabaseProviderInterface::class,
-            $this->container->get($registry->resolveProperty('dbal')->type->name())
+            $this->getContainer()->get($registry->resolveProperty('dbal')->type->name())
         );
         $this->assertInstanceOf(
             ORMInterface::class,
-            $this->container->get($registry->resolveProperty('orm')->type->name())
+            $this->getContainer()->get($registry->resolveProperty('orm')->type->name())
         );
     }
 
     public function testBindCycleEntities(): void
     {
-        $registry = $this->container->get(PrototypeRegistry::class);
+        $registry = $this->getContainer()->get(PrototypeRegistry::class);
 
         $this->assertInstanceOf(
             UserRepository::class,
-            $this->container->get($registry->resolveProperty('users')->type->name())
+            $this->getContainer()->get($registry->resolveProperty('users')->type->name())
         );
     }
 }
