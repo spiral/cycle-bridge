@@ -10,6 +10,7 @@ use Cycle\ORM\ORMInterface;
 use Cycle\ORM\SchemaInterface;
 use Cycle\ORM\Select;
 use Cycle\ORM\Select\Repository;
+use RuntimeException;
 use Spiral\Core\Container\SingletonInterface;
 use Spiral\Validation\AbstractChecker;
 
@@ -56,7 +57,9 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
             if ($repository instanceof Repository) {
                 return $repository->select()->wherePK(...(array) $value)->count() === \count($value);
             }
-            return false;
+            throw new RuntimeException(
+                \sprintf('The `%s` repository doesn\'t support the multiple validation.', $repository::class)
+            );
         }
         \assert($field !== null);
 
@@ -69,14 +72,20 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
                     ->where($field, 'IN', new Parameter((array) $value))
                     ->count() === \count($value);
             }
-            return false;
+            throw new RuntimeException(\sprintf(
+                'The `%s` repository doesn\'t support the multiple validation by custom field.',
+                $repository::class
+            ));
         }
 
         if ($repository instanceof Repository) {
             return $this->whereCaseInsensitive($repository->select(), $field, $value, $multiple)->fetchOne() !== null;
         }
 
-        return false;
+        throw new RuntimeException(\sprintf(
+            'The `%s` repository doesn\'t support the case insensitive validation by custom field.',
+            $repository::class
+        ));
     }
 
     /**
@@ -154,15 +163,8 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
             return $select->where($column, \is_string($value) ? \mb_strtolower($value) : $value);
         }
 
-        return $select->where(
-            new Expression("LOWER({$queryBuilder->resolve($field)})"),
-            'IN',
-            new Parameter(
-                \array_map(
-                    static fn($value) => \is_string($value) ? \mb_strtolower($value) : $value,
-                    (array) $value
-                )
-            )
+        throw new RuntimeException(
+            'The `exists` rule doesn\'t work in multiple case insensitive mode.',
         );
     }
 }

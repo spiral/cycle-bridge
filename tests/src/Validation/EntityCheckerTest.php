@@ -176,4 +176,39 @@ final class EntityCheckerTest extends BaseTest
 
         $this->assertSame($valid, $validator->isValid());
     }
+
+    public function badCasesProvider(): iterable
+    {
+        return [
+            'pk ignore case true multiple - found' => [
+                'rules' => [
+                    'email' => [['entity::exists', User::class, 'email', 'ignoreCase' => true, 'multiple' => true]]
+                ],
+                'entityData' => [strtoupper(self::ENTITY_PK) => [1, 2], 'email' => 'TEST@mail.com'],
+                'exceptionText' => 'The `exists` rule doesn\'t work in multiple case insensitive mode.',
+            ],
+            'pk ignore case true multiple - not found' => [
+                'rules' => [
+                    'email' => [['entity::exists', User::class, 'email', 'ignoreCase' => true, 'multiple' => true]]
+                ],
+                'entityData' => [strtoupper(self::ENTITY_PK) => [2, 96], 'email' => 'TEST@mail.com'],
+                'exceptionText' => 'The `exists` rule doesn\'t work in multiple case insensitive mode.',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider badCasesProvider
+     */
+    public function testExistsAndUniqueExceptions(
+        array $rules,
+        array $entityData,
+        string $exceptionText
+    ): void {
+        $validation = $this->getContainer()->get(ValidationInterface::class);
+        $validator = $validation->validate($entityData, $rules);
+
+        $this->expectExceptionMessage($exceptionText);
+        $validator->isValid();
+    }
 }

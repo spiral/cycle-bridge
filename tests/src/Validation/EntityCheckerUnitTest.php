@@ -78,46 +78,63 @@ final class EntityCheckerUnitTest extends TestCase
         $this->assertFalse($checker->exists([42, 1], 'test'));
     }
 
-    // public function testExistByPkMultiple(): void
-    // {
-    //     $orm = $this->makeOrm(['test' => 'id']);
-    //     $orm->shouldReceive('getRepository')
-    //         ->andReturn($this->makeRepository([
-    //             ['id' => 42, 'foo' => 'bar', 'value' => 'test value'],
-    //             ['id' => 1, 'foo' => 'bar', 'value' => 'test value'],
-    //         ]));
-    //     $checker = new EntityChecker($orm);
-    //
-    //     $this->assertTrue($checker->exists([42, 1], 'test', multiple: true));
-    // }
-
-    public function testNonExistsByCustomFieldMultiple(): void
+    public function testRepositoryNotSupportsExistByPkMultiple(): void
     {
         $orm = $this->makeOrm(['test' => 'id']);
         $orm->shouldReceive('getRepository')
-            ->andReturn(
-                $this->makeRepository([
-                    ['id' => 42, 'foo' => 'bar', 'value' => 'test value'],
-                    ['id' => 1, 'foo' => 'baz', 'value' => 'test value'],
-                ])
-            );
+            ->andReturn($this->makeRepository([
+                ['id' => 42, 'foo' => 'bar', 'value' => 'test value'],
+                ['id' => 1, 'foo' => 'baz', 'value' => 'test value'],
+            ]));
         $checker = new EntityChecker($orm);
 
-        $this->assertFalse($checker->exists(['bar', 'non-exist'], 'test', 'foo', multiple: true));
+        $this->expectExceptionMessage('repository doesn\'t support the multiple validation');
+
+        $checker->exists([42, 1], 'test', multiple: true);
     }
 
-    // public function testExistsByCustomFieldMultiple(): void
-    // {
-    //     $orm = $this->makeOrm(['test' => 'id']);
-    //     $orm->shouldReceive('getRepository')
-    //         ->andReturn(
-    //             $this->makeRepository([
-    //                 ['id' => 42, 'foo' => 'bar', 'value' => 'test value'],
-    //                 ['id' => 1, 'foo' => 'baz', 'value' => 'test value'],
-    //             ])
-    //         );
-    //     $checker = new EntityChecker($orm);
-    //
-    //     $this->assertTrue($checker->exists(['bar', 'baz'], 'test', 'foo', multiple: true));
-    // }
+    public function testRepositoryNotSupportsExistByCustomFieldMultiple(): void
+    {
+        $orm = $this->makeOrm(['test' => 'id']);
+        $orm->shouldReceive('getRepository')
+            ->andReturn($this->makeRepository([
+                ['id' => 42, 'foo' => 'bar', 'value' => 'test value'],
+                ['id' => 1, 'foo' => 'baz', 'value' => 'test value'],
+            ]));
+        $checker = new EntityChecker($orm);
+
+        $this->expectExceptionMessage('repository doesn\'t support the multiple validation by custom field');
+
+        $checker->exists(['bar', 'baz'], 'test', 'foo', multiple: true);
+    }
+
+    public function testRepositoryNotSupportsExistByCustomFieldCaseInsensitive(): void
+    {
+        $orm = $this->makeOrm(['test' => 'id']);
+        $orm->shouldReceive('getRepository')
+            ->andReturn($this->makeRepository([
+                ['id' => 42, 'foo' => 'bar', 'value' => 'test value'],
+                ['id' => 1, 'foo' => 'baz', 'value' => 'test value'],
+            ]));
+        $checker = new EntityChecker($orm);
+
+        $this->expectExceptionMessage('repository doesn\'t support the case insensitive validation by custom field');
+
+        $checker->exists(['bar', 'baz'], 'test', 'foo', ignoreCase: true);
+    }
+
+    public function testRepositoryNotSupportsExistByCustomFieldCaseInsensitiveMultiple(): void
+    {
+        $orm = $this->makeOrm(['test' => 'id']);
+        $orm->shouldReceive('getRepository')
+            ->andReturn($this->makeRepository([
+                ['id' => 42, 'foo' => 'bar', 'value' => 'test value'],
+                ['id' => 1, 'foo' => 'baz', 'value' => 'test value'],
+            ]));
+        $checker = new EntityChecker($orm);
+
+        $this->expectExceptionMessage('repository doesn\'t support the case insensitive validation by custom field');
+
+        $checker->exists(['bar', 'baz'], 'test', 'foo', ignoreCase: true, multiple: true);
+    }
 }

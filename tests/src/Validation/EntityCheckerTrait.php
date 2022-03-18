@@ -37,7 +37,7 @@ trait EntityCheckerTrait
      */
     private function makeRepository(array $items = [], array|string $pk = 'id'): RepositoryInterface
     {
-        return new class($items, (array)$pk) extends Repository {
+        return new class($items, (array)$pk) implements RepositoryInterface {
             /**
              * @param array<int, non-empty-array<non-empty-string, mixed>> $items
              */
