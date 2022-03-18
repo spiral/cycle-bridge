@@ -70,7 +70,7 @@ abstract class AbstractEntityDeclaration extends ClassDeclaration implements Dep
 
     protected function isNullableType(string $type): bool
     {
-        return str_starts_with($type, '?');
+        return \str_starts_with($type, '?');
     }
 
     private function variableType(string $type): string

@@ -55,11 +55,11 @@ class MigrationCommand extends AbstractCommand
         if (!empty($this->option('table'))) {
             $fields = [];
             foreach ($this->option('field') as $field) {
-                if (!str_contains($field, ':')) {
+                if (!\str_contains($field, ':')) {
                     throw new ScaffolderException("Field definition must in 'name:type' form");
                 }
 
-                [$name, $type] = explode(':', $field);
+                [$name, $type] = \explode(':', $field);
                 $fields[$name] = $type;
             }
 

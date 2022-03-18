@@ -112,11 +112,11 @@ class EntityCommand extends AbstractCommand
         $declaration->setInflection((string)$this->option('inflection'));
 
         foreach ($this->option('field') as $field) {
-            if (strpos($field, ':') === false) {
+            if (\strpos($field, ':') === false) {
                 throw new ScaffolderException("Field definition must in 'name:type' or 'name:type' form");
             }
 
-            $parts = explode(':', $field);
+            $parts = \explode(':', $field);
             [$name, $type] = $parts;
 
             $declaration->addField($name, $accessibility, $type);
@@ -143,10 +143,10 @@ class EntityCommand extends AbstractCommand
     private function validateAccessibility(string $accessibility): void
     {
         if (
-            !in_array($accessibility, [
-            AbstractDeclaration::ACCESS_PUBLIC,
-            AbstractDeclaration::ACCESS_PROTECTED,
-            AbstractDeclaration::ACCESS_PRIVATE,
+            !\in_array($accessibility, [
+                AbstractDeclaration::ACCESS_PUBLIC,
+                AbstractDeclaration::ACCESS_PROTECTED,
+                AbstractDeclaration::ACCESS_PRIVATE,
             ], true)
         ) {
             throw new ScaffolderException("Invalid accessibility value `$accessibility`");

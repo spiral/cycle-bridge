@@ -35,7 +35,7 @@ class AnnotatedDeclaration extends AbstractEntityDeclaration
             }
         }
 
-        $entity = implode(', ', $entities);
+        $entity = \implode(', ', $entities);
         $this->addCommentLine($this, "@Cycle\Entity($entity)");
     }
 
@@ -44,7 +44,7 @@ class AnnotatedDeclaration extends AbstractEntityDeclaration
      */
     protected function addCommentLine(AbstractEntityDeclaration|Property $target, string $comment): void
     {
-        $target->setComment(array_merge($this->getComment()->getLines(), [$comment]));
+        $target->setComment(\array_merge($this->getComment()->getLines(), [$comment]));
     }
 
     private function makeFieldComment(string $name, string $type): string
@@ -59,7 +59,7 @@ class AnnotatedDeclaration extends AbstractEntityDeclaration
             $columns = $this->addInflectedName($this->inflection, $name, $columns);
         }
 
-        $column = implode(', ', $columns);
+        $column = \implode(', ', $columns);
 
         return "@Cycle\Column($column)";
     }
@@ -81,18 +81,11 @@ class AnnotatedDeclaration extends AbstractEntityDeclaration
 
     private function inflect(string $inflection, string $value): ?string
     {
-        switch ($inflection) {
-            case 'tableize':
-            case 't':
-                return $this->tableize($value);
-
-            case 'camelize':
-            case 'c':
-                return $this->camelize($value);
-
-            default:
-                throw new ScaffolderException("Unknown inflection, got `$inflection`");
-        }
+        return match ($inflection) {
+            'tableize', 't' => $this->tableize($value),
+            'camelize', 'c' => $this->camelize($value),
+            default => throw new ScaffolderException("Unknown inflection, got `$inflection`"),
+        };
     }
 
     private function tableize(string $name): string
