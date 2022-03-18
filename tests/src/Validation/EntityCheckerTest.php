@@ -4,82 +4,87 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Validation;
 
-use Cycle\ORM\Heap\Heap;
-use Cycle\ORM\ORMInterface;
-use Mockery as m;
+use Cycle\Database\DatabaseInterface;
+use Spiral\App\Entities\User;
 use Spiral\Tests\BaseTest;
 use Spiral\Validation\ValidationInterface;
 
-// use Spiral\Validation\ValidatorInterface;
-
 final class EntityCheckerTest extends BaseTest
 {
-    use EntityCheckerTrait;
-
-    private const ENTITY_ROLE = 'testRole';
     private const ENTITY_PK = 'id';
+
+    private DatabaseInterface $db;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->db = $this->getContainer()->get(DatabaseInterface::class);
+
+        $users = $this->db->table('users')->getSchema();
+        $users->primary('id');
+        $users->string('name');
+        $users->string('email');
+        $users->string('company');
+        $users->integer('user_id');
+        $users->save();
+
+        $this->db->table('users')->insertMultiple(['id', 'name', 'email', 'company'], [
+            [1, 'Antony', 'test@mail.com', 'foo'],
+            [2, 'John', 'test2@mail.com', 'bar'],
+        ]);
+    }
 
     /**
      * @see \Spiral\Cycle\Validation\EntityChecker::exists()
      */
     public function existsDataProvider(): iterable
     {
-        $repoData = [
-            [self::ENTITY_PK => 42, 'email' => 'test@mail.com', 'foo' => 'bar', 'value' => 'test value'],
-            [self::ENTITY_PK => 69, 'email' => 'test2@mail.com', 'company' => 'foo', 'value' => 'test value 2'],
-        ];
         return [
             'pk found' => [
-                'rules' => [self::ENTITY_PK => [['entity::exists', self::ENTITY_ROLE]]],
-                'repositoryData' => $repoData,
-                'entityData' => [self::ENTITY_PK => 42, 'email' => 'test@mail.com'],
+                'rules' => [self::ENTITY_PK => [['entity::exists', User::class]]],
+                'entityData' => [self::ENTITY_PK => 1, 'email' => 'test@mail.com'],
                 'valid' => true,
             ],
             'pk not found' => [
-                'rules' => [self::ENTITY_PK => [['entity::exists', self::ENTITY_ROLE]]],
-                'repositoryData' => $repoData,
-                'entityData' => [self::ENTITY_PK => 1, 'email' => 'test@mail.com'],
+                'rules' => [self::ENTITY_PK => [['entity::exists', User::class]]],
+                'entityData' => [self::ENTITY_PK => 3, 'email' => 'test@mail.com'],
                 'valid' => false,
             ],
             'custom field - found' => [
-                'rules' => ['email' => [['entity::exists', self::ENTITY_ROLE, 'email']]],
-                'repositoryData' => $repoData,
+                'rules' => ['email' => [['entity::exists', User::class, 'email']]],
                 'entityData' => [self::ENTITY_PK => 1, 'email' => 'test@mail.com'],
                 'valid' => true,
             ],
             'custom field - not found' => [
-                'rules' => ['email' => [['entity::exists', self::ENTITY_ROLE, 'email']]],
-                'repositoryData' => $repoData,
-                'entityData' => [self::ENTITY_PK => 42, 'email' => 'undefined@mail.com'],
+                'rules' => ['email' => [['entity::exists', User::class, 'email']]],
+                'entityData' => [self::ENTITY_PK => 2, 'email' => 'undefined@mail.com'],
                 'valid' => false,
             ],
-            // 'multiple pk found' => [
-            //     'rules' => [self::ENTITY_PK => [['entity::exists', self::ENTITY_ROLE, 'multiple' => true]]],
-            //     'repositoryData' => $repoData,
-            //     'entityData' => [
-            //         self::ENTITY_PK => [42, 69],
-            //         'email' => [
-            //             'test@mail.com',
-            //             'test2@mail.com',
-            //         ]
-            //     ],
-            //     'valid' => true,
-            // ],
-            // 'multiple pk not found' => [
-            //     'rules' => [self::ENTITY_PK => [['entity::exists', self::ENTITY_ROLE, 'multiple' => true]]],
-            //     'repositoryData' => $repoData,
-            //     'entityData' => [
-            //         self::ENTITY_PK => [42, 1],
-            //         'email' => [
-            //             'test@mail.com',
-            //             'test2@mail.com',
-            //         ]
-            //     ],
-            //     'valid' => false,
-            // ],
+            'multiple pk found' => [
+                'rules' => [self::ENTITY_PK => [['entity::exists', User::class, 'multiple' => true]]],
+                'entityData' => [
+                    self::ENTITY_PK => [1, 2],
+                    'email' => [
+                        'test@mail.com',
+                        'test2@mail.com',
+                    ]
+                ],
+                'valid' => true,
+            ],
+            'multiple pk not found' => [
+                'rules' => [self::ENTITY_PK => [['entity::exists', User::class, 'multiple' => true]]],
+                'entityData' => [
+                    self::ENTITY_PK => [42, 1],
+                    'email' => [
+                        'test@mail.com',
+                        'test2@mail.com',
+                    ]
+                ],
+                'valid' => false,
+            ],
             'multiple custom field - found' => [
-                'rules' => ['email' => [['entity::exists', self::ENTITY_ROLE, 'email', 'multiple' => true]]],
-                'repositoryData' => $repoData,
+                'rules' => ['email' => [['entity::exists', User::class, 'email', 'multiple' => true]]],
                 'entityData' => [
                     self::ENTITY_PK => [42, 69],
                     'email' => [
@@ -90,8 +95,7 @@ final class EntityCheckerTest extends BaseTest
                 'valid' => true,
             ],
             'multiple custom field - not found' => [
-                'rules' => ['email' => [['entity::exists', self::ENTITY_ROLE, 'email', 'multiple' => true]]],
-                'repositoryData' => $repoData,
+                'rules' => ['email' => [['entity::exists', User::class, 'email', 'multiple' => true]]],
                 'entityData' => [
                     self::ENTITY_PK => [42, 69],
                     'email' => [
@@ -101,6 +105,21 @@ final class EntityCheckerTest extends BaseTest
                 ],
                 'valid' => false,
             ],
+            'ignore case false - found' => [
+                'rules' => ['email' => [['entity::exists', User::class, 'email']]],
+                'entityData' => [self::ENTITY_PK => 1, 'email' => 'test@mail.com'],
+                'valid' => true,
+            ],
+            'ignore case false - not found' => [
+                'rules' => ['email' => [['entity::exists', User::class, 'email']]],
+                'entityData' => [self::ENTITY_PK => 2, 'email' => 'TEST@mail.com'],
+                'valid' => false,
+            ],
+            'ignore case true - found' => [
+                'rules' => ['email' => [['entity::exists', User::class, 'email', 'ignoreCase' => true]]],
+                'entityData' => [self::ENTITY_PK => 2, 'email' => 'TEST@mail.com'],
+                'valid' => true,
+            ],
         ];
     }
 
@@ -109,28 +128,31 @@ final class EntityCheckerTest extends BaseTest
      */
     public function uniqueDataProvider(): iterable
     {
-        $repoData = [
-            [self::ENTITY_PK => 42, 'email' => 'test@mail.com', 'company' => 'bar', 'value' => 'test value 1'],
-            [self::ENTITY_PK => 69, 'email' => 'test@mail.com', 'company' => 'foo', 'value' => 'test value 2'],
-        ];
         return [
             'unique valid simple' => [
-                'rules' => ['email' => [['entity::unique', self::ENTITY_ROLE, 'email']]],
-                'repositoryData' => $repoData,
+                'rules' => ['email' => [['entity::unique', User::class, 'email']]],
                 'entityData' => [self::ENTITY_PK => 42, 'email' => 'unique@mail.com', 'company' => 'bar'],
                 'valid' => true,
             ],
             'unique valid' => [
-                'rules' => ['email' => [['entity::unique', self::ENTITY_ROLE, 'email', ['company']]]],
-                'repositoryData' => $repoData,
+                'rules' => ['email' => [['entity::unique', User::class, 'email', ['company']]]],
                 'entityData' => [self::ENTITY_PK => 42, 'email' => 'test@mail.com', 'company' => 'baz'],
                 'valid' => true,
             ],
             'unique invalid' => [
-                'rules' => ['email' => [['entity::unique', self::ENTITY_ROLE, 'email', ['company']]]],
-                'repositoryData' => $repoData,
+                'rules' => ['email' => [['entity::unique', User::class, 'email', ['company']]]],
                 'entityData' => [self::ENTITY_PK => 42, 'email' => 'test@mail.com', 'company' => 'foo'],
                 'valid' => false,
+            ],
+            'unique ignore case invalid' => [
+                'rules' => ['email' => [['entity::unique', User::class, 'email', ['company'], 'ignoreCase' => true]]],
+                'entityData' => [self::ENTITY_PK => 42, 'email' => 'test@mail.com', 'company' => 'FOO'],
+                'valid' => false,
+            ],
+            'unique ignore case valid' => [
+                'rules' => ['email' => [['entity::unique', User::class, 'email', ['company'], 'ignoreCase' => false]]],
+                'entityData' => [self::ENTITY_PK => 42, 'email' => 'test@mail.com', 'company' => 'FOO'],
+                'valid' => true,
             ],
         ];
     }
@@ -144,30 +166,14 @@ final class EntityCheckerTest extends BaseTest
     /**
      * @dataProvider mainDataProvider
      */
-    public function testExistsWithEmptyDatabase(
+    public function testExistsAndUnique(
         array $rules,
-        array $repositoryData,
         array $entityData,
         bool $valid
     ): void {
-        $this->makeAndBindOrm($repositoryData);
         $validation = $this->getContainer()->get(ValidationInterface::class);
         $validator = $validation->validate($entityData, $rules);
 
         $this->assertSame($valid, $validator->isValid());
-    }
-
-    /**
-     * @param array<int, non-empty-array<non-empty-string, mixed>> $repositoryData
-     */
-    private function makeAndBindOrm(array $repositoryData = []): void
-    {
-        $orm = $this->makeOrm([static::ENTITY_ROLE => static::ENTITY_PK]);
-        $orm->shouldReceive('getRepository')
-            ->with(self::ENTITY_ROLE)
-            ->andReturn($this->makeRepository($repositoryData, self::ENTITY_PK));
-        $orm->shouldReceive('getHeap')
-            ->andReturn(new Heap());
-        $this->getContainer()->bind(ORMInterface::class, $orm);
     }
 }

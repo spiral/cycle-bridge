@@ -20,6 +20,12 @@ class User
     #[Column(type: 'int', name: 'user_id', nullable: true)]
     public ?int $userId = null;
 
+    #[Column(type: 'string', nullable: true)]
+    public ?string $email = null;
+
+    #[Column(type: 'string', nullable: true)]
+    public ?string $company = null;
+
     #[BelongsTo(target: User::class, nullable: true, innerKey: 'userId')]
     public ?User $friend = null;
 

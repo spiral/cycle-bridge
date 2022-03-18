@@ -49,14 +49,12 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
         $isComposite = \count($pk) > 1;
         $isPK = $field === null || (!$isComposite && $pk[0] === $field);
 
-        $value = (array)$value;
-
         if ($isPK) {
             if (!$multiple) {
                 return $repository->findByPK($value) !== null;
             }
             if ($repository instanceof Repository) {
-                return $repository->select()->wherePK(...$value)->count() === \count($value);
+                return $repository->select()->wherePK(...(array) $value)->count() === \count($value);
             }
             return false;
         }
@@ -64,11 +62,11 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
 
         if (!$ignoreCase) {
             if (!$multiple) {
-                return $repository->findOne([$field => \current($value)]) !== null;
+                return $repository->findOne([$field => $value]) !== null;
             }
             if ($repository instanceof Repository) {
                 return $repository->select()
-                    ->where($field, 'IN', new Parameter($value))
+                    ->where($field, 'IN', new Parameter((array) $value))
                     ->count() === \count($value);
             }
             return false;
@@ -153,7 +151,6 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
         $column = new Expression("LOWER({$queryBuilder->resolve($field)})");
 
         if (!$multiple) {
-            $value = \current($value);
             return $select->where($column, \is_string($value) ? \mb_strtolower($value) : $value);
         }
 
@@ -163,7 +160,7 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
             new Parameter(
                 \array_map(
                     static fn($value) => \is_string($value) ? \mb_strtolower($value) : $value,
-                    $value
+                    (array) $value
                 )
             )
         );
