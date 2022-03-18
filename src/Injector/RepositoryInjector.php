@@ -12,6 +12,9 @@ use Cycle\ORM\Select;
 use ReflectionClass;
 use Spiral\Core\Container\InjectorInterface;
 
+/**
+ * @implements InjectorInterface<RepositoryInterface>
+ */
 final class RepositoryInjector implements InjectorInterface
 {
     public function __construct(

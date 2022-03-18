@@ -9,6 +9,9 @@ use Cycle\Database\DatabaseManager;
 use Cycle\Database\Exception\DBALException;
 use Spiral\Core\Container\InjectorInterface;
 
+/**
+ * @implements InjectorInterface<DatabaseInterface>
+ */
 final class DatabaseInjector implements InjectorInterface
 {
     public function __construct(
