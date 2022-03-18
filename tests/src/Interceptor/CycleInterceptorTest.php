@@ -19,21 +19,20 @@ final class CycleInterceptorTest extends ConsoleTest
     public function setUp(): void
     {
         parent::setUp();
-        $this->runCommandDebug('cycle:sync');
-
+        $this->runCommand('cycle:sync');
 
         $u = new User('Antony');
         $u->roles->add(new Role('admin'));
         $this->contextEntity = new User('Contextual');
         $this->contextEntity->roles->add(new Role('user'));
 
-        $this->app->get(EntityManager::class)->persist($u)->persist($this->contextEntity)->run();
+        $this->getContainer()->get(EntityManager::class)->persist($u)->persist($this->contextEntity)->run();
     }
 
     public function testCallBadAction(): void
     {
         /** @var CoreInterface $core */
-        $core = $this->app->get(CoreInterface::class);
+        $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->expectException(ControllerException::class);
         $this->expectExceptionMessage('Invalid action');
@@ -43,7 +42,7 @@ final class CycleInterceptorTest extends ConsoleTest
     public function testCallActionWithUnionType(): void
     {
         /** @var CoreInterface $core */
-        $core = $this->app->get(CoreInterface::class);
+        $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->expectException(ControllerException::class);
         $this->expectExceptionMessage('contains a union type hint');
@@ -53,7 +52,7 @@ final class CycleInterceptorTest extends ConsoleTest
     public function testCallBuiltInType(): void
     {
         /** @var CoreInterface $core */
-        $core = $this->app->get(CoreInterface::class);
+        $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->expectException(ControllerException::class);
         $this->expectExceptionMessage('invalid parameter');
@@ -63,7 +62,7 @@ final class CycleInterceptorTest extends ConsoleTest
     public function testInjectedInstance(): void
     {
         /** @var CoreInterface $core */
-        $core = $this->app->get(CoreInterface::class);
+        $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->expectException(ControllerException::class);
         $this->expectExceptionMessage('Entity `user` can not be found');
@@ -73,7 +72,7 @@ final class CycleInterceptorTest extends ConsoleTest
     public function testInjectedInstance1(): void
     {
         /** @var CoreInterface $core */
-        $core = $this->app->get(CoreInterface::class);
+        $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->expectException(ControllerException::class);
         $core->callAction(HomeController::class, 'entity', ['user' => 69]);
@@ -82,7 +81,7 @@ final class CycleInterceptorTest extends ConsoleTest
     public function testInjectedInstance2(): void
     {
         /** @var CoreInterface $core */
-        $core = $this->app->get(CoreInterface::class);
+        $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->assertSame(
             'Antony',
@@ -96,7 +95,7 @@ final class CycleInterceptorTest extends ConsoleTest
     public function testInjectedTheSameTwice(): void
     {
         /** @var CoreInterface $core */
-        $core = $this->app->get(CoreInterface::class);
+        $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->assertSame('Antony', $core->callAction(HomeController::class, 'entity', ['user' => 1]));
         $this->assertSame('Antony', $core->callAction(HomeController::class, 'entity', ['user' => 1]));
@@ -106,7 +105,7 @@ final class CycleInterceptorTest extends ConsoleTest
     public function testInjectedInstance3(): void
     {
         /** @var CoreInterface $core */
-        $core = $this->app->get(CoreInterface::class);
+        $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->assertSame(
             'Antony',
@@ -117,7 +116,7 @@ final class CycleInterceptorTest extends ConsoleTest
     public function testMultipleEntitiesButID(): void
     {
         /** @var CoreInterface $core */
-        $core = $this->app->get(CoreInterface::class);
+        $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->expectException(ControllerException::class);
         $core->callAction(HomeController::class, 'entity2', ['id' => 1]);
@@ -127,7 +126,7 @@ final class CycleInterceptorTest extends ConsoleTest
     public function testMultipleEntities(): void
     {
         /** @var CoreInterface $core */
-        $core = $this->app->get(CoreInterface::class);
+        $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->assertSame(
             'ok',
@@ -141,7 +140,7 @@ final class CycleInterceptorTest extends ConsoleTest
     public function testBypass(): void
     {
         /** @var CoreInterface $core */
-        $core = $this->app->get(CoreInterface::class);
+        $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->assertSame(
             'Demo',
@@ -155,7 +154,7 @@ final class CycleInterceptorTest extends ConsoleTest
     public function testInjectedTWithContext(): void
     {
         /** @var CoreInterface $core */
-        $core = $this->app->get(CoreInterface::class);
+        $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->assertSame(
             'Contextual',

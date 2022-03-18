@@ -30,7 +30,7 @@ final class TableCommand extends Command
 
     private const SKIP = '<comment>---</comment>';
 
-    public function perform(DatabaseProviderInterface $dbal): void
+    public function perform(DatabaseProviderInterface $dbal): int
     {
         $database = $dbal->database($this->option('database'));
         /** @var Table $table */
@@ -60,6 +60,8 @@ final class TableCommand extends Command
         }
 
         $this->write("\n");
+
+        return self::SUCCESS;
     }
 
     protected function describeColumns(AbstractTable $schema): void

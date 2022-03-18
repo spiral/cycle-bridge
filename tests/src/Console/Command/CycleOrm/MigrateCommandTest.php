@@ -30,75 +30,54 @@ final class MigrateCommandTest extends ConsoleTest
     {
         parent::setUp();
 
-        $this->runCommandDebug('migrate:init', ['-vvv' => true]);
+        $this->runCommand('migrate:init', ['-vvv' => true]);
     }
 
     public function testMigrate(): void
     {
-        $output = $this->runCommandDebug('cycle:migrate');
-
-        foreach (static::USER_MIGRATION as $action) {
-            $this->assertStringContainsString($action, $output);
-        }
-
-        $output = $this->runCommandDebug('cycle:migrate');
-        $this->assertStringContainsString('Outstanding migrations found', $output);
+        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], self::USER_MIGRATION);
+        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], 'Outstanding migrations found');
     }
 
     public function testMigrateNoChanges(): void
     {
-        $output = $this->runCommandDebug('cycle:migrate');
-        foreach (static::USER_MIGRATION as $action) {
-            $this->assertStringContainsString($action, $output);
-        }
-
+        $this->runCommand('cycle:migrate');
         $this->runCommand('migrate');
-
-        $output = $this->runCommandDebug('cycle:migrate');
-        $this->assertStringContainsString('no database changes', $output);
+        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], 'no database changes');
     }
 
-    public function testMigrationShouldBeCreatedWhenNewEntityAppeared()
+    public function testMigrationShouldBeCreatedWhenNewEntityAppeared(): void
     {
-        $output = $this->runCommandDebug('cycle:migrate', ['-r' => true]);
-        foreach (static::USER_MIGRATION as $action) {
-            $this->assertStringContainsString($action, $output);
-        }
+        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', ['-r' => true], self::USER_MIGRATION);
 
         $fs = new Files();
 
-        $entityPatch = __DIR__.'/../../../../App/Entities/Tag.php';
+        $entityPatch = __DIR__.'/../../../../app/Entities/Tag.php';
         file_put_contents(
             $entityPatch, <<<'PHP'
-<?php
+                <?php
 
-declare(strict_types=1);
+                declare(strict_types=1);
 
-namespace Spiral\App\Entities;
+                namespace Spiral\App\Entities;
 
-use Cycle\Annotated\Annotation\Column;
-use Cycle\Annotated\Annotation\Entity;
+                use Cycle\Annotated\Annotation\Column;
+                use Cycle\Annotated\Annotation\Entity;
 
-#[Entity]
-class Tag
-{
-    #[Column(type: 'primary')]
-    public int $id;
-}
-PHP
-    );
+                #[Entity]
+                class Tag
+                {
+                    #[Column(type: 'primary')]
+                    public int $id;
+                }
+                PHP
+        );
 
-        $output = $this->runCommandDebug('cycle:migrate', ['-r' => true]);
-
-        $tagOutput = [
+        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', ['-r' => true], [
             'default.tags',
             'create table',
             'add column id',
-        ];
-
-        foreach ($tagOutput as $action) {
-            $this->assertStringContainsString($action, $output);
-        }
+        ]);
 
         $fs->delete($entityPatch);
     }

@@ -11,32 +11,36 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Illuminate\Support\Collection;
 use Spiral\App\Entities\User;
 use Spiral\Tests\BaseTest;
+use Spiral\Tests\ConfigAttribute;
 
 final class SchemaCollectionsTest extends BaseTest
 {
     protected function setUp(): void
     {
-        parent::setUp();
-
-        $this->updateConfig('cycle.schema.collections', [
-            'default' => 'array',
-            'factories' => [
-                'array' => new ArrayCollectionFactory(),
-                'doctrine' => new DoctrineCollectionFactory(),
-                'illuminate' => new IlluminateCollectionFactory(),
+        $this->updateConfig(
+            'cycle.schema.collections',
+            [
+                'default' => 'array',
+                'factories' => [
+                    'array' => new ArrayCollectionFactory(),
+                    'doctrine' => new DoctrineCollectionFactory(),
+                    'illuminate' => new IlluminateCollectionFactory(),
+                ],
             ],
-        ]);
+        );
+        parent::setUp();
     }
 
+    #[ConfigAttribute(path: 'cycle.schema.collections.default', value: null)]
     public function testWhenCollectionsConfigIsNotSetArrayShouldBeUsed(): void
     {
-        $this->updateConfig('cycle.schema.collections', null);
         $user = $this->getUser();
 
         $this->assertCount(1, $user->friends);
         $this->assertIsArray($user->friends);
     }
 
+    #[ConfigAttribute(path: 'cycle.schema.collections.default', value: null)]
     public function testWhenDefaultCollectionIsNotSetArrayShouldBeUsed(): void
     {
         $this->updateConfig('cycle.schema.collections.default', null);
@@ -46,33 +50,34 @@ final class SchemaCollectionsTest extends BaseTest
         $this->assertIsArray($user->friends);
     }
 
+    #[ConfigAttribute(path: 'cycle.schema.collections.default', value: 'array')]
     public function testDefaultArrayType(): void
     {
-        $this->updateConfig('cycle.schema.collections.default', 'array');
         $user = $this->getUser();
 
         $this->assertCount(1, $user->friends);
         $this->assertIsArray($user->friends);
     }
 
+    #[ConfigAttribute(path: 'cycle.schema.collections.default', value: 'doctrine')]
     public function testDefaultDoctrineCollectionType(): void
     {
-        $this->updateConfig('cycle.schema.collections.default', 'doctrine');
         $user = $this->getUser();
 
         $this->assertCount(1, $user->friends);
         $this->assertInstanceOf(ArrayCollection::class, $user->friends);
     }
 
+    #[ConfigAttribute(path: 'cycle.schema.collections.default', value: 'illuminate')]
     public function testDefaultIlluminateCollectionType(): void
     {
-        $this->updateConfig('cycle.schema.collections.default', 'illuminate');
         $user = $this->getUser();
 
         $this->assertCount(1, $user->friends);
         $this->assertInstanceOf(Collection::class, $user->friends);
     }
 
+    #[ConfigAttribute(path: 'cycle.schema.collections.default', value: 'array')]
     public function testCollectionShouldUseCorrectType(): void
     {
         $user = $this->getUser();

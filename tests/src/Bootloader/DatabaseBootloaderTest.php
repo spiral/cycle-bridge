@@ -14,13 +14,12 @@ use Mockery as m;
 use Psr\Log\LoggerInterface;
 use Spiral\Logger\LogsInterface;
 use Spiral\Tests\BaseTest;
+use Spiral\Tests\ConfigAttribute;
 
 final class DatabaseBootloaderTest extends BaseTest
 {
     protected function setUp(): void
     {
-        parent::setUp();
-
         $this->updateConfig('database.default', 'default');
         $this->updateConfig('database.databases', [
             'default' => [
@@ -32,37 +31,45 @@ final class DatabaseBootloaderTest extends BaseTest
                 connection: new Config\SQLite\MemoryConnectionConfig(),
             ),
         ]);
+
+        parent::setUp();
     }
 
     public function testGetsDatabaseManager(): void
     {
-        $this->assertInstanceOf(
-            DatabaseManager::class,
-            $this->app->get(DatabaseProviderInterface::class)
-        );
+        $this->assertContainerBoundAsSingleton(DatabaseProviderInterface::class, DatabaseManager::class);
+        $this->assertContainerBoundAsSingleton(DatabaseManager::class, DatabaseManager::class);
     }
 
     public function testGetsDatabase(): void
     {
-        /** @var DatabaseInterface $database */
         $this->assertInstanceOf(
             Database::class,
-            $database = $this->app->get(DatabaseInterface::class)
+            $database = $this->getContainer()->get(DatabaseInterface::class)
         );
+        \assert($database instanceof DatabaseInterface);
 
         $this->assertSame('default', $database->getName());
         $this->assertSame('SQLite', $database->getType());
     }
 
-    /**
-     * @dataProvider driverLoggerDataProvider
-     */
-    public function testGetsDriverLogger(string $driverChannel, array $drivers): void
+    #[ConfigAttribute(path: 'database.logger.default', value: 'default')]
+    #[ConfigAttribute(path: 'database.logger.drivers', value: ['foo' => 'bar'])]
+    public function testGetDefaultDriverLogger(): void
     {
-        $this->container->bind(
-            LogsInterface::class,
-            $logger = m::mock(LogsInterface::class)
-        );
+        $this->runGetterTest('default');
+    }
+
+    #[ConfigAttribute(path: 'database.logger.default', value: 'default')]
+    #[ConfigAttribute(path: 'database.logger.drivers', value: ['test' => 'bar'])]
+    public function testGetBarDriverLogger(): void
+    {
+        $this->runGetterTest('bar');
+    }
+
+    private function runGetterTest(string $driverChannel): void
+    {
+        $logger = $this->mockContainer(LogsInterface::class);
 
         $logger->shouldReceive('getLogger')
             ->once()
@@ -72,26 +79,9 @@ final class DatabaseBootloaderTest extends BaseTest
         $log->shouldReceive('info')
             ->once()->with('hello world');
 
-        $this->updateConfig('database.logger', [
-            'default' => 'default',
-            'drivers' => $drivers,
-        ]);
-
-        /** @var DriverInterface $driver */
-        $driver = $this->app->get(DatabaseInterface::class)->getDriver();
+        $driver = $this->getContainer()->get(DatabaseInterface::class)->getDriver();
+        \assert($driver instanceof DriverInterface);
 
         $this->accessProtected($driver, 'logger')->info('hello world');
-    }
-
-    public function driverLoggerDataProvider(): array
-    {
-        return [
-            'default' => [
-                'default', ['foo' => 'bar']
-            ],
-            'driver' => [
-                'bar', ['test' => 'bar']
-            ]
-        ];
     }
 }

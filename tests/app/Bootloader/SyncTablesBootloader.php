@@ -18,10 +18,7 @@ final class SyncTablesBootloader extends Bootloader
     public function boot(SchemaBootloader $schema, EnvironmentInterface $env): void
     {
         if (! $env->get('USE_MIGRATIONS')) {
-            $schema->addGenerator(
-                SchemaBootloader::GROUP_POSTPROCESS,
-                SyncTables::class
-            );
+            $schema->addGenerator(SchemaBootloader::GROUP_POSTPROCESS, SyncTables::class);
         }
     }
 }
