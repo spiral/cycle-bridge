@@ -78,6 +78,9 @@ abstract class BaseTest extends TestCase
             // Validation
             CycleBridge\ValidationBootloader::class,
 
+            // Scaffolder
+            CycleBridge\ScaffolderBootloader::class,
+
             // App
             AppBootloader::class,
         ];

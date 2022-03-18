@@ -9,11 +9,13 @@ use Cycle\Migrations\Migrator;
 use Cycle\ORM\ORMInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\Bootloader\Bootloader;
-use Spiral\Bootloader\ConsoleBootloader;
+use Spiral\Console\Bootloader\ConsoleBootloader;
+use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
 use Spiral\Cycle\Console\Command\CycleOrm;
 use Spiral\Cycle\Console\Command\Database;
 use Spiral\Cycle\Console\Command\Migrate;
+use Spiral\Cycle\Console\Command\Scaffolder;
 
 final class CommandBootloader extends Bootloader
 {
@@ -24,6 +26,7 @@ final class CommandBootloader extends Bootloader
 
     public function boot(
         ConsoleBootloader $console,
+        ConfiguratorInterface $config,
         Container $container
     ): void {
         $this->configureExtensions($console, $container);
@@ -42,6 +45,8 @@ final class CommandBootloader extends Bootloader
         if ($container->has(Migrator::class)) {
             $this->configureMigrations($console);
         }
+
+        $this->configureScaffolders($console, $container);
     }
 
     private function configureDatabase(ConsoleBootloader $console): void
@@ -74,5 +79,17 @@ final class CommandBootloader extends Bootloader
         $console->addCommand(Migrate\MigrateCommand::class);
         $console->addCommand(Migrate\RollbackCommand::class);
         $console->addCommand(Migrate\ReplayCommand::class);
+    }
+
+    public function configureScaffolders(ConsoleBootloader $console, ContainerInterface $container): void
+    {
+        if ($container->has(Migrator::class)) {
+            $console->addCommand(Scaffolder\MigrationCommand::class);
+        }
+
+        if ($container->has(ORMInterface::class)) {
+            $console->addCommand(Scaffolder\EntityCommand::class);
+            $console->addCommand(Scaffolder\RepositoryCommand::class);
+        }
     }
 }
