@@ -26,10 +26,10 @@
     "cycle/schema-migrations-generator": "^2.0",
     "cycle/schema-renderer": "^1.1",
     "doctrine/inflector": "^1.4|^2.0",
-    "spiral/attributes": "^2.10",
-    "spiral/framework": "^2.10",
-    "spiral/reactor": "^2.10",
-    "spiral/scaffolder": "^2.10"
+    "spiral/attributes": "^2.10 || ^3.0",
+    "spiral/framework": "^2.10 || ^3.0",
+    "spiral/reactor": "^2.10 || ^3.0",
+    "spiral/scaffolder": "^2.10 || ^3.0"
   },
   "require-dev": {
     "doctrine/collections": "^1.6",
