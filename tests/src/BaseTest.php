@@ -12,8 +12,10 @@ use Spiral\App\Bootloader\AppBootloader;
 use Spiral\App\Bootloader\SyncTablesBootloader;
 use Spiral\Bootloader as Framework;
 use Spiral\Config\Patch\Set;
+use Spiral\Console\Bootloader\ConsoleBootloader;
 use Spiral\Core\ConfigsInterface;
 use Spiral\Cycle\Bootloader as CycleBridge;
+use Spiral\DataGrid\Bootloader\GridBootloader;
 use Spiral\Testing\TestCase;
 
 abstract class BaseTest extends TestCase
@@ -55,7 +57,7 @@ abstract class BaseTest extends TestCase
     {
         return [
             // Framework commands
-            Framework\ConsoleBootloader::class,
+            ConsoleBootloader::class,
             Framework\CommandBootloader::class,
 
             // Databases
@@ -71,6 +73,7 @@ abstract class BaseTest extends TestCase
             SyncTablesBootloader::class,
 
             // DataGrid
+            GridBootloader::class,
             CycleBridge\DataGridBootloader::class,
 
             // Auth

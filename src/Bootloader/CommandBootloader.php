@@ -21,7 +21,7 @@ final class CommandBootloader extends Bootloader
         MigrationsBootloader::class,
     ];
 
-    public function boot(ConsoleBootloader $console, ContainerInterface $container): void
+    public function init(ConsoleBootloader $console, ContainerInterface $container): void
     {
         $this->configureExtensions($console, $container);
     }

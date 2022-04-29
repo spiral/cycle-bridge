@@ -8,7 +8,7 @@ use Cycle\Annotated;
 use Spiral\Attributes\Factory;
 use Spiral\Attributes\ReaderInterface;
 use Spiral\Boot\Bootloader\Bootloader;
-use Spiral\Bootloader\TokenizerBootloader;
+use Spiral\Tokenizer\Bootloader\TokenizerBootloader;
 use Spiral\Tokenizer\ClassesInterface;
 
 final class AnnotatedBootloader extends Bootloader
@@ -27,7 +27,7 @@ final class AnnotatedBootloader extends Bootloader
         Annotated\MergeIndexes::class => [self::class, 'initMergeIndexes'],
     ];
 
-    public function boot(SchemaBootloader $schema): void
+    public function init(SchemaBootloader $schema): void
     {
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Embeddings::class);
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Entities::class);

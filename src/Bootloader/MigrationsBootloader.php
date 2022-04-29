@@ -10,8 +10,8 @@ use Cycle\Migrations\RepositoryInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Boot\DirectoriesInterface;
 use Spiral\Boot\EnvironmentInterface;
-use Spiral\Bootloader\TokenizerBootloader;
 use Spiral\Config\ConfiguratorInterface;
+use Spiral\Tokenizer\Bootloader\TokenizerBootloader;
 
 final class MigrationsBootloader extends Bootloader
 {
@@ -25,7 +25,7 @@ final class MigrationsBootloader extends Bootloader
         RepositoryInterface::class => FileRepository::class,
     ];
 
-    public function boot(
+    public function init(
         ConfiguratorInterface $config,
         EnvironmentInterface $env,
         DirectoriesInterface $dirs

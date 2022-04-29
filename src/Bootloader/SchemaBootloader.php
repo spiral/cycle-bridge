@@ -10,10 +10,10 @@ use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Boot\MemoryInterface;
-use Spiral\Bootloader\TokenizerBootloader;
 use Spiral\Core\Container;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Schema\Compiler;
+use Spiral\Tokenizer\Bootloader\TokenizerBootloader;
 
 final class SchemaBootloader extends Bootloader implements Container\SingletonInterface
 {

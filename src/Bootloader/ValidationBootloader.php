@@ -10,10 +10,10 @@ use Spiral\Cycle\Validation\EntityChecker;
 final class ValidationBootloader extends Bootloader
 {
     protected const DEPENDENCIES = [
-        \Spiral\Bootloader\Security\ValidationBootloader::class,
+        \Spiral\Validation\Bootloader\ValidationBootloader::class,
     ];
 
-    public function boot(\Spiral\Bootloader\Security\ValidationBootloader $validation)
+    public function init(\Spiral\Validation\Bootloader\ValidationBootloader $validation)
     {
         $validation->addChecker('entity', EntityChecker::class);
     }

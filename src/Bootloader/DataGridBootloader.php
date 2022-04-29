@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Bootloader;
 
-use Cycle\Database\DatabaseManager;
 use Cycle\Database\DatabaseProviderInterface;
 use Psr\Container\ContainerInterface;
+use Spiral\Attributes\Bootloader\AttributesBootloader;
 use Spiral\Boot\Bootloader\Bootloader;
-use Spiral\Bootloader\AttributesBootloader;
 use Spiral\Config\ConfiguratorInterface;
 use Spiral\Cycle\DataGrid\Config\GridConfig;
 use Spiral\Cycle\DataGrid\GridInput;
@@ -33,7 +32,6 @@ final class DataGridBootloader extends Bootloader
         InputInterface::class => GridInput::class,
         GridInterface::class => Grid::class,
         GridFactoryInterface::class => GridFactory::class,
-        GridFactory::class => GridFactory::class, // Deprecated behavior
         Compiler::class => [self::class, 'compiler'],
         GridResponseInterface::class => GridResponse::class,
     ];
@@ -47,7 +45,7 @@ final class DataGridBootloader extends Bootloader
     /**
      * Inits default config.
      */
-    public function boot(): void
+    public function init(): void
     {
         $this->config->setDefaults(GridConfig::CONFIG, [
             'writers' => [QueryWriter::class, BetweenWriter::class],

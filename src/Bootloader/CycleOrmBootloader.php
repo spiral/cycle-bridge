@@ -13,8 +13,6 @@ use Cycle\ORM\FactoryInterface;
 use Cycle\ORM\ORM;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
-use Cycle\ORM\Transaction;
-use Cycle\ORM\TransactionInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\AbstractKernel;
 use Spiral\Boot\Bootloader\Bootloader;
@@ -34,7 +32,6 @@ final class CycleOrmBootloader extends Bootloader
     ];
 
     protected const BINDINGS = [
-        TransactionInterface::class => Transaction::class,
         EntityManagerInterface::class => EntityManager::class,
     ];
 
@@ -48,7 +45,7 @@ final class CycleOrmBootloader extends Bootloader
     ) {
     }
 
-    public function boot(
+    public function init(
         Container $container,
         FinalizerInterface $finalizer,
         EnvironmentInterface $env
@@ -66,7 +63,7 @@ final class CycleOrmBootloader extends Bootloader
         $this->initOrmConfig();
     }
 
-    public function start(AbstractKernel $kernel): void
+    public function boot(AbstractKernel $kernel): void
     {
         $kernel->started(static function (ContainerInterface $container, CycleConfig $config): void {
             if ($config->warmup()) {

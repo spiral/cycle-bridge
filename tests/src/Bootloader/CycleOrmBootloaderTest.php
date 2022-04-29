@@ -8,7 +8,6 @@ use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\FactoryInterface;
 use Cycle\ORM\ORM;
 use Cycle\ORM\ORMInterface;
-use Cycle\ORM\TransactionInterface;
 use Spiral\Core\ConfigsInterface;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Tests\BaseTest;
@@ -25,11 +24,6 @@ final class CycleOrmBootloaderTest extends BaseTest
     public function testGetsOrmFactory(): void
     {
         $this->assertContainerBoundAsSingleton(FactoryInterface::class, \Cycle\ORM\Factory::class);
-    }
-
-    public function testGetsTransaction(): void
-    {
-        $this->assertContainerBound(TransactionInterface::class);
     }
 
     public function testGetsEntityManager(): void

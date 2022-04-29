@@ -32,7 +32,6 @@ final class DataGridBootloaderTest extends BaseTest
     public function testGetsGridFactory(): void
     {
         $this->assertContainerBoundAsSingleton(GridFactoryInterface::class, GridFactory::class);
-        $this->assertContainerBound(GridFactory::class, GridFactory::class);
     }
 
     public function testGridResponse(): void

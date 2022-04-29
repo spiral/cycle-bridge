@@ -16,18 +16,12 @@ class BetweenWriter implements WriterInterface
     /** @var bool */
     private $asOriginal;
 
-    /**
-     * @param bool $asOriginal
-     */
     public function __construct(bool $asOriginal = false)
     {
         $this->asOriginal = $asOriginal;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function write($source, SpecificationInterface $specification, Compiler $compiler)
+    public function write(mixed $source, SpecificationInterface $specification, Compiler $compiler): mixed
     {
         if ($specification instanceof Filter\Between || $specification instanceof Filter\ValueBetween) {
             $filters = $specification->getFilters($this->asOriginal);

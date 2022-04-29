@@ -25,7 +25,7 @@ class ScaffolderBootloader extends Bootloader
     ) {
     }
 
-    public function boot(BaseScaffolderBootloader $scaffolder, ConsoleBootloader $console): void
+    public function init(BaseScaffolderBootloader $scaffolder, ConsoleBootloader $console): void
     {
         $this->configureCommands($console);
         $this->configureDeclarations($scaffolder);

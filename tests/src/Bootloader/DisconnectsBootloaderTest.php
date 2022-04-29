@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Spiral\Tests\Bootloader;
 
 use Cycle\Database\DatabaseInterface;
-use Spiral\Boot\BootloadManager;
+use Spiral\Boot\BootloadManager\BootloadManager;
 use Spiral\Boot\FinalizerInterface;
 use Spiral\Cycle\Bootloader\DisconnectsBootloader;
 use Spiral\Tests\BaseTest;

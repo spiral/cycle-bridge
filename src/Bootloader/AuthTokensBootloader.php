@@ -9,7 +9,7 @@ use Spiral\Cycle\Auth\TokenStorage as CycleStorage;
 use Spiral\Auth\TokenStorageInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Bootloader\Auth\HttpAuthBootloader;
-use Spiral\Bootloader\TokenizerBootloader;
+use Spiral\Tokenizer\Bootloader\TokenizerBootloader;
 
 final class AuthTokensBootloader extends Bootloader
 {
@@ -23,7 +23,7 @@ final class AuthTokensBootloader extends Bootloader
         TokenStorageInterface::class => CycleStorage::class,
     ];
 
-    public function boot(TokenizerBootloader $tokenizer): void
+    public function init(TokenizerBootloader $tokenizer): void
     {
         $tokenClass = new \ReflectionClass(Token::class);
         $tokenizer->addDirectory(dirname($tokenClass->getFileName()));

@@ -21,7 +21,7 @@ class PostgresQueryWriter implements WriterInterface
     /**
      * @inheritDoc
      */
-    public function write($source, SpecificationInterface $specification, Compiler $compiler)
+    public function write(mixed $source, SpecificationInterface $specification, Compiler $compiler): mixed
     {
         if (!$this->targetAcceptable($source)) {
             return null;

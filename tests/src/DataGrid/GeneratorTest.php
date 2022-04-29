@@ -11,7 +11,7 @@ use Spiral\DataGrid\GridSchema;
 use Spiral\DataGrid\Input\ArrayInput;
 use Spiral\DataGrid\Specification\Pagination\PagePaginator;
 use Spiral\DataGrid\Specification\Sorter\Sorter;
-use Spiral\DataGrid\Writer\QueryWriter;
+use Spiral\Cycle\DataGrid\Writer\QueryWriter;
 
 final class GeneratorTest extends BaseTest
 {

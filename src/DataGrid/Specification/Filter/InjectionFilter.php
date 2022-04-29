@@ -66,7 +66,7 @@ abstract class InjectionFilter implements FilterInterface
     /**
      * @inheritDoc
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->expression->getValue();
     }

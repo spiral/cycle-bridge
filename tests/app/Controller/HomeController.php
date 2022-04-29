@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Spiral\App\Controller;
 
-use DateTimeInterface;
 use Spiral\App\Entities\Role;
 use Spiral\App\Entities\User;
 

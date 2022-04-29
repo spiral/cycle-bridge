@@ -10,7 +10,7 @@ use Spiral\Console\Command;
 use Spiral\Console\Console;
 use Spiral\Cycle\Bootloader\SchemaBootloader;
 use Spiral\Cycle\Config\CycleConfig;
-use Spiral\Cycle\SchemaCompiler;
+use Spiral\Cycle\Schema\Compiler;
 
 final class UpdateCommand extends Command
 {
@@ -26,7 +26,7 @@ final class UpdateCommand extends Command
     ): int {
         $this->write('Updating ORM schema... ');
 
-        SchemaCompiler::compile(
+        Compiler::compile(
             $registry,
             $bootloader->getGenerators($config)
         )->toMemory($memory);

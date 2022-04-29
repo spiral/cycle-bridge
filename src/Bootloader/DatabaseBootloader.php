@@ -25,7 +25,7 @@ final class DatabaseBootloader extends Bootloader implements SingletonInterface
     /**
      * Init database config.
      */
-    public function boot(Container $container, ConfiguratorInterface $config): void
+    public function init(Container $container, ConfiguratorInterface $config): void
     {
         $config->setDefaults(
             DatabaseConfig::CONFIG,

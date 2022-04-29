@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Bootloader;
 
 use Cycle\Database\DatabaseManager;
-use Cycle\Database\DatabaseProviderInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Boot\FinalizerInterface;
@@ -15,7 +14,7 @@ use Spiral\Boot\FinalizerInterface;
  */
 final class DisconnectsBootloader extends Bootloader
 {
-    public function boot(FinalizerInterface $finalizer, ContainerInterface $container): void
+    public function init(FinalizerInterface $finalizer, ContainerInterface $container): void
     {
         $finalizer->addFinalizer(
             function () use ($container): void {
