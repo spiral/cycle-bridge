@@ -18,7 +18,7 @@ final class LoggerFactory implements LoggerFactoryInterface
     private array $config;
 
     public function __construct(
-        private ContainerInterface $container,
+        private readonly ContainerInterface $container,
         ConfigsInterface $configs
     ) {
         $this->config = $configs->getConfig('database')['logger'] ?? [];

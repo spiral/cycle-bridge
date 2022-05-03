@@ -13,7 +13,7 @@ use Spiral\Cycle\Scaffolder\Declaration;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Scaffolder\Bootloader\ScaffolderBootloader as BaseScaffolderBootloader;
 
-class ScaffolderBootloader extends Bootloader
+final class ScaffolderBootloader extends Bootloader
 {
     public const DEPENDENCIES = [
         ConsoleBootloader::class,
@@ -21,7 +21,7 @@ class ScaffolderBootloader extends Bootloader
     ];
 
     public function __construct(
-        private ContainerInterface $container
+        private readonly ContainerInterface $container
     ) {
     }
 

@@ -9,11 +9,9 @@ use Spiral\Http\Request\InputManager;
 
 final class GridInput implements InputInterface
 {
-    private InputManager $input;
-
-    public function __construct(InputManager $input)
-    {
-        $this->input = $input;
+    public function __construct(
+        private readonly InputManager $input
+    ) {
     }
 
     public function withNamespace(string $namespace): InputInterface
@@ -29,10 +27,7 @@ final class GridInput implements InputInterface
         return $this->input->input($option) !== null;
     }
 
-    /**
-     * @param mixed $default
-     */
-    public function getValue(string $option, $default = null): mixed
+    public function getValue(string $option, mixed $default = null): mixed
     {
         return $this->input->input($option, $default);
     }

@@ -79,7 +79,7 @@ final class TableCommand extends Command
         foreach ($schema->getColumns() as $column) {
             $name = $column->getName();
 
-            if (in_array($column->getName(), $schema->getPrimaryKeys(), true)) {
+            if (\in_array($column->getName(), $schema->getPrimaryKeys(), true)) {
                 $name = "<fg=magenta>{$name}</fg=magenta>";
             }
 
@@ -113,7 +113,7 @@ final class TableCommand extends Command
                 [
                     $index->getName(),
                     $index->isUnique() ? 'UNIQUE INDEX' : 'INDEX',
-                    implode(', ', $index->getColumns()),
+                    \implode(', ', $index->getColumns()),
                 ]
             );
         }
@@ -143,9 +143,9 @@ final class TableCommand extends Command
             $foreignTable->addRow(
                 [
                     $reference->getName(),
-                    implode(', ', $reference->getColumns()),
+                    \implode(', ', $reference->getColumns()),
                     $reference->getForeignTable(),
-                    implode(', ', $reference->getForeignKeys()),
+                    \implode(', ', $reference->getForeignKeys()),
                     $reference->getDeleteRule(),
                     $reference->getUpdateRule(),
                 ]
@@ -193,7 +193,7 @@ final class TableCommand extends Command
     {
         $abstractType = $column->getAbstractType();
 
-        if (in_array($abstractType, ['primary', 'bigPrimary'])) {
+        if (\in_array($abstractType, ['primary', 'bigPrimary'])) {
             $abstractType = "<fg=magenta>{$abstractType}</fg=magenta>";
         }
 

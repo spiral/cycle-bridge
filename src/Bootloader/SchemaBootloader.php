@@ -34,7 +34,7 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
     private array $defaultGenerators;
 
     public function __construct(
-        private Container $container
+        private readonly Container $container
     ) {
         $this->defaultGenerators = [
             self::GROUP_INDEX => [
@@ -69,7 +69,7 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
     public function getGenerators(CycleConfig $config): array
     {
         $generators = $config->getSchemaGenerators();
-        if (is_array($generators)) {
+        if (\is_array($generators)) {
             $generators = [self::GROUP_INDEX => $generators];
         } else {
             $generators = $this->defaultGenerators;
@@ -78,7 +78,7 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
         $result = [];
         foreach ($generators as $group) {
             foreach ($group as $generator) {
-                if (is_object($generator) && ! $generator instanceof Container\Autowire) {
+                if (\is_object($generator) && ! $generator instanceof Container\Autowire) {
                     $result[] = $generator;
                 } else {
                     $result[] = $this->container->get($generator);

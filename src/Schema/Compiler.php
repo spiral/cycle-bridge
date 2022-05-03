@@ -14,10 +14,9 @@ final class Compiler
     private const MEMORY_SECTION = 'cycle';
     private const EMPTY_SCHEMA = ':empty:';
 
-    /** @var mixed */
-    private $schema;
+    private mixed $schema = null;
 
-    private function __construct($schema)
+    private function __construct(mixed $schema)
     {
         $this->schema = $schema;
     }
@@ -52,6 +51,6 @@ final class Compiler
 
     private function isWriteableSchema(): bool
     {
-        return is_array($this->schema);
+        return \is_array($this->schema);
     }
 }

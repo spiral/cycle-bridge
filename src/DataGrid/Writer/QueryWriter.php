@@ -12,6 +12,8 @@ use Spiral\Cycle\DataGrid\Specification\Sorter\InjectionSorter;
 use Spiral\DataGrid\Compiler;
 use Spiral\DataGrid\Exception\CompilerException;
 use Spiral\DataGrid\Specification;
+use Spiral\DataGrid\Specification\FilterInterface;
+use Spiral\DataGrid\Specification\SorterInterface;
 use Spiral\DataGrid\SpecificationInterface;
 use Spiral\DataGrid\WriterInterface;
 
@@ -41,41 +43,19 @@ class QueryWriter implements WriterInterface
         Specification\Sorter\DescSorter::class => 'DESC',
     ];
 
-    /**
-     * @inheritDoc
-     */
     public function write(mixed $source, SpecificationInterface $specification, Compiler $compiler): mixed
     {
-        if (! $this->targetAcceptable($source)) {
-            return null;
-        }
-
-        if ($specification instanceof Specification\FilterInterface) {
-            return $this->writeFilter($source, $specification, $compiler);
-        }
-
-        if ($specification instanceof Specification\SorterInterface) {
-            return $this->writeSorter($source, $specification, $compiler);
-        }
-
-        if ($specification instanceof Specification\Pagination\Limit) {
-            return $source->limit($specification->getValue());
-        }
-
-        if ($specification instanceof Specification\Pagination\Offset) {
-            return $source->offset($specification->getValue());
-        }
-
-        return null;
+        return match (true) {
+            !$this->targetAcceptable($source) => null,
+            $specification instanceof FilterInterface => $this->writeFilter($source, $specification, $compiler),
+            $specification instanceof SorterInterface => $this->writeSorter($source, $specification, $compiler),
+            $specification instanceof Specification\Pagination\Limit => $source->limit($specification->getValue()),
+            $specification instanceof Specification\Pagination\Offset => $source->offset($specification->getValue()),
+            default => null
+        };
     }
 
-    /**
-     * @param  SelectQuery|Select  $source
-     * @param  Specification\FilterInterface  $filter
-     * @param  Compiler  $compiler
-     * @return mixed
-     */
-    protected function writeFilter($source, Specification\FilterInterface $filter, Compiler $compiler)
+    protected function writeFilter($source, FilterInterface $filter, Compiler $compiler): mixed
     {
         if ($filter instanceof Specification\Filter\All || $filter instanceof Specification\Filter\Map) {
             return $source->where(static function () use ($compiler, $filter, $source): void {
@@ -115,10 +95,6 @@ class QueryWriter implements WriterInterface
         return null;
     }
 
-    /**
-     * @param  Specification\Filter\Expression  $filter
-     * @return string
-     */
     protected function getExpressionOperator(Specification\Filter\Expression $filter): string
     {
         if ($filter instanceof Specification\Filter\Like) {
@@ -126,20 +102,19 @@ class QueryWriter implements WriterInterface
         }
 
         if ($filter instanceof Specification\Filter\InArray || $filter instanceof Specification\Filter\NotInArray) {
-            return static::ARRAY_OPERATORS[get_class($filter)];
+            return static::ARRAY_OPERATORS[\get_class($filter)];
         }
 
-        return static::COMPARE_OPERATORS[get_class($filter)];
+        return static::COMPARE_OPERATORS[\get_class($filter)];
     }
 
     /**
-     * @param  Specification\Filter\Expression  $filter
      * @return array|Parameter[]|Specification\ValueInterface[]
      */
     protected function getExpressionArgs(Specification\Filter\Expression $filter): array
     {
         if ($filter instanceof Specification\Filter\Like) {
-            return [sprintf($filter->getPattern(), $this->fetchValue($filter->getValue()))];
+            return [\sprintf($filter->getPattern(), $this->fetchValue($filter->getValue()))];
         }
 
         if ($filter instanceof Specification\Filter\InArray || $filter instanceof Specification\Filter\NotInArray) {
@@ -149,13 +124,7 @@ class QueryWriter implements WriterInterface
         return [$this->fetchValue($filter->getValue())];
     }
 
-    /**
-     * @param  SelectQuery|Select  $source
-     * @param  Specification\SorterInterface  $sorter
-     * @param  Compiler  $compiler
-     * @return mixed
-     */
-    protected function writeSorter($source, Specification\SorterInterface $sorter, Compiler $compiler)
+    protected function writeSorter($source, SorterInterface $sorter, Compiler $compiler): mixed
     {
         if ($sorter instanceof Specification\Sorter\SorterSet) {
             foreach ($sorter->getSorters() as $subSorter) {
@@ -169,7 +138,7 @@ class QueryWriter implements WriterInterface
             $sorter instanceof Specification\Sorter\AscSorter
             || $sorter instanceof Specification\Sorter\DescSorter
         ) {
-            $direction = static::SORTER_DIRECTIONS[get_class($sorter)];
+            $direction = static::SORTER_DIRECTIONS[\get_class($sorter)];
             foreach ($sorter->getExpressions() as $expression) {
                 $source = $source->orderBy($expression, $direction);
             }
@@ -178,7 +147,7 @@ class QueryWriter implements WriterInterface
         }
 
         if ($sorter instanceof InjectionSorter) {
-            $direction = static::SORTER_DIRECTIONS[get_class($sorter)] ?? 'ASC';
+            $direction = static::SORTER_DIRECTIONS[\get_class($sorter)] ?? 'ASC';
             foreach ($sorter->getInjections() as $injection) {
                 $source = $source->orderBy($injection, $direction);
             }
@@ -191,11 +160,8 @@ class QueryWriter implements WriterInterface
 
     /**
      * Fetch and assert that filter value is not expecting any user input.
-     *
-     * @param  Specification\ValueInterface|mixed  $value
-     * @return mixed
      */
-    protected function fetchValue($value)
+    protected function fetchValue(mixed $value): mixed
     {
         if ($value instanceof Specification\ValueInterface) {
             throw new CompilerException('Value expects user input, none given');
@@ -204,17 +170,13 @@ class QueryWriter implements WriterInterface
         return $value;
     }
 
-    /**
-     * @param  mixed  $target
-     * @return bool
-     */
-    protected function targetAcceptable($target): bool
+    protected function targetAcceptable(mixed $target): bool
     {
-        if (class_exists(SelectQuery::class) && $target instanceof SelectQuery) {
+        if (\class_exists(SelectQuery::class) && $target instanceof SelectQuery) {
             return true;
         }
 
-        if (class_exists(Select::class) && $target instanceof Select) {
+        if (\class_exists(Select::class) && $target instanceof Select) {
             return true;
         }
 

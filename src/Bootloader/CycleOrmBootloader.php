@@ -16,7 +16,6 @@ use Cycle\ORM\RepositoryInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\AbstractKernel;
 use Spiral\Boot\Bootloader\Bootloader;
-use Spiral\Boot\EnvironmentInterface;
 use Spiral\Boot\FinalizerInterface;
 use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
@@ -41,15 +40,12 @@ final class CycleOrmBootloader extends Bootloader
     ];
 
     public function __construct(
-        private ConfiguratorInterface $config
+        private readonly ConfiguratorInterface $config
     ) {
     }
 
-    public function init(
-        Container $container,
-        FinalizerInterface $finalizer,
-        EnvironmentInterface $env
-    ): void {
+    public function init(Container $container, FinalizerInterface $finalizer): void
+    {
         $finalizer->addFinalizer(
             static function () use ($container): void {
                 if ($container->hasInstance(ORMInterface::class)) {

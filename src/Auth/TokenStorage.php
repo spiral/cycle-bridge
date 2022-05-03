@@ -19,24 +19,23 @@ use Throwable;
 final class TokenStorage implements TokenStorageInterface
 {
     public function __construct(
-        private ORMInterface $orm,
-        private EntityManagerInterface $em
+        private readonly ORMInterface $orm,
+        private readonly EntityManagerInterface $em
     ) {
     }
 
-    /**  @inheritDoc */
     public function load(string $id): ?TokenInterface
     {
-        if (strpos($id, ':') === false) {
+        if (!\str_contains($id, ':')) {
             return null;
         }
 
-        [$pk, $hash] = explode(':', $id, 2);
+        [$pk, $hash] = \explode(':', $id, 2);
 
         /** @var Token $token */
         $token = $this->orm->getRepository(Token::class)->findByPK($pk);
 
-        if ($token === null || ! hash_equals($token->getHashedValue(), hash('sha512', $hash))) {
+        if ($token === null || !\hash_equals($token->getHashedValue(), \hash('sha512', $hash))) {
             // hijacked or deleted
             return null;
         }
@@ -53,7 +52,6 @@ final class TokenStorage implements TokenStorageInterface
         return $token;
     }
 
-    /** @inheritDoc */
     public function create(array $payload, DateTimeInterface $expiresAt = null): TokenInterface
     {
         try {
@@ -74,7 +72,6 @@ final class TokenStorage implements TokenStorageInterface
         }
     }
 
-    /** @inheritDoc */
     public function delete(TokenInterface $token): void
     {
         try {
@@ -106,6 +103,6 @@ final class TokenStorage implements TokenStorageInterface
 
     private function randomHash(int $length): string
     {
-        return substr(bin2hex(random_bytes($length)), 0, $length);
+        return \substr(\bin2hex(random_bytes($length)), 0, $length);
     }
 }

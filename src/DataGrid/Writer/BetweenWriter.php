@@ -13,8 +13,7 @@ use Spiral\DataGrid\WriterInterface;
 
 class BetweenWriter implements WriterInterface
 {
-    /** @var bool */
-    private $asOriginal;
+    private bool $asOriginal;
 
     public function __construct(bool $asOriginal = false)
     {
@@ -25,7 +24,7 @@ class BetweenWriter implements WriterInterface
     {
         if ($specification instanceof Filter\Between || $specification instanceof Filter\ValueBetween) {
             $filters = $specification->getFilters($this->asOriginal);
-            if (count($filters) > 1) {
+            if (\count($filters) > 1) {
                 return $source->where(static function () use ($compiler, $source, $filters): void {
                     $compiler->compile($source, ...$filters);
                 });
@@ -36,11 +35,10 @@ class BetweenWriter implements WriterInterface
             $expression = $specification->getFilter();
             if ($expression instanceof Filter\Between) {
                 $filters = $expression->getFilters($this->asOriginal);
-                if (count($filters) > 1) {
-                    $filters = array_map(
-                        static function (SpecificationInterface $filter) use ($specification): InjectionFilter {
-                            return InjectionFilter::createFrom($specification, $filter);
-                        },
+                if (\count($filters) > 1) {
+                    $filters = \array_map(
+                        static fn (SpecificationInterface $filter): InjectionFilter =>
+                            InjectionFilter::createFrom($specification, $filter),
                         $filters
                     );
 

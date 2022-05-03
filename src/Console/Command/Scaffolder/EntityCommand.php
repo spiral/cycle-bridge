@@ -112,7 +112,7 @@ class EntityCommand extends AbstractCommand
         $declaration->setInflection((string)$this->option('inflection'));
 
         foreach ($this->option('field') as $field) {
-            if (\strpos($field, ':') === false) {
+            if (!\str_contains($field, ':')) {
                 throw new ScaffolderException("Field definition must in 'name:type' or 'name:type' form");
             }
 

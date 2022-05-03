@@ -15,7 +15,7 @@ use Spiral\Core\Container\InjectorInterface;
 final class DatabaseInjector implements InjectorInterface
 {
     public function __construct(
-        private DatabaseManager $dm
+        private readonly DatabaseManager $dm
     ) {
     }
 

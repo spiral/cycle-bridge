@@ -45,7 +45,7 @@ final class MigrateCommand extends AbstractCommand
 
         $schemaCompiler = Compiler::compile(
             $registry,
-            array_merge($bootloader->getGenerators($config), [
+            \array_merge($bootloader->getGenerators($config), [
                 $show = new ShowChanges($this->output)
             ])
         );

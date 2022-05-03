@@ -15,7 +15,7 @@ final class ShowChanges implements GeneratorInterface
     private array $changes = [];
 
     public function __construct(
-        private OutputInterface $output
+        private readonly OutputInterface $output
     ) {
     }
 
@@ -45,29 +45,23 @@ final class ShowChanges implements GeneratorInterface
         }
 
         foreach ($this->changes as $change) {
-            $this->output->write(sprintf('• <fg=cyan>%s.%s</fg=cyan>', $change['database'], $change['table']));
+            $this->output->write(\sprintf('• <fg=cyan>%s.%s</fg=cyan>', $change['database'], $change['table']));
             $this->describeChanges($change['schema']);
         }
 
         return $registry;
     }
 
-    /**
-     * @return bool
-     */
     public function hasChanges(): bool
     {
         return $this->changes !== [];
     }
 
-    /**
-     * @param  AbstractTable  $table
-     */
     protected function describeChanges(AbstractTable $table): void
     {
         if (!$this->output->isVerbose()) {
             $this->output->writeln(
-                sprintf(
+                \sprintf(
                     ': <fg=green>%s</fg=green> change(s) detected',
                     $this->numChanges($table)
                 )
@@ -94,9 +88,6 @@ final class ShowChanges implements GeneratorInterface
         $this->describeFKs($cmp);
     }
 
-    /**
-     * @param  Comparator  $cmp
-     */
     protected function describeColumns(Comparator $cmp): void
     {
         foreach ($cmp->addedColumns() as $column) {
@@ -113,66 +104,56 @@ final class ShowChanges implements GeneratorInterface
         }
     }
 
-    /**
-     * @param  Comparator  $cmp
-     */
     protected function describeIndexes(Comparator $cmp): void
     {
         foreach ($cmp->addedIndexes() as $index) {
-            $index = implode(', ', $index->getColumns());
+            $index = \implode(', ', $index->getColumns());
             $this->output->writeln("    - add index on <fg=yellow>[{$index}]</fg=yellow>");
         }
 
         foreach ($cmp->droppedIndexes() as $index) {
-            $index = implode(', ', $index->getColumns());
+            $index = \implode(', ', $index->getColumns());
             $this->output->writeln("    - drop index on <fg=yellow>[{$index}]</fg=yellow>");
         }
 
         foreach ($cmp->alteredIndexes() as $index) {
             $index = $index[0];
-            $index = implode(', ', $index->getColumns());
+            $index = \implode(', ', $index->getColumns());
             $this->output->writeln("    - alter index on <fg=yellow>[{$index}]</fg=yellow>");
         }
     }
 
-    /**
-     * @param  Comparator  $cmp
-     */
     protected function describeFKs(Comparator $cmp): void
     {
         foreach ($cmp->addedForeignKeys() as $fk) {
-            $fkColumns = implode(', ', $fk->getColumns());
+            $fkColumns = \implode(', ', $fk->getColumns());
             $this->output->writeln("    - add foreign key on <fg=yellow>{$fkColumns}</fg=yellow>");
         }
 
         foreach ($cmp->droppedForeignKeys() as $fk) {
-            $fkColumns = implode(', ', $fk->getColumns());
+            $fkColumns = \implode(', ', $fk->getColumns());
             $this->output->writeln("    - drop foreign key <fg=yellow>{$fkColumns}</fg=yellow>");
         }
 
         foreach ($cmp->alteredForeignKeys() as $fk) {
             $fk = $fk[0];
-            $fkColumns = implode(', ', $fk->getColumns());
+            $fkColumns = \implode(', ', $fk->getColumns());
             $this->output->writeln("    - alter foreign key <fg=yellow>{$fkColumns}</fg=yellow>");
         }
     }
 
-    /**
-     * @param  AbstractTable  $table
-     * @return int
-     */
     protected function numChanges(AbstractTable $table): int
     {
         $cmp = $table->getComparator();
 
-        return count($cmp->addedColumns())
-            + count($cmp->droppedColumns())
-            + count($cmp->alteredColumns())
-            + count($cmp->addedIndexes())
-            + count($cmp->droppedIndexes())
-            + count($cmp->alteredIndexes())
-            + count($cmp->addedForeignKeys())
-            + count($cmp->droppedForeignKeys())
-            + count($cmp->alteredForeignKeys());
+        return \count($cmp->addedColumns())
+            + \count($cmp->droppedColumns())
+            + \count($cmp->alteredColumns())
+            + \count($cmp->addedIndexes())
+            + \count($cmp->droppedIndexes())
+            + \count($cmp->alteredIndexes())
+            + \count($cmp->addedForeignKeys())
+            + \count($cmp->droppedForeignKeys())
+            + \count($cmp->alteredForeignKeys());
     }
 }

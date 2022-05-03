@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Bootloader;
 
+use Cycle\Migrations\Config\MigrationConfig;
 use Cycle\Migrations\FileRepository;
 use Cycle\Migrations\Migrator;
 use Cycle\Migrations\RepositoryInterface;
@@ -35,7 +36,7 @@ final class MigrationsBootloader extends Bootloader
         }
 
         $config->setDefaults(
-            'migration',
+            MigrationConfig::CONFIG,
             [
                 'directory' => $dirs->get('migrations'),
                 'table' => 'migrations',

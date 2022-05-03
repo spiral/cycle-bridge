@@ -16,7 +16,7 @@ abstract class InjectionFilter implements FilterInterface
     protected const INJECTION = '';
 
     /** @var Between|Expression */
-    private $expression;
+    private SpecificationInterface $expression;
 
     public function __construct(SpecificationInterface $expression)
     {
@@ -35,26 +35,17 @@ abstract class InjectionFilter implements FilterInterface
         return $clone;
     }
 
-    /**
-     * @return SpecificationInterface
-     */
     public function getFilter(): SpecificationInterface
     {
         return $this->expression;
     }
 
-    /**
-     * @return Injection\FragmentInterface
-     */
     public function getInjection(): Injection\FragmentInterface
     {
         $injector = static::INJECTION;
         return new $injector($this->expression->getExpression());
     }
 
-    /**
-     * @inheritDoc
-     */
     public function withValue($value): ?SpecificationInterface
     {
         $filter = clone $this;
@@ -63,9 +54,6 @@ abstract class InjectionFilter implements FilterInterface
         return $filter->expression === null ? null : $filter;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getValue(): mixed
     {
         return $this->expression->getValue();

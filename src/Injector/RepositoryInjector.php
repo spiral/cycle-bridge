@@ -18,7 +18,7 @@ use Spiral\Core\Container\InjectorInterface;
 final class RepositoryInjector implements InjectorInterface
 {
     public function __construct(
-        private ORMInterface $orm
+        private readonly ORMInterface $orm
     ) {
     }
 
@@ -34,6 +34,6 @@ final class RepositoryInjector implements InjectorInterface
             }
         }
 
-        throw new ORMException(sprintf('Unable to find Entity role for repository %s', $class->getName()));
+        throw new ORMException(\sprintf('Unable to find Entity role for repository %s', $class->getName()));
     }
 }

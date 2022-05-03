@@ -26,7 +26,7 @@ final class ListCommand extends Command
         if ($this->argument('db')) {
             $databases = [$this->argument('db')];
         } else {
-            $databases = array_keys($config->getDatabases());
+            $databases = \array_keys($config->getDatabases());
         }
 
         if (empty($databases)) {
@@ -84,15 +84,10 @@ final class ListCommand extends Command
         return self::SUCCESS;
     }
 
-    /**
-     * @param  Table  $grid
-     * @param  array  $header
-     * @param  \Throwable  $exception
-     */
     private function renderException(Table $grid, array $header, \Throwable $exception): void
     {
         $grid->addRow(
-            array_merge(
+            \array_merge(
                 $header,
                 [
                     "<fg=red>{$exception->getMessage()}</fg=red>",
