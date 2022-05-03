@@ -11,7 +11,7 @@
 
 Make sure that your server is configured with following PHP version and extensions:
 
-- PHP 8.0+
+- PHP 8.1+
 - PDO Extension with desired database drivers
 
 ## Installation
@@ -62,7 +62,7 @@ protected const LOAD = [
 
     // Database Token Storage (Optional)
     CycleBridge\AuthTokensBootloader::class,
-    
+
     // Migrations and Cycle Scaffolders (Optional)
     CycleBridge\ScaffolderBootloader::class,
 ];
