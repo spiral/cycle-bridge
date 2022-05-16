@@ -61,7 +61,7 @@ final class CycleOrmBootloader extends Bootloader
 
     public function boot(AbstractKernel $kernel): void
     {
-        $kernel->started(static function (ContainerInterface $container, CycleConfig $config): void {
+        $kernel->booted(static function (ContainerInterface $container, CycleConfig $config): void {
             if ($config->warmup()) {
                 $orm = $container->get(ORMInterface::class);
                 if (\method_exists($orm, 'prepareServices')) {
