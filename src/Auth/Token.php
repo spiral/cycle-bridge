@@ -8,6 +8,7 @@ use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Entity;
 use DateTimeInterface;
 use Spiral\Auth\TokenInterface;
+use Spiral\Auth\Exception\TokenStorageException;
 
 #[Entity(table: 'auth_tokens')]
 class Token implements TokenInterface
@@ -28,6 +29,8 @@ class Token implements TokenInterface
 
     #[Column(type: 'blob')]
     private $payload;
+
+    private ?array $normalizedPayload = null;
 
     public function __construct(
         string $id,
@@ -77,11 +80,21 @@ class Token implements TokenInterface
     /** @inheritDoc */
     public function getPayload(): array
     {
-        if (is_resource($this->payload)) {
-            // postgres
-            return json_decode(stream_get_contents($this->payload), true);
+        if (is_array($this->normalizedPayload)) {
+          return $this->normalizedPayload;
         }
 
-        return json_decode($this->payload, true);
+        if (is_resource($this->payload)) {
+            // postgres
+            $this->normalizedPayload = json_decode(stream_get_contents($this->payload), true);
+        } elseif (is_string($this->payload)) {
+            $this->normalizedPayload = json_decode($this->payload, true);
+        }
+
+        if ($this->normalizedPayload === null) {
+            throw new TokenStorageException('Token payload is not valid!');
+        }
+
+        return $this->normalizedPayload;
     }
 }
