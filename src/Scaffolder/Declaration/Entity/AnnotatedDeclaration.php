@@ -4,25 +4,23 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Scaffolder\Declaration\Entity;
 
+use Cycle\Annotated\Annotation\Column;
+use Cycle\Annotated\Annotation\Entity;
 use Doctrine\Inflector\Rules\English\InflectorFactory;
 use Spiral\Reactor\Partial\Property;
-use Spiral\Reactor\Traits\CommentTrait;
 use Spiral\Cycle\Scaffolder\Declaration\AbstractEntityDeclaration;
 use Spiral\Scaffolder\Exception\ScaffolderException;
 
 class AnnotatedDeclaration extends AbstractEntityDeclaration
 {
+    public const TYPE = 'entity';
+
     public function addField(string $name, string $accessibility, string $type): Property
     {
         $property = parent::addField($name, $accessibility, $type);
-        $this->addCommentLine($property, $this->makeFieldComment($name, $type));
+        $property->addAttribute(Column::class, $this->makeFieldAttribute($name, $type));
 
         return $property;
-    }
-
-    public function getDependencies(): array
-    {
-        return ['Cycle\Annotated\Annotation' => 'Cycle'];
     }
 
     public function declareSchema(): void
@@ -31,49 +29,38 @@ class AnnotatedDeclaration extends AbstractEntityDeclaration
         $attributes = ['role', 'mapper', 'repository', 'table', 'database'];
         foreach ($attributes as $attribute) {
             if (!empty($this->$attribute)) {
-                $entities[] = "$attribute=\"{$this->$attribute}\"";
+                $entities[$attribute] = $this->$attribute;
             }
         }
 
-        $entity = \implode(', ', $entities);
-        $this->addCommentLine($this, "@Cycle\Entity($entity)");
+        $this->class->addAttribute(Entity::class, $entities);
     }
 
-    /**
-     * @psalm-suppress UndefinedDocblockClass
-     */
-    protected function addCommentLine(AbstractEntityDeclaration|Property $target, string $comment): void
-    {
-        $target->setComment(\array_merge($this->getComment()->getLines(), [$comment]));
-    }
-
-    private function makeFieldComment(string $name, string $type): string
+    private function makeFieldAttribute(string $name, string $type): array
     {
         $columns = [];
         if ($this->isNullableType($type)) {
-            $columns = ['nullable = true'];
+            $columns['nullable'] = true;
         }
-        $columns[] = "type = \"{$this->annotatedType($type)}\"";
+        $columns['type'] = $this->annotatedType($type);
 
         if (!empty($this->inflection)) {
             $columns = $this->addInflectedName($this->inflection, $name, $columns);
         }
 
-        $column = \implode(', ', $columns);
-
-        return "@Cycle\Column($column)";
+        return $columns;
     }
 
     private function annotatedType(string $type): string
     {
-        return $this->isNullableType($type) ? substr($type, 1) : $type;
+        return $this->isNullableType($type) ? \substr($type, 1) : $type;
     }
 
     private function addInflectedName(string $inflection, string $name, array $columns): array
     {
         $inflected = $this->inflect($inflection, $name);
         if ($inflected !== null && $inflected !== $name) {
-            $columns[] = "name = \"$inflected\"";
+            $columns['name'] = $inflected;
         }
 
         return $columns;
@@ -96,5 +83,11 @@ class AnnotatedDeclaration extends AbstractEntityDeclaration
     private function camelize(string $name): string
     {
         return (new InflectorFactory())->build()->camelize($name);
+    }
+
+    public function declare(): void
+    {
+        $this->namespace->addUse(Column::class);
+        $this->namespace->addUse(Entity::class);
     }
 }

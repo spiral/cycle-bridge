@@ -24,7 +24,7 @@ final class CycleOrmWarmedUpBootloaderTest extends BaseTest
 {
     protected function setUp(): void
     {
-        $this->beforeStarting(
+        $this->beforeBooting(
             \Closure::bind(static function (CycleConfig $config) {
                 $config->config['warmup'] = true;
             }, null, CycleConfig::class)
@@ -40,7 +40,7 @@ final class CycleOrmWarmedUpBootloaderTest extends BaseTest
                 return $heap;
             });
 
-        $this->beforeStarting(static function (Container $container) use ($orm) {
+        $this->beforeBooting(static function (Container $container) use ($orm) {
             $container->bindSingleton(ORMInterface::class, $orm);
             $container->bindSingleton(ORM::class, $orm);
         });

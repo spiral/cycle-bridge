@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Scaffolder\Declaration;
 
 use Doctrine\Inflector\Rules\English\InflectorFactory;
-use Spiral\Reactor\ClassDeclaration;
-use Spiral\Reactor\DependedInterface;
 use Spiral\Reactor\Partial\Property;
+use Spiral\Reactor\Partial\Visibility;
+use Spiral\Scaffolder\Declaration\AbstractDeclaration;
 
-abstract class AbstractEntityDeclaration extends ClassDeclaration implements DependedInterface
+abstract class AbstractEntityDeclaration extends AbstractDeclaration
 {
     protected ?string $role = null;
     protected ?string $mapper = null;
@@ -53,13 +53,16 @@ abstract class AbstractEntityDeclaration extends ClassDeclaration implements Dep
      */
     public function addField(string $name, string $accessibility, string $type): Property
     {
-        $property = $this->property($name);
-        $property->setComment("@var {$this->variableType($type)}");
-        if ($accessibility) {
-            $property->setAccess($accessibility);
+        $property = $this->class
+            ->addProperty($name)
+            ->setVisibility(Visibility::from($accessibility))
+            ->setType($this->variableType($type));
+
+        if ($this->isNullableType($type)) {
+            $property->setValue(null);
         }
 
-        if ($property->getAccess() !== self::ACCESS_PUBLIC) {
+        if (!$property->isPublic()) {
             $this->declareAccessors($name, $type);
         }
 
@@ -80,14 +83,14 @@ abstract class AbstractEntityDeclaration extends ClassDeclaration implements Dep
 
     private function declareAccessors(string $field, string $type): void
     {
-        $setter = $this->method('set' . $this->classify($field));
+        $setter = $this->class->addMethod('set' . $this->classify($field));
         $setter->setPublic();
-        $setter->parameter('value')->setType($type);
-        $setter->setSource("\$this->$field = \$value;");
+        $setter->addParameter('value')->setType($type);
+        $setter->addBody("\$this->$field = \$value;");
 
-        $getter = $this->method('get' . $this->classify($field));
+        $getter = $this->class->addMethod('get' . $this->classify($field));
         $getter->setPublic();
-        $getter->setSource("return \$this->$field;");
+        $getter->addBody("return \$this->$field;");
     }
 
     private function classify(string $name): string

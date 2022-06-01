@@ -5,52 +5,47 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Scaffolder\Declaration;
 
 use Cycle\Migrations\Migration;
-use Spiral\Reactor\ClassDeclaration;
-use Spiral\Reactor\DependedInterface;
+use Spiral\Scaffolder\Declaration\AbstractDeclaration;
 
 /**
  * Migration declaration
  */
-class MigrationDeclaration extends ClassDeclaration implements DependedInterface
+class MigrationDeclaration extends AbstractDeclaration
 {
-    public function __construct(string $name, string $comment = '')
-    {
-        parent::__construct($name, 'Migration', [], $comment);
-
-        $this->declareStructure();
-    }
-
-    public function getDependencies(): array
-    {
-        return [Migration::class => null];
-    }
+    public const TYPE = 'migration';
 
     /**
      * Declare table creation with specific set of columns
      */
     public function declareCreation(string $table, array $columns): void
     {
-        $source = $this->method('up')->getSource();
-
-        $source->addLine("\$this->table('{$table}')");
+        $body = "\$this->table('{$table}')";
         foreach ($columns as $name => $type) {
-            $source->addLine("    ->addColumn('{$name}', '{$type}')");
+            $body .= "->addColumn('{$name}', '{$type}')";
         }
+        $body .= '->create();';
 
-        $source->addLine('    ->create();');
+        $this->class->getMethod('up')->addBody($body);
 
-        $this->method('down')->getSource()->addLine("\$this->table('{$table}')->drop();");
+        $this->class->getMethod('down')->addBody("\$this->table('{$table}')->drop();");
     }
 
-    /**
-     * Declare default __invoke method body.
-     */
-    private function declareStructure(): void
+    public function declare(): void
     {
-        $up = $this->method('up')->setPublic()->setReturn('void');
-        $down = $this->method('down')->setPublic()->setReturn('void');
+        $this->namespace->addUse(Migration::class);
 
-        $up->setComment('Create tables, add columns or insert data here');
-        $down->setComment('Drop created, columns and etc here');
+        $this->class->setExtends(Migration::class);
+
+        $this->class
+            ->addMethod('up')
+            ->setPublic()
+            ->setReturnType('void')
+            ->setComment('Create tables, add columns or insert data here');
+
+        $this->class
+            ->addMethod('down')
+            ->setPublic()
+            ->setReturnType('void')
+            ->setComment('Drop created, columns and etc here');
     }
 }

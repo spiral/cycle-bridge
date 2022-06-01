@@ -6,7 +6,8 @@ namespace Spiral\Cycle\Console\Command\Scaffolder;
 
 use Spiral\Console\Console;
 use Spiral\Cycle\Scaffolder\Declaration\Entity\AnnotatedDeclaration;
-use Spiral\Reactor\AbstractDeclaration;
+use Spiral\Cycle\Scaffolder\Declaration\RepositoryDeclaration;
+use Spiral\Reactor\Partial\Visibility;
 use Spiral\Scaffolder\Command\AbstractCommand;
 use Spiral\Scaffolder\Config\ScaffolderConfig;
 use Spiral\Scaffolder\Exception\ScaffolderException;
@@ -18,13 +19,10 @@ use function Spiral\Scaffolder\trimPostfix;
 
 class EntityCommand extends AbstractCommand
 {
-    protected const ELEMENT = 'entity';
-
     protected const NAME        = 'create:entity';
     protected const DESCRIPTION = 'Create entity declaration';
     protected const ARGUMENTS   = [
         ['name', InputArgument::REQUIRED, 'Entity name'],
-        ['format', InputArgument::OPTIONAL, 'Declaration format (annotated, xml?, yaml?, php?)', 'annotated'],
     ];
     protected const OPTIONS     = [
         [
@@ -62,7 +60,7 @@ class EntityCommand extends AbstractCommand
             'a',
             InputOption::VALUE_OPTIONAL,
             'Accessibility accessor (public, protected, private)',
-            AbstractDeclaration::ACCESS_PUBLIC,
+            'public',
         ],
         [
             'inflection',
@@ -96,12 +94,12 @@ class EntityCommand extends AbstractCommand
         $this->validateAccessibility($accessibility);
 
         /** @var AnnotatedDeclaration $declaration */
-        $declaration = $this->createDeclaration();
+        $declaration = $this->createDeclaration(AnnotatedDeclaration::class);
 
         $repository = trimPostfix((string)$this->argument('name'), 'repository');
         if ($this->option('repository')) {
-            $repositoryClass = $config->className(RepositoryCommand::ELEMENT, $repository);
-            $repositoryNamespace = $config->classNamespace(RepositoryCommand::ELEMENT, $repository);
+            $repositoryClass = $config->className(RepositoryDeclaration::TYPE, $repository);
+            $repositoryNamespace = $config->classNamespace(RepositoryDeclaration::TYPE, $repository);
             $declaration->setRepository("\\$repositoryNamespace\\$repositoryClass");
         }
 
@@ -144,9 +142,9 @@ class EntityCommand extends AbstractCommand
     {
         if (
             !\in_array($accessibility, [
-                AbstractDeclaration::ACCESS_PUBLIC,
-                AbstractDeclaration::ACCESS_PROTECTED,
-                AbstractDeclaration::ACCESS_PRIVATE,
+                Visibility::PUBLIC->value,
+                Visibility::PROTECTED->value,
+                Visibility::PRIVATE->value,
             ], true)
         ) {
             throw new ScaffolderException("Invalid accessibility value `$accessibility`");

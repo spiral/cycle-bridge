@@ -12,7 +12,7 @@ final class ValidationBootloaderTest extends BaseTest
     public function test(): void
     {
         /** @var array<string, array<string, class-string|callable>> $configs */
-        $configs = $this->getConfig('validation');
+        $configs = $this->getConfig('validator');
 
         $this->assertTrue(isset($configs['checkers']['entity']));
         $this->assertSame(EntityChecker::class, $configs['checkers']['entity']);
