@@ -54,7 +54,10 @@ final class CycleOrmBootloader extends Bootloader
         $finalizer->addFinalizer(
             static function () use ($container): void {
                 if ($container->hasInstance(EntityManagerInterface::class)) {
-                    $container->get(EntityManagerInterface::class)->clean(true);
+                    $container->get(EntityManagerInterface::class)->clean();
+                }
+                if ($container->hasInstance(ORMInterface::class)) {
+                    $container->get(ORMInterface::class)->getHeap()->clean();
                 }
             }
         );
