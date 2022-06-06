@@ -7,7 +7,8 @@ namespace Spiral\Tests\Validation;
 use Cycle\Database\DatabaseInterface;
 use Spiral\App\Entities\User;
 use Spiral\Tests\BaseTest;
-use Spiral\Validation\ValidationInterface;
+use Spiral\Validation\ValidationProviderInterface;
+use Spiral\Validator\FilterDefinition;
 
 final class EntityCheckerTest extends BaseTest
 {
@@ -171,8 +172,8 @@ final class EntityCheckerTest extends BaseTest
         array $entityData,
         bool $valid
     ): void {
-        $validation = $this->getContainer()->get(ValidationInterface::class);
-        $validator = $validation->validate($entityData, $rules);
+        $provider = $this->getContainer()->get(ValidationProviderInterface::class);
+        $validator = $provider->getValidation(FilterDefinition::class)->validate($entityData, $rules);
 
         $this->assertSame($valid, $validator->isValid());
     }
@@ -205,8 +206,8 @@ final class EntityCheckerTest extends BaseTest
         array $entityData,
         string $exceptionText
     ): void {
-        $validation = $this->getContainer()->get(ValidationInterface::class);
-        $validator = $validation->validate($entityData, $rules);
+        $provider = $this->getContainer()->get(ValidationProviderInterface::class);
+        $validator = $provider->getValidation(FilterDefinition::class)->validate($entityData, $rules);
 
         $this->expectExceptionMessage($exceptionText);
         $validator->isValid();

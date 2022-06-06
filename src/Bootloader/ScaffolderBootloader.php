@@ -45,13 +45,13 @@ final class ScaffolderBootloader extends Bootloader
 
     private function configureDeclarations(BaseScaffolderBootloader $scaffolder): void
     {
-        $scaffolder->addDeclaration('migration', [
+        $scaffolder->addDeclaration(Declaration\MigrationDeclaration::TYPE, [
             'namespace' => '',
             'postfix'   => 'Migration',
             'class'     => Declaration\MigrationDeclaration::class,
         ]);
 
-        $scaffolder->addDeclaration('entity', [
+        $scaffolder->addDeclaration(Declaration\Entity\AnnotatedDeclaration::TYPE, [
             'namespace' => 'Database',
             'postfix'   => '',
             'options'   => [
@@ -59,7 +59,7 @@ final class ScaffolderBootloader extends Bootloader
             ],
         ]);
 
-        $scaffolder->addDeclaration('repository', [
+        $scaffolder->addDeclaration(Declaration\RepositoryDeclaration::TYPE, [
             'namespace' => 'Repository',
             'postfix'   => 'Repository',
             'class'     => Declaration\RepositoryDeclaration::class,

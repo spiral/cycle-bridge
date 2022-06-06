@@ -6,7 +6,6 @@ namespace Spiral\Cycle\Console\Command\Scaffolder;
 
 use Spiral\Cycle\Scaffolder\Declaration\MigrationDeclaration;
 use Cycle\Migrations\Migrator;
-use Spiral\Reactor\FileDeclaration;
 use Spiral\Scaffolder\Command\AbstractCommand;
 use Spiral\Scaffolder\Exception\ScaffolderException;
 use Symfony\Component\Console\Input\InputArgument;
@@ -14,8 +13,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 class MigrationCommand extends AbstractCommand
 {
-    protected const ELEMENT = 'migration';
-
     protected const NAME        = 'create:migration';
     protected const DESCRIPTION = 'Create migration declaration';
     protected const ARGUMENTS   = [
@@ -50,7 +47,7 @@ class MigrationCommand extends AbstractCommand
     public function perform(Migrator $migrator): int
     {
         /** @var MigrationDeclaration $declaration */
-        $declaration = $this->createDeclaration();
+        $declaration = $this->createDeclaration(MigrationDeclaration::class);
 
         if (!empty($this->option('table'))) {
             $fields = [];
@@ -66,19 +63,14 @@ class MigrationCommand extends AbstractCommand
             $declaration->declareCreation((string)$this->option('table'), $fields);
         }
 
-        $file = new FileDeclaration($this->getNamespace());
-        $file->setDirectives('strict_types=1');
-        $file->setComment($this->config->headerLines());
-        $file->addElement($declaration);
-
         $filename = $migrator->getRepository()->registerMigration(
             (string)$this->argument('name'),
-            $declaration->getName(),
-            $file->render()
+            $declaration->getClass()->getName(),
+            (string) $declaration->getFile()
         );
 
         $this->writeln(
-            "Declaration of '<info>{$declaration->getName()}</info>' "
+            "Declaration of '<info>{$declaration->getClass()->getName()}</info>' "
             . "has been successfully written into '<comment>{$filename}</comment>'."
         );
 

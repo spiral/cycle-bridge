@@ -5,18 +5,16 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Scaffolder\Declaration;
 
 use Cycle\ORM\Select\Repository;
-use Spiral\Reactor\ClassDeclaration;
-use Spiral\Reactor\DependedInterface;
+use Spiral\Scaffolder\Declaration\AbstractDeclaration;
 
-class RepositoryDeclaration extends ClassDeclaration implements DependedInterface
+class RepositoryDeclaration extends AbstractDeclaration
 {
-    public function __construct(string $name, string $comment = '')
-    {
-        parent::__construct($name, 'Repository', [], $comment);
-    }
+    public const TYPE = 'repository';
 
-    public function getDependencies(): array
+    public function declare(): void
     {
-        return [Repository::class => null];
+        $this->namespace->addUse(Repository::class);
+
+        $this->class->setExtends(Repository::class);
     }
 }

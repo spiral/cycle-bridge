@@ -16,7 +16,7 @@ final class CycleOrmBootloaderRebindingTest extends BaseTest
     protected function setUp(): void
     {
         $this->commandGenerator = m::mock(CommandGeneratorInterface::class);
-        $this->beforeStarting(function (Container $container): void {
+        $this->beforeBooting(function (Container $container): void {
             $container->bind(CommandGeneratorInterface::class, $this->commandGenerator);
         });
         parent::setUp();

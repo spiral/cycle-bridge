@@ -39,16 +39,6 @@ final class CycleInterceptorTest extends ConsoleTest
         $core->callAction(HomeController::class, 'no_method', []);
     }
 
-    public function testCallActionWithUnionType(): void
-    {
-        /** @var CoreInterface $core */
-        $core = $this->getContainer()->get(CoreInterface::class);
-
-        $this->expectException(ControllerException::class);
-        $this->expectExceptionMessage('contains a union type hint');
-        $core->callAction(HomeController::class, 'entityUnion', []);
-    }
-
     public function testCallBuiltInType(): void
     {
         /** @var CoreInterface $core */

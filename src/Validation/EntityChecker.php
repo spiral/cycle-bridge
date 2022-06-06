@@ -12,7 +12,7 @@ use Cycle\ORM\Select;
 use Cycle\ORM\Select\Repository;
 use RuntimeException;
 use Spiral\Core\Container\SingletonInterface;
-use Spiral\Validation\AbstractChecker;
+use Spiral\Validator\AbstractChecker;
 
 /**
  * Cycle ORM specific checker

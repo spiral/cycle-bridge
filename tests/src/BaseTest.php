@@ -50,7 +50,7 @@ abstract class BaseTest extends TestCase
 
     public function rootDirectory(): string
     {
-        return dirname(__DIR__ . '/../App');
+        return dirname(__DIR__ . '/../app');
     }
 
     public function defineBootloaders(): array
@@ -107,7 +107,7 @@ abstract class BaseTest extends TestCase
     public function updateConfig(string $key, mixed $data): void
     {
         [$config, $key] = explode('.', $key, 2);
-        $this->beforeStarting(static function (ConfigsInterface $configs) use ($config, $key, $data) {
+        $this->beforeBooting(static function (ConfigsInterface $configs) use ($config, $key, $data) {
             $configs->modify(
                 $config,
                 new Set($key, $data)
@@ -133,9 +133,7 @@ abstract class BaseTest extends TestCase
     protected function accessProtected(object $obj, string $prop)
     {
         $reflection = new \ReflectionClass($obj);
-        $property = $reflection->getProperty($prop);
-        $property->setAccessible(true);
 
-        return $property->getValue($obj);
+        return $reflection->getProperty($prop)->getValue($obj);
     }
 }

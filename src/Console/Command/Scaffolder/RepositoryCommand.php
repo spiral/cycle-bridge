@@ -11,8 +11,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 class RepositoryCommand extends AbstractCommand
 {
-    public const ELEMENT = 'repository';
-
     protected const NAME        = 'create:repository';
     protected const DESCRIPTION = 'Create repository declaration';
     protected const ARGUMENTS   = [
@@ -33,7 +31,7 @@ class RepositoryCommand extends AbstractCommand
     public function perform(): int
     {
         /** @var RepositoryDeclaration $declaration */
-        $declaration = $this->createDeclaration();
+        $declaration = $this->createDeclaration(RepositoryDeclaration::class);
 
         $this->writeDeclaration($declaration);
 
