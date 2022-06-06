@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Bootloader;
 
+use Cycle\ORM\EntityManager;
 use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\FactoryInterface;
 use Cycle\ORM\ORM;
@@ -34,6 +35,7 @@ final class CycleOrmBootloaderTest extends BaseTest
 
     public function testGetsEntityManager(): void
     {
+        $this->assertContainerBoundAsSingleton(EntityManagerInterface::class, EntityManager::class);
         $this->assertContainerBound(EntityManagerInterface::class);
     }
 
