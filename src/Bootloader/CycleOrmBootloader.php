@@ -47,7 +47,11 @@ final class CycleOrmBootloader extends Bootloader
     public function init(Container $container, FinalizerInterface $finalizer): void
     {
         $finalizer->addFinalizer(
-            static function () use ($container): void {
+            static function (bool $terminate) use ($container): void {
+                if ($terminate) {
+                    return;
+                }
+
                 if ($container->hasInstance(ORMInterface::class)) {
                     $container->get(ORMInterface::class)->getHeap()->clean();
                 }
