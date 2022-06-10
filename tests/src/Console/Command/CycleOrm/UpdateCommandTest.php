@@ -14,7 +14,8 @@ final class UpdateCommandTest extends ConsoleTest
 {
     public const ENV = [
         'SAFE_MIGRATIONS' => true,
-        'USE_MIGRATIONS' => true
+        'USE_MIGRATIONS' => true,
+        'CYCLE_SCHEMA_CACHE' => true
     ];
 
     public function testGetSchema(): void
@@ -37,7 +38,7 @@ final class UpdateCommandTest extends ConsoleTest
         $memory = m::mock(MemoryInterface::class);
         $this->getContainer()->bind(MemoryInterface::class, $memory);
 
-        $memory->shouldReceive('saveData');
+        $memory->shouldReceive('saveData')->once();
         $memory->shouldReceive('loadData')->once()->andReturn(new Schema([]));
         $this->runCommand('cycle');
 

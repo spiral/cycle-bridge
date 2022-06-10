@@ -40,7 +40,8 @@ final class CycleOrmBootloader extends Bootloader
     ];
 
     public function __construct(
-        private readonly ConfiguratorInterface $config
+        private readonly ConfiguratorInterface $config,
+        private readonly EnvironmentInterface $env
     ) {
     }
 
@@ -104,11 +105,12 @@ final class CycleOrmBootloader extends Bootloader
             CycleConfig::CONFIG,
             [
                 'schema' => [
-                    'cache' => true,
+                    'cache' => $this->env->get('CYCLE_SCHEMA_CACHE', false),
                     'generators' => null,
                     'defaults' => [],
                     'collections' => [],
                 ],
+                'warmup' => $this->env->get('CYCLE_SCHEMA_WARMUP', false),
             ]
         );
     }
