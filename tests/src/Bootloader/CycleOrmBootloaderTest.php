@@ -6,8 +6,10 @@ namespace Spiral\Tests\Bootloader;
 
 use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\FactoryInterface;
+use Cycle\ORM\Heap\HeapInterface;
 use Cycle\ORM\ORM;
 use Cycle\ORM\ORMInterface;
+use Spiral\Boot\FinalizerInterface;
 use Spiral\Core\ConfigsInterface;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Tests\BaseTest;
@@ -54,5 +56,26 @@ final class CycleOrmBootloaderTest extends BaseTest
         $config = $this->getContainer()->get(CycleConfig::class);
 
         $this->assertFalse($config->warmup());
+    }
+
+    public function testFinalizerShouldCleanHeapForLoop(): void
+    {
+        $orm = $this->mockContainer(ORMInterface::class);
+
+        $orm->shouldReceive('getHeap')->once()->andReturn($heap = \Mockery::mock(HeapInterface::class));
+        $heap->shouldReceive('clean')->once();
+
+        $finalizer = $this->getContainer()->get(FinalizerInterface::class);
+
+        $finalizer->finalize();
+    }
+
+    public function testFinalizerShouldNotCleanHeapAfterTerminating(): void
+    {
+        $orm = $this->mockContainer(ORMInterface::class);
+        $orm->shouldReceive('getHeap')->never();
+        $finalizer = $this->getContainer()->get(FinalizerInterface::class);
+
+        $finalizer->finalize(true);
     }
 }
