@@ -22,14 +22,12 @@ abstract class OrmWithPrepareServicesMockStub implements ORMInterface
 
 final class CycleOrmWarmedUpBootloaderTest extends BaseTest
 {
+    public const ENV = [
+        'CYCLE_SCHEMA_WARMUP' => true
+    ];
+
     protected function setUp(): void
     {
-        $this->beforeStarting(
-            \Closure::bind(static function (CycleConfig $config) {
-                $config->config['warmup'] = true;
-            }, null, CycleConfig::class)
-        );
-
         $orm = m::mock(OrmWithPrepareServicesMockStub::class);
         $orm->shouldAllowMockingMethod('prepareServices');
         $orm->shouldReceive('prepareServices')->once();
