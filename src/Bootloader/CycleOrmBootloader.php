@@ -16,6 +16,7 @@ use Cycle\ORM\RepositoryInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\AbstractKernel;
 use Spiral\Boot\Bootloader\Bootloader;
+use Spiral\Boot\EnvironmentInterface;
 use Spiral\Boot\FinalizerInterface;
 use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
