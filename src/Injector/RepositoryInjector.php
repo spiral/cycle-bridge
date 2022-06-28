@@ -29,15 +29,15 @@ final class RepositoryInjector implements InjectorInterface
         foreach ($schema->getRoles() as $role) {
             $repository = $schema->define($role, SchemaInterface::REPOSITORY);
 
-            if ($repository !== Select\Repository::class && in_array($repository, $class->getInterfaceNames(), true)) {
-                return $this->orm->getRepository($role);
-            }
-
-            if ($repository !== Select\Repository::class && $repository === $class->getName()) {
-                return $this->orm->getRepository($role);
+            if ($repository !== Select\Repository::class) {
+                if ($repository === $class->getName() || \in_array($repository, $class->getInterfaceNames(), true)) {
+                    return $this->orm->getRepository($role);
+                }
             }
         }
 
-        throw new ORMException(sprintf('Unable to find Entity role for repository %s', $class->getName()));
+        throw new ORMException(
+            \sprintf('Unable to find Entity role for repository %s', $class->getName())
+        );
     }
 }
