@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Injector;
 
+use Cycle\ORM\RepositoryInterface;
 use Spiral\App\Repositories\RoleRepository;
 use Spiral\App\Repositories\RoleRepositoryInterface;
 use Spiral\App\Repositories\UserRepository;
@@ -20,5 +21,12 @@ final class RepositoryInjectorTest extends BaseTest
     public function testInjectRepositoryInterface(): void
     {
         $this->assertInstanceOf(RoleRepository::class, $this->getContainer()->get(RoleRepositoryInterface::class));
+    }
+
+    public function testInjectBaseRepositoryInterface(): void
+    {
+        $this->expectExceptionMessage('Unable to find Entity role for repository Cycle\ORM\RepositoryInterface');
+
+        $this->getContainer()->get(RepositoryInterface::class);
     }
 }
