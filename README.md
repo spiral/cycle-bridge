@@ -65,6 +65,9 @@ protected const LOAD = [
 
     // Migrations and Cycle Scaffolders (Optional)
     CycleBridge\ScaffolderBootloader::class,
+    
+    // Prototyping (Optional)
+    CycleBridge\PrototypeBootloader::class,
 ];
 ```
 
