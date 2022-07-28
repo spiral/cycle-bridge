@@ -4,30 +4,18 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Scaffolder\Declaration\Entity;
 
-use PHPUnit\Framework\TestCase;
 use Spiral\Cycle\Scaffolder\Declaration\Entity\AnnotatedDeclaration;
 use Spiral\Scaffolder\Config\ScaffolderConfig;
+use Spiral\Tests\BaseTest;
 
-final class AnnotatedDeclarationTest extends TestCase
+final class AnnotatedDeclarationTest extends BaseTest
 {
     /**
      * @dataProvider fieldsProvider
      */
     public function testAddField(string $name, string $accessibility, string $type, string $expectedType): void
     {
-        $declaration = new AnnotatedDeclaration(
-            new ScaffolderConfig([
-                'header'       => [],
-                'directory'    => '',
-                'namespace'    => '',
-                'declarations' => [
-                    'entity' => [
-
-                    ]
-                ],
-            ]),
-            'test'
-        );
+        $declaration = new AnnotatedDeclaration($this->getContainer()->get(ScaffolderConfig::class), 'test');
 
         $property = $declaration->addField($name, $accessibility, $type);
 

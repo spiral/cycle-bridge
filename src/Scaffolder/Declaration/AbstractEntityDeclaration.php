@@ -84,14 +84,26 @@ abstract class AbstractEntityDeclaration extends AbstractDeclaration
         }
 
         $phpMapping = [
-            'int'   => ['primary', 'bigPrimary', 'integer', 'tinyInteger', 'smallInteger', 'bigInteger'],
-            'bool'  => ['boolean'],
+            'int'   => [
+                'primary',
+                'incremental',
+                'bigPrimary',
+                'int',
+                'integer',
+                'tinyInteger',
+                'smallint',
+                'smallInteger',
+                'bigint',
+                'bigInteger',
+                'bigIncremental'
+            ],
+            'bool'  => ['boolean', 'bool'],
             'float' => ['double', 'float', 'decimal'],
             \DateTimeImmutable::class => ['datetime', 'date', 'time', 'timestamp']
         ];
 
         foreach ($phpMapping as $phpType => $candidates) {
-            if (in_array($type, $candidates, true)) {
+            if (\in_array($type, $candidates, true)) {
                 return $phpType;
             }
         }
