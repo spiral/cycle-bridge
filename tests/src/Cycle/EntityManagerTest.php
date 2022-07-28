@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Spiral\Tests\Cycle;
 
 use Cycle\Database\DatabaseInterface;
+use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\Mapper\Mapper;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\Schema;
@@ -56,5 +57,15 @@ final class EntityManagerTest extends BaseTest
         $this->getContainer()->get(FinalizerInterface::class)->finalize();
         $em->run();
         self::assertNull($this->getRepository(Bar::class)->findOne(['name' => 'baz']));
+    }
+
+    public function testMethodCleanCalled(): void
+    {
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->expects($this->once())->method('clean');
+
+        $this->getContainer()->bindSingleton(EntityManagerInterface::class, fn(): EntityManagerInterface => $em);
+        $this->getContainer()->get(EntityManagerInterface::class);
+        $this->getContainer()->get(FinalizerInterface::class)->finalize();
     }
 }
