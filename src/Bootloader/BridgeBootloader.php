@@ -33,5 +33,8 @@ final class BridgeBootloader extends Bootloader
 
         // Migrations and Cycle Scaffolders (Optional)
         ScaffolderBootloader::class,
+
+        // Prototyping (Optional)
+        PrototypeBootloader::class,
     ];
 }
