@@ -30,6 +30,7 @@
     "spiral/framework": "3.0.x-dev",
     "spiral/reactor": "^3.0",
     "spiral/scaffolder": "^3.0",
+    "spiral/prototype": "^3.0",
     "spiral/data-grid-bridge": "^3.0",
     "psr/container": "^1.1 || ^2.0"
   },
