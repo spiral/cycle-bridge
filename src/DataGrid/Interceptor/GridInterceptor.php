@@ -115,7 +115,7 @@ final class GridInterceptor implements CoreInterceptorInterface
 
     private function makeFactory(array $schema): GridFactoryInterface
     {
-        if (!empty($schema['factory']) && $this->container->has($schema['factory'])) {
+        if (!empty($schema['factory'])) {
             $factory = $this->container->get($schema['factory']);
             if ($factory instanceof GridFactoryInterface) {
                 return $factory;
