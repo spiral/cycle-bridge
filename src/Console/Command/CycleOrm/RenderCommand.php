@@ -6,6 +6,7 @@ namespace Spiral\Cycle\Console\Command\CycleOrm;
 
 use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Renderer\OutputSchemaRenderer;
+use Cycle\Schema\Renderer\PhpSchemaRenderer;
 use Cycle\Schema\Renderer\SchemaToArrayConverter;
 use Spiral\Cycle\Console\Command\Migrate\AbstractCommand;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,6 +18,7 @@ final class RenderCommand extends AbstractCommand
     protected const DESCRIPTION = 'Render available CycleORM schemas';
     protected const OPTIONS = [
         ['no-color', 'nc', InputOption::VALUE_NONE, 'Display output without colors.'],
+        ['php', 'p', InputOption::VALUE_NONE, 'Display output as PHP code.'],
     ];
 
     public function perform(
@@ -28,7 +30,9 @@ final class RenderCommand extends AbstractCommand
             OutputSchemaRenderer::FORMAT_PLAIN_TEXT :
             OutputSchemaRenderer::FORMAT_CONSOLE_COLOR;
 
-        $renderer = new OutputSchemaRenderer($format);
+        $renderer = $this->option('php')
+                    ? new PhpSchemaRenderer($format)
+                    : new OutputSchemaRenderer($format);
 
         $output->writeln(
             $renderer->render(
