@@ -31,7 +31,7 @@ final class RenderCommand extends AbstractCommand
             OutputSchemaRenderer::FORMAT_CONSOLE_COLOR;
 
         $renderer = $this->option('php')
-                    ? new PhpSchemaRenderer($format)
+                    ? new PhpSchemaRenderer()
                     : new OutputSchemaRenderer($format);
 
         $output->writeln(
