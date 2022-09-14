@@ -39,10 +39,10 @@
     "illuminate/collections": "^9.0",
     "infection/infection": "^0.26.6",
     "mockery/mockery": "^1.5",
-    "phpunit/phpunit": "^9.5",
+    "phpunit/phpunit": "^9.5.20",
     "spiral/testing": "^2.0",
     "spiral/validator": "^1.0",
-    "vimeo/psalm": "^4.9"
+    "vimeo/psalm": "^4.27"
   },
   "autoload": {
     "psr-4": {
