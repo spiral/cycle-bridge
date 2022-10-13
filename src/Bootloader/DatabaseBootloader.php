@@ -8,6 +8,7 @@ use Cycle\Database\Config\DatabaseConfig;
 use Cycle\Database\DatabaseInterface;
 use Cycle\Database\DatabaseManager;
 use Cycle\Database\DatabaseProviderInterface;
+use Cycle\Database\LoggerFactoryInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
@@ -20,6 +21,7 @@ final class DatabaseBootloader extends Bootloader implements SingletonInterface
     protected const SINGLETONS = [
         DatabaseManager::class => [self::class, 'initManager'],
         DatabaseProviderInterface::class => DatabaseManager::class,
+        LoggerFactoryInterface::class => LoggerFactory::class,
     ];
 
     /**
@@ -44,9 +46,10 @@ final class DatabaseBootloader extends Bootloader implements SingletonInterface
         $container->bindInjector(DatabaseInterface::class, DatabaseInjector::class);
     }
 
-    protected function initManager(DatabaseConfig $config, LoggerFactory $loggerFactory): DatabaseProviderInterface
-    {
+    protected function initManager(
+        DatabaseConfig $config,
+        LoggerFactoryInterface $loggerFactory
+    ): DatabaseProviderInterface {
         return new DatabaseManager($config, $loggerFactory);
     }
 }
-
