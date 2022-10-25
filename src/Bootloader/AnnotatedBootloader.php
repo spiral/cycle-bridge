@@ -5,26 +5,32 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Bootloader;
 
 use Cycle\Annotated;
-use Spiral\Attributes\Factory;
 use Spiral\Attributes\ReaderInterface;
 use Spiral\Boot\Bootloader\Bootloader;
-use Spiral\Tokenizer\Bootloader\TokenizerBootloader;
-use Spiral\Tokenizer\ClassesInterface;
+use Spiral\Bootloader\Attributes\AttributesBootloader;
+use Spiral\Cycle\Annotated\Locator\ListenerEmbeddingsLocator;
+use Spiral\Cycle\Annotated\Locator\ListenerEntityLocator;
+use Spiral\Tokenizer\Bootloader\TokenizerListenerBootloader;
 
 final class AnnotatedBootloader extends Bootloader
 {
     protected const DEPENDENCIES = [
         SchemaBootloader::class,
-        TokenizerBootloader::class,
+        TokenizerListenerBootloader::class,
+        AttributesBootloader::class,
     ];
 
     protected const BINDINGS = [
-        ReaderInterface::class => [self::class, 'initReader'],
         Annotated\Embeddings::class => [self::class, 'initEmbeddings'],
         Annotated\Entities::class => [self::class, 'initEntities'],
         Annotated\MergeColumns::class => [self::class, 'initMergeColumns'],
         Annotated\TableInheritance::class => [self::class, 'initTableInheritance'],
         Annotated\MergeIndexes::class => [self::class, 'initMergeIndexes'],
+    ];
+
+    protected const SINGLETONS = [
+        ListenerEntityLocator::class => ListenerEntityLocator::class,
+        ListenerEmbeddingsLocator::class => ListenerEmbeddingsLocator::class,
     ];
 
     public function init(SchemaBootloader $schema): void
@@ -36,32 +42,38 @@ final class AnnotatedBootloader extends Bootloader
         $schema->addGenerator(SchemaBootloader::GROUP_RENDER, Annotated\MergeIndexes::class);
     }
 
-    private function initReader(): ReaderInterface
-    {
-        return (new Factory)->create();
+    public function boot(
+        TokenizerListenerBootloader $tokenizer,
+        ListenerEntityLocator $entityLocator,
+        ListenerEmbeddingsLocator $embeddingsLocator
+    ): void {
+        $tokenizer->addListener($entityLocator);
+        $tokenizer->addListener($embeddingsLocator);
     }
 
-    private function initEmbeddings(ClassesInterface $classes, ReaderInterface $reader): Annotated\Embeddings
-    {
-        return new Annotated\Embeddings($classes, $reader);
+    private function initEmbeddings(
+        ReaderInterface $reader,
+        ListenerEmbeddingsLocator $embeddingsLocator
+    ): Annotated\Embeddings {
+        return new Annotated\Embeddings($embeddingsLocator, $reader);
     }
 
-    public function initEntities(ClassesInterface $classes, ReaderInterface $reader): Annotated\Entities
+    public function initEntities(ReaderInterface $reader, ListenerEntityLocator $entityLocator): Annotated\Entities
     {
-        return new Annotated\Entities($classes, $reader);
+        return new Annotated\Entities($entityLocator, $reader);
     }
 
-    public function initMergeColumns(ClassesInterface $classes, ReaderInterface $reader): Annotated\MergeColumns
+    public function initMergeColumns(ReaderInterface $reader): Annotated\MergeColumns
     {
         return new Annotated\MergeColumns($reader);
     }
 
-    public function initTableInheritance(ClassesInterface $classes, ReaderInterface $reader): Annotated\TableInheritance
+    public function initTableInheritance(ReaderInterface $reader): Annotated\TableInheritance
     {
         return new Annotated\TableInheritance($reader);
     }
 
-    public function initMergeIndexes(ClassesInterface $classes, ReaderInterface $reader): Annotated\MergeIndexes
+    public function initMergeIndexes(ReaderInterface $reader): Annotated\MergeIndexes
     {
         return new Annotated\MergeIndexes($reader);
     }

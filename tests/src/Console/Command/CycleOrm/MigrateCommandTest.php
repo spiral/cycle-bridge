@@ -6,6 +6,7 @@ namespace Spiral\Tests\Console\Command\CycleOrm;
 
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Entity;
+use Spiral\Cycle\Annotated\Locator\ListenerEntityLocator;
 use Spiral\Files\Files;
 use Spiral\Tests\ConsoleTest;
 
@@ -72,6 +73,10 @@ final class MigrateCommandTest extends ConsoleTest
                 }
                 PHP
         );
+
+        // This is the important part. Listeners only work when the app is bootstrapping.
+        $listener = $this->getContainer()->get(ListenerEntityLocator::class);
+        $listener->listen(new \ReflectionClass(\Spiral\App\Entities\Tag::class));
 
         $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', ['-r' => true], [
             'default.tags',
