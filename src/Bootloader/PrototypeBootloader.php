@@ -17,7 +17,7 @@ final class PrototypeBootloader extends Bootloader
 {
     public function boot(AbstractKernel $kernel): void
     {
-        $kernel->booted(function (BasePrototypeBootloader $prototype, ContainerInterface $container): void {
+        $kernel->bootstrapped(function (BasePrototypeBootloader $prototype, ContainerInterface $container): void {
             $this->bindDatabase($prototype);
             $this->bindCycle($prototype, $container);
         });
