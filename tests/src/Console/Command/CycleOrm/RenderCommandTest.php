@@ -10,13 +10,35 @@ use Cycle\ORM\SchemaInterface;
 
 final class RenderCommandTest extends ConsoleTest
 {
-    public function testRenderSchema(): void
+    public function testRenderDefaultFormat(): void
     {
-        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['--no-color' => true], [
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => ''], [
             '[user] :: default.users',
             'Entity: Spiral\App\Entities\User',
             'Mapper: Cycle\ORM\Mapper\Mapper',
-            'Repository: Cycle\ORM\Select\Repository'
+            'Repository: Cycle\ORM\Select\Repository',
+        ]);
+    }
+
+    public function testRenderMermaidFormat(): void
+    {
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'mermaid'], [
+            'classDiagram',
+            'class user',
+            'class role',
+            'class token',
+            'user --> "nullable" user : friend',
+        ]);
+    }
+
+    public function testRenderPHPFormat(): void
+    {
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'php'], [
+            '<?php',
+            'declare(strict_types=1);',
+            'use Cycle\ORM\Relation;',
+            'use Cycle\ORM\SchemaInterface as Schema;',
+            'return [',
         ]);
     }
 
@@ -36,7 +58,7 @@ final class RenderCommandTest extends ConsoleTest
             'Repository: custom_repository',
             'Scope: custom_scope',
             'Typecast: Cycle\ORM\Parser\Typecast',
-            'custom_typecast_handler'
+            'custom_typecast_handler',
         ]);
     }
 }
