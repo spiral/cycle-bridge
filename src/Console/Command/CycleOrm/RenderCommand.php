@@ -29,7 +29,7 @@ final class RenderCommand extends AbstractCommand
             'color' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_CONSOLE_COLOR),
             'plain' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_PLAIN_TEXT),
             default => throw new \InvalidArgumentException(
-                sprintf('Format `%s` doesn\'t exists.', $this->argument('format'))
+                sprintf("Format `%s` doesn't exists.", $this->argument('format'))
             )
         };
 
