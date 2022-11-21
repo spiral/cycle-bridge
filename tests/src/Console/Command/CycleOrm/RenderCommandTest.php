@@ -32,12 +32,30 @@ final class RenderCommandTest extends ConsoleTest
         ]);
     }
 
+    #[ConfigAttribute(path: 'cycle.schema.defaults', value: [
+        SchemaInterface::MAPPER => 'custom_mapper',
+        SchemaInterface::REPOSITORY => 'custom_repository',
+        SchemaInterface::SCOPE => 'custom_scope',
+        SchemaInterface::TYPECAST_HANDLER => [
+            \Cycle\ORM\Parser\Typecast::class,
+            'custom_typecast_handler',
+        ],
+    ])]
+    public function testRenderInColorFormat()
+    {
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'color'], [
+            '[35m[user][39m :: [32mdefault[39m.[32musers[39m',
+            'Entity: [34mSpiral\App\Entities\User[39m',
+            'Mapper: [34mcustom_mapper[39m'
+        ]);
+    }
+
     public function testRenderInInvalidFormat(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Format \'123\' doesn\'t exists.');
+        $this->expectExceptionMessage("Format `unknown` doesn't exists.");
 
-        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => '123']);
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'unknown']);
     }
 
     #[ConfigAttribute(path: 'cycle.schema.defaults', value: [
