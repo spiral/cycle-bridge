@@ -27,7 +27,10 @@ final class RenderCommand extends AbstractCommand
             'mermaid' => new MermaidRenderer(),
             'php' => new PhpSchemaRenderer(),
             'color' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_CONSOLE_COLOR),
-            default => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_PLAIN_TEXT)
+            'plain' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_PLAIN_TEXT),
+            default => throw new \InvalidArgumentException(
+                sprintf('Format \'%s\' doesn\'t exists.', $this->argument('format'))
+            )
         };
 
         $output->writeln(

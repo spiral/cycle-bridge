@@ -10,17 +10,7 @@ use Cycle\ORM\SchemaInterface;
 
 final class RenderCommandTest extends ConsoleTest
 {
-    public function testRenderDefaultFormat(): void
-    {
-        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => ''], [
-            '[user] :: default.users',
-            'Entity: Spiral\App\Entities\User',
-            'Mapper: Cycle\ORM\Mapper\Mapper',
-            'Repository: Cycle\ORM\Select\Repository',
-        ]);
-    }
-
-    public function testRenderMermaidFormat(): void
+    public function testRenderInMermaidFormat(): void
     {
         $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'mermaid'], [
             'classDiagram',
@@ -31,7 +21,7 @@ final class RenderCommandTest extends ConsoleTest
         ]);
     }
 
-    public function testRenderPHPFormat(): void
+    public function testRenderInPHPFormat(): void
     {
         $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'php'], [
             '<?php',
@@ -40,6 +30,14 @@ final class RenderCommandTest extends ConsoleTest
             'use Cycle\ORM\SchemaInterface as Schema;',
             'return [',
         ]);
+    }
+
+    public function testRenderInInvalidFormat(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Format \'123\' doesn\'t exists.');
+
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => '123']);
     }
 
     #[ConfigAttribute(path: 'cycle.schema.defaults', value: [
@@ -53,7 +51,7 @@ final class RenderCommandTest extends ConsoleTest
     ])]
     public function testRedefineSchemaDefaults()
     {
-        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['--no-color' => true], [
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'plain'], [
             'Mapper: custom_mapper',
             'Repository: custom_repository',
             'Scope: custom_scope',
