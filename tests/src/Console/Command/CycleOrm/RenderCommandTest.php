@@ -53,7 +53,7 @@ final class RenderCommandTest extends ConsoleTest
     public function testRenderInInvalidFormat(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("Format `unknown` doesn't exists.");
+        $this->expectExceptionMessage("Format `unknown` isn't supported.");
 
         $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'unknown']);
     }
