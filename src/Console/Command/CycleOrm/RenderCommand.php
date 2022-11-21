@@ -11,6 +11,7 @@ use Cycle\Schema\Renderer\SchemaToArrayConverter;
 use Spiral\Cycle\Console\Command\Migrate\AbstractCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Cycle\Schema\Renderer\MermaidRenderer\MermaidRenderer;
 
 final class RenderCommand extends AbstractCommand
 {
@@ -18,7 +19,7 @@ final class RenderCommand extends AbstractCommand
     protected const DESCRIPTION = 'Render available CycleORM schemas';
     protected const OPTIONS = [
         ['no-color', 'nc', InputOption::VALUE_NONE, 'Display output without colors.'],
-        ['php', 'p', InputOption::VALUE_NONE, 'Display output as PHP code.'],
+        ['renderer', 'rr', InputOption::VALUE_NONE, 'Display output in specific format.'],
     ];
 
     public function perform(
@@ -26,13 +27,15 @@ final class RenderCommand extends AbstractCommand
         SchemaInterface $schema,
         SchemaToArrayConverter $converter
     ): int {
-        $format = $this->option('no-color')  ?
+        $format = $this->option('no-color') ?
             OutputSchemaRenderer::FORMAT_PLAIN_TEXT :
             OutputSchemaRenderer::FORMAT_CONSOLE_COLOR;
 
-        $renderer = $this->option('php')
-                    ? new PhpSchemaRenderer()
-                    : new OutputSchemaRenderer($format);
+        $renderer = match ($this->option('renderer')) {
+            'php' => new PhpSchemaRenderer(),
+            'mermaid' => new MermaidRenderer(),
+            default => new OutputSchemaRenderer($format)
+        };
 
         $output->writeln(
             $renderer->render(
