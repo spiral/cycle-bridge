@@ -23,7 +23,7 @@
     "cycle/annotated": "^3.1",
     "cycle/migrations": "^4.0.1",
     "cycle/orm": "^2.0.2",
-    "cycle/schema-migrations-generator": "^3.0",
+    "cycle/schema-migrations-generator": "^2.1",
     "cycle/schema-renderer": "^1.2",
     "doctrine/inflector": "^1.4 || ^2.0",
     "spiral/attributes": "^2.10 || ^3.0",
