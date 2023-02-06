@@ -11,6 +11,7 @@
 
 -----
 
+
 ## Requirements
 
 Make sure that your server is configured with following PHP version and extensions:
