@@ -31,12 +31,9 @@ final class CycleOrmBootloader extends Bootloader
         AnnotatedBootloader::class,
     ];
 
-    protected const BINDINGS = [
-        EntityManagerInterface::class => EntityManager::class,
-    ];
-
     protected const SINGLETONS = [
         ORMInterface::class => ORM::class,
+        EntityManagerInterface::class => EntityManager::class,
         FactoryInterface::class => [self::class, 'factory'],
     ];
 
@@ -52,6 +49,10 @@ final class CycleOrmBootloader extends Bootloader
             static function (bool $terminate) use ($container): void {
                 if ($terminate) {
                     return;
+                }
+
+                if ($container->hasInstance(EntityManagerInterface::class)) {
+                    $container->get(EntityManagerInterface::class)->clean();
                 }
 
                 if ($container->hasInstance(ORMInterface::class)) {
