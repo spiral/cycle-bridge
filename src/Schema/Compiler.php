@@ -44,7 +44,7 @@ final class Compiler
 
     public function toMemory(MemoryInterface $memory)
     {
-        return $memory->saveData(
+        $memory->saveData(
             self::MEMORY_SECTION,
             empty($this->schema) ? self::EMPTY_SCHEMA : $this->schema
         );
