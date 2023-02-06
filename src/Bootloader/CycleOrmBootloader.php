@@ -18,7 +18,6 @@ use Cycle\ORM\TransactionInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\AbstractKernel;
 use Spiral\Boot\Bootloader\Bootloader;
-use Spiral\Boot\EnvironmentInterface;
 use Spiral\Boot\FinalizerInterface;
 use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
@@ -35,11 +34,11 @@ final class CycleOrmBootloader extends Bootloader
 
     protected const BINDINGS = [
         TransactionInterface::class => Transaction::class,
-        EntityManagerInterface::class => EntityManager::class,
     ];
 
     protected const SINGLETONS = [
         ORMInterface::class => ORM::class,
+        EntityManagerInterface::class => EntityManager::class,
         FactoryInterface::class => [self::class, 'factory'],
     ];
 
@@ -52,10 +51,12 @@ final class CycleOrmBootloader extends Bootloader
     public function boot(
         Container $container,
         FinalizerInterface $finalizer,
-        EnvironmentInterface $env
     ): void {
         $finalizer->addFinalizer(
             static function () use ($container): void {
+                if ($container->hasInstance(EntityManagerInterface::class)) {
+                    $container->get(EntityManagerInterface::class)->clean();
+                }
                 if ($container->hasInstance(ORMInterface::class)) {
                     $container->get(ORMInterface::class)->getHeap()->clean();
                 }
