@@ -36,7 +36,6 @@ final class CycleOrmBootloaderTest extends BaseTest
     public function testGetsEntityManager(): void
     {
         $this->assertContainerBoundAsSingleton(EntityManagerInterface::class, EntityManager::class);
-        $this->assertContainerBound(EntityManagerInterface::class);
     }
 
     #[ConfigAttribute(path: 'cycle.schema.collections', value: ['default' => 'test'])]
