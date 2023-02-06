@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Bootloader;
 
+use Cycle\ORM\EntityManager;
 use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\FactoryInterface;
 use Cycle\ORM\Heap\HeapInterface;
@@ -30,7 +31,7 @@ final class CycleOrmBootloaderTest extends BaseTest
 
     public function testGetsEntityManager(): void
     {
-        $this->assertContainerBound(EntityManagerInterface::class);
+        $this->assertContainerBoundAsSingleton(EntityManagerInterface::class, EntityManager::class);
     }
 
     #[ConfigAttribute(path: 'cycle.schema.collections', value: ['default' => 'test'])]
@@ -61,9 +62,11 @@ final class CycleOrmBootloaderTest extends BaseTest
     public function testFinalizerShouldCleanHeapForLoop(): void
     {
         $orm = $this->mockContainer(ORMInterface::class);
+        $em = $this->mockContainer(EntityManagerInterface::class);
 
         $orm->shouldReceive('getHeap')->once()->andReturn($heap = \Mockery::mock(HeapInterface::class));
         $heap->shouldReceive('clean')->once();
+        $em->shouldReceive('clean')->once();
 
         $finalizer = $this->getContainer()->get(FinalizerInterface::class);
 
@@ -73,7 +76,10 @@ final class CycleOrmBootloaderTest extends BaseTest
     public function testFinalizerShouldNotCleanHeapAfterTerminating(): void
     {
         $orm = $this->mockContainer(ORMInterface::class);
+        $em = $this->mockContainer(EntityManagerInterface::class);
         $orm->shouldReceive('getHeap')->never();
+        $em->shouldReceive('clean')->never();
+
         $finalizer = $this->getContainer()->get(FinalizerInterface::class);
 
         $finalizer->finalize(true);
