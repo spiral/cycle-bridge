@@ -11,10 +11,10 @@ use Cycle\Annotated\Annotation\Entity;
 class Bar
 {
     #[Column(type: 'primary')]
-    public int $id;
+    public $id;
 
     #[Column(type: 'string')]
-    public string $name;
+    public $name;
 
     public function __construct(string $name)
     {
