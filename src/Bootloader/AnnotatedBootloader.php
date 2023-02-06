@@ -51,17 +51,17 @@ final class AnnotatedBootloader extends Bootloader
         return new Annotated\Entities($classes, $reader);
     }
 
-    public function initMergeColumns(ClassesInterface $classes, ReaderInterface $reader): Annotated\MergeColumns
+    public function initMergeColumns(ReaderInterface $reader): Annotated\MergeColumns
     {
         return new Annotated\MergeColumns($reader);
     }
 
-    public function initTableInheritance(ClassesInterface $classes, ReaderInterface $reader): Annotated\TableInheritance
+    public function initTableInheritance(ReaderInterface $reader): Annotated\TableInheritance
     {
         return new Annotated\TableInheritance($reader);
     }
 
-    public function initMergeIndexes(ClassesInterface $classes, ReaderInterface $reader): Annotated\MergeIndexes
+    public function initMergeIndexes(ReaderInterface $reader): Annotated\MergeIndexes
     {
         return new Annotated\MergeIndexes($reader);
     }
