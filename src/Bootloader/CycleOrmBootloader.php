@@ -18,6 +18,7 @@ use Cycle\ORM\TransactionInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\AbstractKernel;
 use Spiral\Boot\Bootloader\Bootloader;
+use Spiral\Boot\EnvironmentInterface;
 use Spiral\Boot\FinalizerInterface;
 use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
@@ -43,14 +44,14 @@ final class CycleOrmBootloader extends Bootloader
     ];
 
     public function __construct(
-        private ConfiguratorInterface $config,
-        private EnvironmentInterface $env
+        private ConfiguratorInterface $config
     ) {
     }
 
     public function boot(
         Container $container,
         FinalizerInterface $finalizer,
+        EnvironmentInterface $env,
     ): void {
         $finalizer->addFinalizer(
             static function () use ($container): void {
@@ -65,7 +66,7 @@ final class CycleOrmBootloader extends Bootloader
 
         $container->bindInjector(RepositoryInterface::class, RepositoryInjector::class);
 
-        $this->initOrmConfig();
+        $this->initOrmConfig($env);
     }
 
     public function start(AbstractKernel $kernel): void
@@ -103,18 +104,18 @@ final class CycleOrmBootloader extends Bootloader
         return $factory;
     }
 
-    private function initOrmConfig(): void
+    private function initOrmConfig(EnvironmentInterface $env): void
     {
         $this->config->setDefaults(
             CycleConfig::CONFIG,
             [
                 'schema' => [
-                    'cache' => $this->env->get('CYCLE_SCHEMA_CACHE', false),
+                    'cache' => $env->get('CYCLE_SCHEMA_CACHE', false),
                     'generators' => null,
                     'defaults' => [],
                     'collections' => [],
                 ],
-                'warmup' => $this->env->get('CYCLE_SCHEMA_WARMUP', false),
+                'warmup' => $env->get('CYCLE_SCHEMA_WARMUP', false),
             ]
         );
     }

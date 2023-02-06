@@ -64,7 +64,7 @@ final class EntityManagerTest extends BaseTest
         $em = $this->createMock(EntityManagerInterface::class);
         $em->expects($this->once())->method('clean');
 
-        $this->getContainer()->bindSingleton(EntityManagerInterface::class, fn(): EntityManagerInterface => $em);
+        $this->getContainer()->bindSingleton(EntityManagerInterface::class, $em);
         $this->getContainer()->get(EntityManagerInterface::class);
         $this->getContainer()->get(FinalizerInterface::class)->finalize();
     }
