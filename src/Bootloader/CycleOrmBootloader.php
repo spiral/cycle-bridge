@@ -35,27 +35,29 @@ final class CycleOrmBootloader extends Bootloader
 
     protected const BINDINGS = [
         TransactionInterface::class => Transaction::class,
-        EntityManagerInterface::class => EntityManager::class,
     ];
 
     protected const SINGLETONS = [
         ORMInterface::class => ORM::class,
+        EntityManagerInterface::class => EntityManager::class,
         FactoryInterface::class => [self::class, 'factory'],
     ];
 
     public function __construct(
-        private ConfiguratorInterface $config,
-        private EnvironmentInterface $env
+        private ConfiguratorInterface $config
     ) {
     }
 
     public function boot(
         Container $container,
         FinalizerInterface $finalizer,
-        EnvironmentInterface $env
+        EnvironmentInterface $env,
     ): void {
         $finalizer->addFinalizer(
             static function () use ($container): void {
+                if ($container->hasInstance(EntityManagerInterface::class)) {
+                    $container->get(EntityManagerInterface::class)->clean();
+                }
                 if ($container->hasInstance(ORMInterface::class)) {
                     $container->get(ORMInterface::class)->getHeap()->clean();
                 }
@@ -64,7 +66,7 @@ final class CycleOrmBootloader extends Bootloader
 
         $container->bindInjector(RepositoryInterface::class, RepositoryInjector::class);
 
-        $this->initOrmConfig();
+        $this->initOrmConfig($env);
     }
 
     public function start(AbstractKernel $kernel): void
@@ -102,18 +104,18 @@ final class CycleOrmBootloader extends Bootloader
         return $factory;
     }
 
-    private function initOrmConfig(): void
+    private function initOrmConfig(EnvironmentInterface $env): void
     {
         $this->config->setDefaults(
             CycleConfig::CONFIG,
             [
                 'schema' => [
-                    'cache' => $this->env->get('CYCLE_SCHEMA_CACHE', false),
+                    'cache' => $env->get('CYCLE_SCHEMA_CACHE', false),
                     'generators' => null,
                     'defaults' => [],
                     'collections' => [],
                 ],
-                'warmup' => $this->env->get('CYCLE_SCHEMA_WARMUP', false),
+                'warmup' => $env->get('CYCLE_SCHEMA_WARMUP', false),
             ]
         );
     }

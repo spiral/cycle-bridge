@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Bootloader;
 
+use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\Heap\HeapInterface;
 use Cycle\ORM\ORM;
 use Cycle\ORM\ORMInterface;
@@ -41,6 +42,13 @@ final class CycleOrmWarmedUpBootloaderTest extends BaseTest
         $this->beforeStarting(static function (Container $container) use ($orm) {
             $container->bindSingleton(ORMInterface::class, $orm);
             $container->bindSingleton(ORM::class, $orm);
+        });
+
+        $em = m::mock(EntityManagerInterface::class);
+        $em->shouldReceive('clean');
+
+        $this->beforeStarting(static function (Container $container) use ($em) {
+            $container->bindSingleton(EntityManagerInterface::class, $em);
         });
 
         parent::setUp();
