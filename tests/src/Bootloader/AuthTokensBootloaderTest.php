@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Bootloader;
 
-use Spiral\Auth\TokenStorageInterface;
+use Spiral\Auth\Config\AuthConfig;
 use Spiral\Cycle\Auth\Token;
-use Spiral\Cycle\Auth\TokenStorage as CycleStorage;
+use Spiral\Cycle\Auth\TokenStorage;
 use Spiral\Tests\BaseTest;
 
 final class AuthTokensBootloaderTest extends BaseTest
 {
     public function testGetsTokenStorage(): void
     {
-        $this->assertContainerBoundAsSingleton(TokenStorageInterface::class, CycleStorage::class);
+        $storages = $this->getConfig(AuthConfig::CONFIG)['storages'];
+        $this->assertSame(TokenStorage::class, $storages['cycle']);
     }
 
     public function testTokenEntityShouldBeRegisterInTokenizer(): void
