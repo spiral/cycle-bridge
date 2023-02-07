@@ -37,8 +37,8 @@ final class AnnotatedBootloader extends Bootloader
     {
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Embeddings::class);
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Entities::class);
+        $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\TableInheritance::class);
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\MergeColumns::class);
-        $schema->addGenerator(SchemaBootloader::GROUP_RENDER, Annotated\TableInheritance::class);
         $schema->addGenerator(SchemaBootloader::GROUP_RENDER, Annotated\MergeIndexes::class);
     }
 

@@ -1,11 +1,16 @@
 # Cycle ORM v2 bridge to Spiral Framework
 
-[![Latest Stable Version](https://poser.pugx.org/spiral/cycle-bridge/version)](https://packagist.org/packages/spiral/cycle-bridge)
-[![Unit tests](https://github.com/spiral/cycle-bridge/actions/workflows/main.yml/badge.svg)](https://github.com/spiral/cycle-bridge/actions/workflows/main.yml)
-[![Static analysis](https://github.com/spiral/cycle-bridge/actions/workflows/static.yml/badge.svg)](https://github.com/spiral/cycle-bridge/actions/workflows/static.yml)
-[![Codecov](https://codecov.io/gh/spiral/cycle-bridge/graph/badge.svg)](https://codecov.io/gh/spiral/cycle-bridge)
+[![PHP Version Require](https://poser.pugx.org/spiral/cycle-bridge/require/php)](https://packagist.org/packages/spiral/cycle-bridge)
+[![Latest Stable Version](https://poser.pugx.org/spiral/cycle-bridge/v/stable)](https://packagist.org/packages/spiral/cycle-bridge)
+[![phpunit](https://github.com/spiral/cycle-bridge/actions/workflows/phpunit.yml/badge.svg)](https://github.com/spiral/cycle-bridge/actions)
+[![psalm](https://github.com/spiral/cycle-bridge/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/spiral/cycle-bridge/actions)
+[![Codecov](https://codecov.io/gh/spiral/cycle-bridge/branch/2.0/graph/badge.svg)](https://codecov.io/gh/spiral/cycle-bridge)
+[![Total Downloads](https://poser.pugx.org/spiral/cycle-bridge/downloads)](https://packagist.org/packages/spiral/cycle-bridge)
+[![type-coverage](https://shepherd.dev/github/spiral/cycle-bridge/coverage.svg)](https://shepherd.dev/github/spiral/cycle-bridge)
+[![psalm-level](https://shepherd.dev/github/spiral/cycle-bridge/level.svg)](https://shepherd.dev/github/spiral/cycle-bridge)
 
 -----
+
 
 ## Requirements
 
@@ -65,7 +70,7 @@ protected const LOAD = [
 
     // Migrations and Cycle Scaffolders (Optional)
     CycleBridge\ScaffolderBootloader::class,
-    
+
     // Prototyping (Optional)
     CycleBridge\PrototypeBootloader::class,
 ];
@@ -427,3 +432,7 @@ protected const LOAD = [
 | `cycle:migrate` | Generate ORM schema migrations.<br/>`--run` Automatically run generated migration.   |
 | `cycle:render`  | Render available CycleORM schemas.<br/>`--no-color` Display output without colors.   |
 | `cycle:sync`    | Sync Cycle ORM schema with database without intermediate migration (risk operation). |
+
+## License
+
+MIT License (MIT). Please see [`LICENSE`](./LICENSE) for more information. Maintained by [Spiral Scout](https://spiralscout.com).
