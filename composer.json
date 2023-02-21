@@ -27,7 +27,7 @@
     "cycle/schema-renderer": "^1.2",
     "doctrine/inflector": "^1.4 || ^2.0",
     "spiral/attributes": "^2.10 || ^3.0",
-    "spiral/framework": "^3.0",
+    "spiral/framework": "^3.3",
     "spiral/reactor": "^3.0",
     "spiral/scaffolder": "^3.0",
     "spiral/prototype": "^3.0",
