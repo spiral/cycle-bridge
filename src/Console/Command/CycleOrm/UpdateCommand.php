@@ -7,7 +7,6 @@ namespace Spiral\Cycle\Console\Command\CycleOrm;
 use Cycle\Schema\Registry;
 use Spiral\Boot\MemoryInterface;
 use Spiral\Console\Command;
-use Spiral\Console\Console;
 use Spiral\Cycle\Bootloader\SchemaBootloader;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Schema\Compiler;
@@ -21,14 +20,14 @@ final class UpdateCommand extends Command
         SchemaBootloader $bootloader,
         CycleConfig $config,
         Registry $registry,
-        MemoryInterface $memory,
-        Console $console
+        MemoryInterface $memory
     ): int {
         $this->write('Updating ORM schema... ');
 
         Compiler::compile(
             $registry,
-            $bootloader->getGenerators($config)
+            $bootloader->getGenerators($config),
+            $config->getSchemaDefaults()
         )->toMemory($memory);
 
         $this->writeln('<info>done</info>');
