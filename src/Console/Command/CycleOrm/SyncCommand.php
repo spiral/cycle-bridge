@@ -28,7 +28,8 @@ final class SyncCommand extends Command
 
         $schemaCompiler = Compiler::compile(
             $registry,
-            \array_merge($bootloader->getGenerators($config), [$show, new SyncTables()])
+            \array_merge($bootloader->getGenerators($config), [$show, new SyncTables()]),
+            $config->getSchemaDefaults()
         );
         $schemaCompiler->toMemory($memory);
 

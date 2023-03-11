@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Console\Command\CycleOrm;
 
+use Cycle\ORM\SchemaInterface;
 use Spiral\App\Entities\User;
+use Spiral\Boot\MemoryInterface;
+use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Tests\ConsoleTest;
-use Symfony\Component\Console\Output\BufferedOutput;
 
 final class SyncCommandTest extends ConsoleTest
 {
@@ -39,5 +41,32 @@ final class SyncCommandTest extends ConsoleTest
         $this->getEntityManager()->persist($u)->run();
 
         $this->assertSame(1, $u->id);
+    }
+
+    public function testSchemaDefaultsShouldBePassedToCompiler(): void
+    {
+        $config['schema']['defaults'][SchemaInterface::TYPECAST_HANDLER][] = 'foo';
+
+        $memory = new class implements MemoryInterface
+        {
+            private mixed $data;
+
+            public function loadData(string $section): mixed
+            {
+                return $this->data[$section];
+            }
+
+            public function saveData(string $section, mixed $data): void
+            {
+                $this->data[$section] = $data;
+            }
+        };
+
+        $this->getContainer()->bind(CycleConfig::class, new CycleConfig($config));
+        $this->getContainer()->bindSingleton(MemoryInterface::class, $memory);
+
+        $this->runCommand('cycle:sync');
+
+        $this->assertSame(['foo'], $memory->loadData('cycle')['role'][SchemaInterface::TYPECAST_HANDLER]);
     }
 }

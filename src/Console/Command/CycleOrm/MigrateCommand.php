@@ -47,7 +47,8 @@ final class MigrateCommand extends AbstractCommand
             $registry,
             \array_merge($bootloader->getGenerators($config), [
                 $show = new ShowChanges($this->output)
-            ])
+            ]),
+            $config->getSchemaDefaults()
         );
 
         $schemaCompiler->toMemory($memory);
