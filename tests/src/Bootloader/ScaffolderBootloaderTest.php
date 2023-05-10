@@ -15,10 +15,13 @@ final class ScaffolderBootloaderTest extends BaseTest
         $config = $this->getConfig(ScaffolderConfig::CONFIG);
 
         $this->assertIsArray($config);
-        $this->assertIsArray($config['declarations']);
-        $this->assertIsArray($config['declarations']['migration']);
-        $this->assertIsArray($config['declarations']['entity']);
-        $this->assertIsArray($config['declarations']['repository']);
+
+        $declarations = $config['defaults']['declarations'] ?? $config['declarations'];
+
+        $this->assertIsArray($declarations);
+        $this->assertIsArray($declarations['migration']);
+        $this->assertIsArray($declarations['entity']);
+        $this->assertIsArray($declarations['repository']);
 
         $this->assertSame(
             [
@@ -26,7 +29,7 @@ final class ScaffolderBootloaderTest extends BaseTest
                 'postfix'   => 'Migration',
                 'class'     => Declaration\MigrationDeclaration::class,
             ],
-            $config['declarations']['migration']
+            $declarations['migration']
         );
 
         $this->assertSame(
@@ -37,7 +40,7 @@ final class ScaffolderBootloaderTest extends BaseTest
                     'annotated' => Declaration\Entity\AnnotatedDeclaration::class,
                 ],
             ],
-            $config['declarations']['entity']
+            $declarations['entity']
         );
 
         $this->assertSame(
@@ -46,7 +49,7 @@ final class ScaffolderBootloaderTest extends BaseTest
                 'postfix'   => 'Repository',
                 'class'     => Declaration\RepositoryDeclaration::class,
             ],
-            $config['declarations']['repository']
+            $declarations['repository']
         );
     }
 }
