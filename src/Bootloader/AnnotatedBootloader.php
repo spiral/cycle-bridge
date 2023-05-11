@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Bootloader;
 
 use Cycle\Annotated;
-use Spiral\Attributes\Factory;
 use Spiral\Attributes\ReaderInterface;
 use Spiral\Boot\Bootloader\Bootloader;
+use Spiral\Bootloader\Attributes\AttributesBootloader;
 use Spiral\Tokenizer\Bootloader\TokenizerBootloader;
 use Spiral\Tokenizer\ClassesInterface;
 
@@ -16,10 +16,10 @@ final class AnnotatedBootloader extends Bootloader
     protected const DEPENDENCIES = [
         SchemaBootloader::class,
         TokenizerBootloader::class,
+        AttributesBootloader::class,
     ];
 
     protected const BINDINGS = [
-        ReaderInterface::class => [self::class, 'initReader'],
         Annotated\Embeddings::class => [self::class, 'initEmbeddings'],
         Annotated\Entities::class => [self::class, 'initEntities'],
         Annotated\MergeColumns::class => [self::class, 'initMergeColumns'],
@@ -34,11 +34,6 @@ final class AnnotatedBootloader extends Bootloader
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\TableInheritance::class);
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\MergeColumns::class);
         $schema->addGenerator(SchemaBootloader::GROUP_RENDER, Annotated\MergeIndexes::class);
-    }
-
-    private function initReader(): ReaderInterface
-    {
-        return (new Factory)->create();
     }
 
     private function initEmbeddings(ClassesInterface $classes, ReaderInterface $reader): Annotated\Embeddings
