@@ -17,7 +17,11 @@ final class DisconnectsBootloader extends Bootloader
     public function init(FinalizerInterface $finalizer, ContainerInterface $container): void
     {
         $finalizer->addFinalizer(
-            function () use ($container): void {
+            function (bool $terminate) use ($container): void {
+                if ($terminate) {
+                    return;
+                }
+
                 /** @var DatabaseManager $dbal */
                 $dbal = $container->get(DatabaseManager::class);
                 foreach ($dbal->getDrivers() as $driver) {
