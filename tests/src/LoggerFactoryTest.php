@@ -16,6 +16,7 @@ use Spiral\Logger\LogsInterface;
 final class LoggerFactoryTest extends BaseTest
 {
     protected ConfigsInterface $config;
+    private LogsInterface $logger;
 
     protected function setUp(): void
     {
