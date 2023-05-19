@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Bootloader;
 
 use Cycle\ORM\SchemaInterface;
+use Cycle\Schema\Defaults;
 use Cycle\Schema\Generator;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Boot\MemoryInterface;
 use Spiral\Core\Container;
+use Spiral\Core\FactoryInterface;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Schema\Compiler;
 use Spiral\Tokenizer\Bootloader\TokenizerBootloader;
@@ -28,6 +30,7 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
 
     protected const BINDINGS = [
         SchemaInterface::class => [self::class, 'schema'],
+        Registry::class => [self::class, 'initRegistry']
     ];
 
     /** @var string[][]|GeneratorInterface[][] */
@@ -107,6 +110,14 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
         }
 
         return $schemaCompiler->toSchema();
+    }
+
+    private function initRegistry(FactoryInterface $factory, CycleConfig $config): Registry
+    {
+        $defaults = new Defaults();
+        $defaults->merge($config->getSchemaDefaults());
+
+        return $factory->make(Registry::class, ['defaults' => $defaults]);
     }
 }
 
