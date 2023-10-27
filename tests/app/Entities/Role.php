@@ -6,9 +6,9 @@ namespace Spiral\App\Entities;
 
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Entity;
-use Spiral\App\Repositories\RoleRepositoryInterface;
+use Spiral\App\Repositories\RoleRepository;
 
-#[Entity(repository: RoleRepositoryInterface::class)]
+#[Entity(repository: RoleRepository::class)]
 class Role
 {
     #[Column(type: 'primary')]
