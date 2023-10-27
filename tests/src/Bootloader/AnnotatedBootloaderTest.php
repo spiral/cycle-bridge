@@ -7,8 +7,6 @@ namespace Spiral\Tests\Bootloader;
 use Cycle\Annotated;
 use Cycle\Schema\GeneratorInterface;
 use Spiral\Attributes\ReaderInterface;
-use Spiral\Cycle\Annotated\Locator\ListenerEmbeddingsLocator;
-use Spiral\Cycle\Annotated\Locator\ListenerEntityLocator;
 use Spiral\Tests\BaseTest;
 
 final class AnnotatedBootloaderTest extends BaseTest
@@ -41,15 +39,5 @@ final class AnnotatedBootloaderTest extends BaseTest
     public function testGetsAnnotatedMergeIndexes(): void
     {
         $this->assertContainerBound(Annotated\MergeIndexes::class, GeneratorInterface::class);
-    }
-
-    public function testGetsListenerEntityLocator(): void
-    {
-        $this->assertContainerBoundAsSingleton(ListenerEntityLocator::class, ListenerEntityLocator::class);
-    }
-
-    public function testGetsListenerEmbeddingsLocator(): void
-    {
-        $this->assertContainerBoundAsSingleton(ListenerEmbeddingsLocator::class, ListenerEmbeddingsLocator::class);
     }
 }
