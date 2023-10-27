@@ -14,6 +14,10 @@ use Spiral\Prototype\Bootloader\PrototypeBootloader as BasePrototypeBootloader;
 
 final class PrototypeBootloader extends Bootloader
 {
+    protected const DEPENDENCIES = [
+        BasePrototypeBootloader::class,
+    ];
+
     public function boot(BasePrototypeBootloader $prototype, ContainerInterface $container): void
     {
         $this->bindDatabase($prototype);
