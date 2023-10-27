@@ -9,7 +9,6 @@ use Cycle\Database\DatabaseProviderInterface;
 use Cycle\ORM;
 use Doctrine\Inflector\Rules\English\InflectorFactory;
 use Psr\Container\ContainerInterface;
-use Spiral\Boot\AbstractKernel;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Prototype\Bootloader\PrototypeBootloader as BasePrototypeBootloader;
 
@@ -19,10 +18,10 @@ final class PrototypeBootloader extends Bootloader
         BasePrototypeBootloader::class,
     ];
 
-    public function boot(AbstractKernel $kernel): void
+    public function boot(BasePrototypeBootloader $prototype, ContainerInterface $container): void
     {
-        $kernel->bootstrapped($this->bindDatabase(...));
-        $kernel->bootstrapped($this->bindCycle(...));
+        $this->bindDatabase($prototype);
+        $this->bindCycle($prototype, $container);
     }
 
     private function bindDatabase(BasePrototypeBootloader $prototype): void
