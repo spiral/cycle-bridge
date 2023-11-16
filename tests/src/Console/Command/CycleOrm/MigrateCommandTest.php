@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Console\Command\CycleOrm;
 
-use Cycle\Annotated\Annotation\Column;
-use Cycle\Annotated\Annotation\Entity;
 use Cycle\ORM\SchemaInterface;
 use Spiral\Boot\MemoryInterface;
 use Spiral\Cycle\Config\CycleConfig;
@@ -38,8 +36,15 @@ final class MigrateCommandTest extends ConsoleTest
 
     public function testMigrate(): void
     {
+        // Create migration
         $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], self::USER_MIGRATION);
-        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], 'Outstanding migrations found');
+
+        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], [
+            'Outstanding migrations found',
+            'Detecting schema changes...',
+            'Migration 0_default_create_roles_create_users_create_auth_tokens was successfully executed.',
+            'no database changes has been detected'
+        ]);
     }
 
     public function testMigrateNoChanges(): void

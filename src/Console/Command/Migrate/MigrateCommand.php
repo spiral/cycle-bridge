@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 final class MigrateCommand extends AbstractCommand
 {
     protected const NAME = 'migrate';
-    protected const DESCRIPTION = 'Perform one or all outstanding migrations';
+    protected const DESCRIPTION = 'Execute one or multiple migrations.';
     protected const OPTIONS = [
         ['one', 'o', InputOption::VALUE_NONE, 'Execute only one (first) migration'],
     ];
@@ -34,12 +34,12 @@ final class MigrateCommand extends AbstractCommand
 
             $this->sprintf(
                 "<info>Migration <comment>%s</comment> was successfully executed.</info>\n",
-                $migration->getState()->getName()
+                $migration->getState()->getName(),
             );
         }
 
         if (!$found) {
-            $this->writeln('<fg=red>No outstanding migrations were found.</fg=red>');
+            $this->error('No outstanding migrations were found.');
         }
 
         return self::SUCCESS;

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Console\Command\CycleOrm\Generator;
 
+use Cycle\Database\Schema\ComparatorInterface;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
 use Cycle\Database\Schema\AbstractTable;
-use Cycle\Database\Schema\Comparator;
 use Symfony\Component\Console\Output\OutputInterface;
 
 final class ShowChanges implements GeneratorInterface
@@ -15,20 +15,18 @@ final class ShowChanges implements GeneratorInterface
     private array $changes = [];
 
     public function __construct(
-        private readonly OutputInterface $output
+        private readonly OutputInterface $output,
     ) {
     }
 
     public function run(Registry $registry): Registry
     {
-        $this->output->writeln('<info>Detecting schema changes:</info>');
-
         $this->changes = [];
         foreach ($registry->getIterator() as $e) {
             if ($registry->hasTable($e)) {
                 $table = $registry->getTableSchema($e);
                 if ($table->getComparator()->hasChanges()) {
-                    $key = $registry->getDatabase($e).':'.$registry->getTable($e);
+                    $key = $registry->getDatabase($e) . ':' . $registry->getTable($e);
                     $this->changes[$key] = [
                         'database' => $registry->getDatabase($e),
                         'table' => $registry->getTable($e),
@@ -43,6 +41,9 @@ final class ShowChanges implements GeneratorInterface
 
             return $registry;
         }
+
+
+        $this->output->writeln('<info>Schema changes:</info>');
 
         foreach ($this->changes as $change) {
             $this->output->write(\sprintf('• <fg=cyan>%s.%s</fg=cyan>', $change['database'], $change['table']));
@@ -63,14 +64,14 @@ final class ShowChanges implements GeneratorInterface
             $this->output->writeln(
                 \sprintf(
                     ': <fg=green>%s</fg=green> change(s) detected',
-                    $this->numChanges($table)
-                )
+                    $this->numChanges($table),
+                ),
             );
 
             return;
         }
-        $this->output->write("\n");
 
+        $this->output->write("\n");
 
         if (!$table->exists()) {
             $this->output->writeln('    - create table');
@@ -88,7 +89,7 @@ final class ShowChanges implements GeneratorInterface
         $this->describeFKs($cmp);
     }
 
-    protected function describeColumns(Comparator $cmp): void
+    protected function describeColumns(ComparatorInterface $cmp): void
     {
         foreach ($cmp->addedColumns() as $column) {
             $this->output->writeln("    - add column <fg=yellow>{$column->getName()}</fg=yellow>");
@@ -104,7 +105,7 @@ final class ShowChanges implements GeneratorInterface
         }
     }
 
-    protected function describeIndexes(Comparator $cmp): void
+    protected function describeIndexes(ComparatorInterface $cmp): void
     {
         foreach ($cmp->addedIndexes() as $index) {
             $index = \implode(', ', $index->getColumns());
@@ -123,7 +124,7 @@ final class ShowChanges implements GeneratorInterface
         }
     }
 
-    protected function describeFKs(Comparator $cmp): void
+    protected function describeFKs(ComparatorInterface $cmp): void
     {
         foreach ($cmp->addedForeignKeys() as $fk) {
             $fkColumns = \implode(', ', $fk->getColumns());

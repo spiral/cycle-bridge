@@ -16,7 +16,6 @@ final class ReplayCommand extends AbstractCommand
     ];
 
     /**
-     * @param  Console  $console
      * @throws \Throwable
      */
     public function perform(Console $console): int
@@ -35,12 +34,12 @@ final class ReplayCommand extends AbstractCommand
             $migrate['--one'] = true;
         }
 
-        $this->writeln('Rolling back executed migration(s)...');
+        $this->warning('Rolling back executed migration(s)...');
         $console->run('migrate:rollback', $rollback, $this->output);
 
         $this->writeln('');
 
-        $this->writeln('Executing outstanding migration(s)...');
+        $this->info('Executing outstanding migration(s)...');
         $console->run('migrate', $migrate, $this->output);
 
         return self::SUCCESS;
