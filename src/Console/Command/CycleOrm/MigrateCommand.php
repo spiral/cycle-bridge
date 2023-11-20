@@ -6,6 +6,7 @@ namespace Spiral\Cycle\Console\Command\CycleOrm;
 
 use Cycle\Schema\Generator\Migrations\Strategy\GeneratorStrategyInterface;
 use Cycle\Schema\Generator\Migrations\Strategy\MultipleFilesStrategy;
+use Spiral\Core\BinderInterface;
 use Spiral\Cycle\Bootloader\SchemaBootloader;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Console\Command\CycleOrm\Generator\ShowChanges;
@@ -65,6 +66,7 @@ final class MigrateCommand extends AbstractCommand
 
         if ($show->hasChanges()) {
             if ($this->option('split')) {
+                \assert($this->container instanceof BinderInterface);
                 $this->container->bind(GeneratorStrategyInterface::class, MultipleFilesStrategy::class);
             }
 
