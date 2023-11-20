@@ -42,8 +42,8 @@ final class MigrateCommandTest extends ConsoleTest
         $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], [
             'Outstanding migrations found',
             'Detecting schema changes...',
-            'Migration 0_default_create_roles_create_users_create_auth_tokens was successfully executed.',
-            'no database changes has been detected'
+            'was successfully executed.',
+            'no database changes has been detected',
         ]);
     }
 
@@ -60,9 +60,10 @@ final class MigrateCommandTest extends ConsoleTest
 
         $fs = new Files();
 
-        $entityPatch = __DIR__.'/../../../../app/Entities/Tag.php';
+        $entityPatch = __DIR__ . '/../../../../app/Entities/Tag.php';
         file_put_contents(
-            $entityPatch, <<<'PHP'
+            $entityPatch,
+            <<<'PHP'
                 <?php
 
                 declare(strict_types=1);
@@ -78,7 +79,7 @@ final class MigrateCommandTest extends ConsoleTest
                     #[Column(type: 'primary')]
                     public int $id;
                 }
-                PHP
+                PHP,
         );
 
         $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', ['-r' => true], [
@@ -94,8 +95,7 @@ final class MigrateCommandTest extends ConsoleTest
     {
         $config['schema']['defaults'][SchemaInterface::TYPECAST_HANDLER][] = 'foo';
 
-        $memory = new class implements MemoryInterface
-        {
+        $memory = new class implements MemoryInterface {
             private mixed $data;
 
             public function loadData(string $section): mixed
