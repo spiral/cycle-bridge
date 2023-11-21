@@ -15,7 +15,6 @@ use Cycle\Schema\Renderer\MermaidRenderer\MermaidRenderer;
 final class RenderCommand extends AbstractCommand
 {
     protected const SIGNATURE = 'cycle:render {format=color : Output format}';
-
     protected const DESCRIPTION = 'Render available CycleORM schemas';
 
     public function perform(
