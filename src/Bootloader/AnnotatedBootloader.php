@@ -33,22 +33,20 @@ final class AnnotatedBootloader extends Bootloader
         ListenerEmbeddingsLocator::class => ListenerEmbeddingsLocator::class,
     ];
 
-    public function init(SchemaBootloader $schema): void
-    {
-        $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Embeddings::class);
-        $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Entities::class);
-        $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\TableInheritance::class);
-        $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\MergeColumns::class);
-        $schema->addGenerator(SchemaBootloader::GROUP_RENDER, Annotated\MergeIndexes::class);
-    }
-
-    public function boot(
+    public function init(
+        SchemaBootloader $schema,
         TokenizerListenerBootloader $tokenizer,
         ListenerEntityLocator $entityLocator,
         ListenerEmbeddingsLocator $embeddingsLocator
     ): void {
         $tokenizer->addListener($entityLocator);
         $tokenizer->addListener($embeddingsLocator);
+
+        $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Embeddings::class);
+        $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Entities::class);
+        $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\TableInheritance::class);
+        $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\MergeColumns::class);
+        $schema->addGenerator(SchemaBootloader::GROUP_RENDER, Annotated\MergeIndexes::class);
     }
 
     private function initEmbeddings(
