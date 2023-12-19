@@ -9,8 +9,10 @@ use Cycle\Annotated\Exception\AnnotationException;
 use Cycle\Annotated\Locator\Embedding;
 use Cycle\Annotated\Locator\EmbeddingLocatorInterface;
 use Spiral\Attributes\ReaderInterface;
+use Spiral\Tokenizer\Attribute\TargetAttribute;
 use Spiral\Tokenizer\TokenizationListenerInterface;
 
+#[TargetAttribute(Embeddable::class, useAnnotations: true)]
 final class ListenerEmbeddingsLocator implements EmbeddingLocatorInterface, TokenizationListenerInterface
 {
     /**

@@ -9,8 +9,10 @@ use Cycle\Annotated\Exception\AnnotationException;
 use Cycle\Annotated\Locator\Entity;
 use Cycle\Annotated\Locator\EntityLocatorInterface;
 use Spiral\Attributes\ReaderInterface;
+use Spiral\Tokenizer\Attribute\TargetAttribute;
 use Spiral\Tokenizer\TokenizationListenerInterface;
 
+#[TargetAttribute(Attribute::class, useAnnotations: true)]
 final class ListenerEntityLocator implements EntityLocatorInterface, TokenizationListenerInterface
 {
     /**
