@@ -89,11 +89,13 @@ final class TokenStorage implements TokenStorageInterface
     {
         $id = $this->randomHash(64);
 
+        /** @psalm-suppress InternalMethod */
         $query = $this->orm->getSource(Token::class)
             ->getDatabase()
             ->select()
             ->from($this->orm->getSource(Token::class)->getTable());
 
+        /** @psalm-suppress InternalMethod */
         while ((clone $query)->where('id', $id)->count('id') !== 0) {
             $id = $this->randomHash(64);
         }

@@ -52,6 +52,7 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
                 Generator\RenderTables::class,
                 Generator\RenderRelations::class,
                 Generator\RenderModifiers::class,
+                Generator\ForeignKeys::class,
             ],
             self::GROUP_POSTPROCESS => [
                 // post processing

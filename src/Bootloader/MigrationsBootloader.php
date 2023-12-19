@@ -8,6 +8,11 @@ use Cycle\Migrations\Config\MigrationConfig;
 use Cycle\Migrations\FileRepository;
 use Cycle\Migrations\Migrator;
 use Cycle\Migrations\RepositoryInterface;
+use Cycle\Schema\Generator\Migrations\NameBasedOnChangesGenerator;
+use Cycle\Schema\Generator\Migrations\NameGeneratorInterface;
+use Cycle\Schema\Generator\Migrations\Strategy\GeneratorStrategyInterface;
+use Cycle\Schema\Generator\Migrations\Strategy\SingleFileStrategy;
+use Psr\Container\ContainerInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Boot\DirectoriesInterface;
 use Spiral\Boot\EnvironmentInterface;
@@ -24,6 +29,8 @@ final class MigrationsBootloader extends Bootloader
     protected const SINGLETONS = [
         Migrator::class => Migrator::class,
         RepositoryInterface::class => FileRepository::class,
+        NameGeneratorInterface::class => [self::class, 'initNameGenerator'],
+        GeneratorStrategyInterface::class => [self::class, 'initGeneratorStrategy'],
     ];
 
     public function init(
@@ -39,9 +46,27 @@ final class MigrationsBootloader extends Bootloader
             MigrationConfig::CONFIG,
             [
                 'directory' => $dirs->get('migrations'),
+                'strategy' => SingleFileStrategy::class,
+                'nameGenerator' => NameBasedOnChangesGenerator::class,
                 'table' => 'migrations',
                 'safe' => $env->get('SAFE_MIGRATIONS', false),
             ]
         );
+    }
+
+    private function initGeneratorStrategy(
+        MigrationConfig $config,
+        ContainerInterface $container
+    ): GeneratorStrategyInterface {
+        $strategy = $config->toArray()['strategy'] ?? SingleFileStrategy::class;
+
+        return $container->get($strategy);
+    }
+
+    private function initNameGenerator(MigrationConfig $config, ContainerInterface $container): NameGeneratorInterface
+    {
+        $nameGenerator = $config->toArray()['nameGenerator'] ?? NameBasedOnChangesGenerator::class;
+
+        return $container->get($nameGenerator);
     }
 }

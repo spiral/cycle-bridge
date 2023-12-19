@@ -19,12 +19,12 @@ use function Spiral\Scaffolder\trimPostfix;
 
 class EntityCommand extends AbstractCommand
 {
-    protected const NAME        = 'create:entity';
+    protected const NAME = 'create:entity';
     protected const DESCRIPTION = 'Create entity declaration';
-    protected const ARGUMENTS   = [
+    protected const ARGUMENTS = [
         ['name', InputArgument::REQUIRED, 'Entity name'],
     ];
-    protected const OPTIONS     = [
+    protected const OPTIONS = [
         [
             'role',
             'r',

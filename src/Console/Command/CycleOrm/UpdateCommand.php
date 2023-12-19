@@ -20,17 +20,17 @@ final class UpdateCommand extends Command
         SchemaBootloader $bootloader,
         CycleConfig $config,
         Registry $registry,
-        MemoryInterface $memory
+        MemoryInterface $memory,
     ): int {
-        $this->write('Updating ORM schema... ');
+        $this->info('Updating ORM schema... ');
 
         Compiler::compile(
             $registry,
             $bootloader->getGenerators($config),
-            $config->getSchemaDefaults()
+            $config->getSchemaDefaults(),
         )->toMemory($memory);
 
-        $this->writeln('<info>done</info>');
+        $this->info('Schema has been updated.');
 
         return self::SUCCESS;
     }

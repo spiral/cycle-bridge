@@ -7,6 +7,8 @@ namespace Spiral\Tests\Bootloader;
 use Cycle\Migrations\FileRepository;
 use Cycle\Migrations\Migrator;
 use Cycle\Migrations\RepositoryInterface;
+use Cycle\Schema\Generator\Migrations\NameBasedOnChangesGenerator;
+use Cycle\Schema\Generator\Migrations\Strategy\SingleFileStrategy;
 use Spiral\Tests\BaseTest;
 
 final class MigrationsBootloaderTest extends BaseTest
@@ -28,6 +30,8 @@ final class MigrationsBootloaderTest extends BaseTest
         $this->assertDirectoryAliasDefined('migrations');
         $this->assertSame([
             'directory' => $this->getDirectoryByAlias('migrations'),
+            'strategy' => SingleFileStrategy::class,
+            'nameGenerator' => NameBasedOnChangesGenerator::class,
             'table' => 'migrations',
             'safe' => false,
         ], $config);

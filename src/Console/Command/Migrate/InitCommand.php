@@ -7,7 +7,7 @@ namespace Spiral\Cycle\Console\Command\Migrate;
 final class InitCommand extends AbstractCommand
 {
     protected const NAME = 'migrate:init';
-    protected const DESCRIPTION = 'Init migrations component (create migrations table)';
+    protected const DESCRIPTION = 'Create migrations table if not exists.';
 
     /**
      * Perform command.
@@ -15,7 +15,7 @@ final class InitCommand extends AbstractCommand
     public function perform(): int
     {
         $this->migrator->configure();
-        $this->writeln('<info>Migrations table were successfully created</info>');
+        $this->info('Migration table was successfully created.');
 
         return self::SUCCESS;
     }

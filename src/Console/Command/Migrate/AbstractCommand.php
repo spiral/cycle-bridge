@@ -15,7 +15,7 @@ abstract class AbstractCommand extends Command
 {
     public function __construct(
         protected Migrator $migrator,
-        protected MigrationConfig $config
+        protected MigrationConfig $config,
     ) {
         parent::__construct();
     }
@@ -24,7 +24,7 @@ abstract class AbstractCommand extends Command
     {
         if (!$this->migrator->isConfigured()) {
             $this->writeln(
-                "<fg=red>Migrations are not configured yet, run '<info>migrate:init</info>' first.</fg=red>"
+                "<fg=red>Migrations are not configured yet, run '<info>migrate:init</info>' first.</fg=red>",
             );
 
             return false;
@@ -36,17 +36,17 @@ abstract class AbstractCommand extends Command
     /**
      * Check if current environment is safe to run migration.
      */
-    protected function verifyEnvironment(): bool
+    protected function verifyEnvironment(string $message = 'Confirmation is required to run migrations!'): bool
     {
-        if ($this->option('force') || $this->config->isSafe()) {
+        if ($this->isForce() || $this->config->isSafe()) {
             //Safe to run
             return true;
         }
 
-        $this->writeln('<fg=red>Confirmation is required to run migrations!</fg=red>');
+        $this->error($message);
 
         if (!$this->askConfirmation()) {
-            $this->writeln('<comment>Cancelling operation...</comment>');
+            $this->comment('Cancelling operation...');
 
             return false;
         }
@@ -60,7 +60,8 @@ abstract class AbstractCommand extends Command
             static::OPTIONS,
             [
                 ['force', 's', InputOption::VALUE_NONE, 'Skip safe environment check'],
-            ]
+                ['no-interaction', 'n', InputOption::VALUE_NONE, 'Do not ask any interactive question'],
+            ],
         );
     }
 
@@ -71,7 +72,17 @@ abstract class AbstractCommand extends Command
         return $question->ask(
             $this->input,
             $this->output,
-            new ConfirmationQuestion('<question>Would you like to continue?</question> ')
+            new ConfirmationQuestion('<question>Would you like to continue?</question> ', false),
         );
+    }
+
+    protected function isInteractive(): bool
+    {
+        return !$this->option('no-interaction');
+    }
+
+    protected function isForce(): bool
+    {
+        return $this->option('force');
     }
 }

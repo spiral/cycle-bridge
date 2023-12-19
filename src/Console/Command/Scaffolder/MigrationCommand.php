@@ -13,12 +13,12 @@ use Symfony\Component\Console\Input\InputOption;
 
 class MigrationCommand extends AbstractCommand
 {
-    protected const NAME        = 'create:migration';
+    protected const NAME = 'create:migration';
     protected const DESCRIPTION = 'Create migration declaration';
-    protected const ARGUMENTS   = [
+    protected const ARGUMENTS = [
         ['name', InputArgument::REQUIRED, 'Migration name'],
     ];
-    protected const OPTIONS     = [
+    protected const OPTIONS = [
         [
             'table',
             't',
@@ -66,12 +66,12 @@ class MigrationCommand extends AbstractCommand
         $filename = $migrator->getRepository()->registerMigration(
             (string)$this->argument('name'),
             $declaration->getClass()->getName(),
-            (string) $declaration->getFile()
+            (string)$declaration->getFile(),
         );
 
         $this->writeln(
             "Declaration of '<info>{$declaration->getClass()->getName()}</info>' "
-            . "has been successfully written into '<comment>{$filename}</comment>'."
+            . "has been successfully written into '<comment>{$filename}</comment>'.",
         );
 
         return self::SUCCESS;

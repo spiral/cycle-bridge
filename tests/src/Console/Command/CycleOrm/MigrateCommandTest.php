@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Console\Command\CycleOrm;
 
-use Cycle\Annotated\Annotation\Column;
-use Cycle\Annotated\Annotation\Entity;
 use Cycle\ORM\SchemaInterface;
 use Spiral\Boot\MemoryInterface;
 use Spiral\Cycle\Annotated\Locator\ListenerEntityLocator;
@@ -39,8 +37,15 @@ final class MigrateCommandTest extends ConsoleTest
 
     public function testMigrate(): void
     {
+        // Create migration
         $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], self::USER_MIGRATION);
-        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], 'Outstanding migrations found');
+
+        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], [
+            'Outstanding migrations found',
+            'Detecting schema changes...',
+            'was successfully executed.',
+            'no database changes has been detected',
+        ]);
     }
 
     public function testMigrateNoChanges(): void
@@ -56,9 +61,10 @@ final class MigrateCommandTest extends ConsoleTest
 
         $fs = new Files();
 
-        $entityPatch = __DIR__.'/../../../../app/Entities/Tag.php';
+        $entityPatch = __DIR__ . '/../../../../app/Entities/Tag.php';
         file_put_contents(
-            $entityPatch, <<<'PHP'
+            $entityPatch,
+            <<<'PHP'
                 <?php
 
                 declare(strict_types=1);
@@ -74,7 +80,7 @@ final class MigrateCommandTest extends ConsoleTest
                     #[Column(type: 'primary')]
                     public int $id;
                 }
-                PHP
+                PHP,
         );
 
         $listener = $this->getContainer()->get(ListenerEntityLocator::class);
@@ -93,8 +99,7 @@ final class MigrateCommandTest extends ConsoleTest
     {
         $config['schema']['defaults'][SchemaInterface::TYPECAST_HANDLER][] = 'foo';
 
-        $memory = new class implements MemoryInterface
-        {
+        $memory = new class implements MemoryInterface {
             private mixed $data;
 
             public function loadData(string $section): mixed
