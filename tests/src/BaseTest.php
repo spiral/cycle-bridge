@@ -11,11 +11,13 @@ use ReflectionMethod;
 use Spiral\App\Bootloader\AppBootloader;
 use Spiral\App\Bootloader\SyncTablesBootloader;
 use Spiral\Bootloader as Framework;
+use Spiral\Nyholm\Bootloader as Nyholm;
 use Spiral\Config\Patch\Set;
 use Spiral\Console\Bootloader\ConsoleBootloader;
 use Spiral\Core\ConfigsInterface;
 use Spiral\Cycle\Bootloader as CycleBridge;
 use Spiral\DataGrid\Bootloader\GridBootloader;
+use Spiral\Router\Bootloader\AnnotatedRoutesBootloader;
 use Spiral\Testing\TestCase;
 
 abstract class BaseTest extends TestCase
@@ -63,6 +65,12 @@ abstract class BaseTest extends TestCase
             // Databases
             CycleBridge\DatabaseBootloader::class,
             CycleBridge\MigrationsBootloader::class,
+
+            // Http
+            AnnotatedRoutesBootloader::class,
+            Framework\Http\RouterBootloader::class,
+            Nyholm\NyholmBootloader::class,
+            Framework\Security\FiltersBootloader::class,
 
             // ORM
             CycleBridge\SchemaBootloader::class,
