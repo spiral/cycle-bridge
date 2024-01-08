@@ -4,29 +4,29 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Interceptor;
 
-use Cycle\ORM\EntityManager;
-use Spiral\App\Entities\Role;
+use Spiral\App\Database\Factory\RoleFactory;
+use Spiral\App\Database\Factory\UserFactory;
 use Spiral\Core\CoreInterface;
 use Spiral\Core\Exception\ControllerException;
 use Spiral\App\Controller\HomeController;
 use Spiral\App\Entities\User;
-use Spiral\Tests\ConsoleTest;
+use Spiral\Tests\DatabaseTest;
 
-final class CycleInterceptorTest extends ConsoleTest
+final class CycleInterceptorTest extends DatabaseTest
 {
     private User $contextEntity;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->runCommand('cycle:sync');
+        $this->cleanIdentityMap();
 
-        $u = new User('Antony');
-        $u->roles->add(new Role('admin'));
-        $this->contextEntity = new User('Contextual');
-        $this->contextEntity->roles->add(new Role('user'));
+        $role = RoleFactory::new(['name' => 'admin'])->makeOne();
+        UserFactory::new(['name' => 'Antony'])->addRole($role)->createOne();
 
-        $this->getContainer()->get(EntityManager::class)->persist($u)->persist($this->contextEntity)->run();
+        $this->contextEntity = UserFactory::new(['name' => 'Contextual'])
+            ->addRole(RoleFactory::new()->makeOne())
+            ->createOne();
     }
 
     public function testCallBadAction(): void
@@ -74,8 +74,8 @@ final class CycleInterceptorTest extends ConsoleTest
         $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->assertSame(
-            'Antony',
-            $core->callAction(HomeController::class, 'entity', ['user' => 1])
+            ['user' => 'Antony'],
+            $core->callAction(HomeController::class, 'entity', ['user' => 1]),
         );
     }
 
@@ -87,8 +87,8 @@ final class CycleInterceptorTest extends ConsoleTest
         /** @var CoreInterface $core */
         $core = $this->getContainer()->get(CoreInterface::class);
 
-        $this->assertSame('Antony', $core->callAction(HomeController::class, 'entity', ['user' => 1]));
-        $this->assertSame('Antony', $core->callAction(HomeController::class, 'entity', ['user' => 1]));
+        $this->assertSame(['user' => 'Antony'], $core->callAction(HomeController::class, 'entity', ['user' => 1]));
+        $this->assertSame(['user' => 'Antony'], $core->callAction(HomeController::class, 'entity', ['user' => 1]));
     }
 
     // singular entity
@@ -98,8 +98,8 @@ final class CycleInterceptorTest extends ConsoleTest
         $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->assertSame(
-            'Antony',
-            $core->callAction(HomeController::class, 'entity', ['id' => 1])
+            ['user' => 'Antony'],
+            $core->callAction(HomeController::class, 'entity', ['id' => 1]),
         );
     }
 
@@ -119,8 +119,8 @@ final class CycleInterceptorTest extends ConsoleTest
         $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->assertSame(
-            'ok',
-            $core->callAction(HomeController::class, 'entity2', ['user' => 1, 'role' => 1])
+            ['user' => 'Antony', 'role' => 'admin'],
+            $core->callAction(HomeController::class, 'entity2', ['user' => 1, 'role' => 1]),
         );
     }
 
@@ -133,8 +133,8 @@ final class CycleInterceptorTest extends ConsoleTest
         $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->assertSame(
-            'Demo',
-            $core->callAction(HomeController::class, 'entity', ['user' => new User('Demo')])
+            ['user' => 'Demo'],
+            $core->callAction(HomeController::class, 'entity', ['user' => new User('Demo')]),
         );
     }
 
@@ -147,8 +147,8 @@ final class CycleInterceptorTest extends ConsoleTest
         $core = $this->getContainer()->get(CoreInterface::class);
 
         $this->assertSame(
-            'Contextual',
-            $core->callAction(HomeController::class, 'entity', ['user' => $this->contextEntity])
+            ['user' => 'Contextual'],
+            $core->callAction(HomeController::class, 'entity', ['user' => $this->contextEntity]),
         );
     }
 }
