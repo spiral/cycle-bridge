@@ -34,14 +34,15 @@ final class MigrateCommandTest extends ConsoleTest
     public function testUnsafeMigrate(): void
     {
         $db = $this->initMigrations();
-        $output = $this->runCommand('migrate');
+        $output = $this->runCommand('migrate', [
+            '--no-interaction' => true,
+        ]);
         $this->assertStringContainsString('Confirmation is required to run migrations!', $output);
         $this->assertStringContainsString('Cancelling operation...', $output);
         $this->assertCount(1, $db->getTables());
     }
 
     /**
-     * @return void
      * @throws \Throwable
      */
     public function initMigrations(): DatabaseInterface
