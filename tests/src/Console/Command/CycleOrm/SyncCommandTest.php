@@ -20,7 +20,10 @@ final class SyncCommandTest extends ConsoleTest
     #[Env('SAFE_MIGRATIONS', 'false')]
     public function testUnsafeSync(): void
     {
-        $output = $this->runCommand('cycle:sync');
+        $output = $this->runCommand('cycle:sync', [
+            '--no-interaction' => true,
+        ]);
+
         $this->assertStringContainsString('This operation is not recommended for production environment.', $output);
         $this->assertStringContainsString('Cancelling operation...', $output);
     }
@@ -58,8 +61,7 @@ final class SyncCommandTest extends ConsoleTest
     {
         $config['schema']['defaults'][SchemaInterface::TYPECAST_HANDLER][] = 'foo';
 
-        $memory = new class implements MemoryInterface
-        {
+        $memory = new class implements MemoryInterface {
             private mixed $data;
 
             public function loadData(string $section): mixed

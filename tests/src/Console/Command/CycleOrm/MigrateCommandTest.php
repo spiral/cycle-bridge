@@ -38,12 +38,25 @@ final class MigrateCommandTest extends ConsoleTest
     public function testMigrate(): void
     {
         // Create migration
-        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], self::USER_MIGRATION);
+        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [
+            '--no-interaction' => true,
+        ], self::USER_MIGRATION);
 
-        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], [
+        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [
+            '--no-interaction' => true,
+        ], [
             'Outstanding migrations found',
-            'Detecting schema changes...',
+            'Please run `migrate` first.',
+        ]);
+
+        $this->assertConsoleCommandOutputContainsStrings('migrate', [
             'was successfully executed.',
+        ]);
+
+        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [
+            '--no-interaction' => true,
+        ], [
+            'Detecting schema changes...',
             'no database changes has been detected',
         ]);
     }

@@ -11,12 +11,17 @@ class HomeController
 {
     public function entity(User $user)
     {
-        return $user->getName();
+        return [
+            'user' => $user->getName(),
+        ];
     }
 
     public function entity2(User $user, Role $role)
     {
-        return 'ok';
+        return [
+            'user' => $user->getName(),
+            'role' => $role->name,
+        ];
     }
 
     public function index(): string
