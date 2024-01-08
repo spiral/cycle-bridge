@@ -11,7 +11,10 @@ use Cycle\Annotated\Annotation\Relation\HasMany;
 use Doctrine\Common\Collections\ArrayCollection;
 use Spiral\App\Repositories\UserRepository;
 
-#[Entity(repository: UserRepository::class)]
+#[
+    Entity(repository: UserRepository::class),
+    \AllowDynamicProperties
+]
 class User
 {
     #[Column(type: 'primary')]
@@ -46,7 +49,7 @@ class User
 
     public function __construct(
         #[Column(type: 'string')]
-        private string $name
+        private string $name,
     ) {
         $this->friendsAsDoctrineCollection = new ArrayCollection();
         $this->roles = new ArrayCollection();

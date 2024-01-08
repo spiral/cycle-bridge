@@ -38,12 +38,12 @@
     "spiral/tokenizer": "^3.0",
     "spiral/config": "^3.0",
     "spiral/validator": "^1.2",
-    "spiral/filters": "^3.9",
+    "spiral/filters": "^3.10",
     "spiral/data-grid-bridge": "^3.0",
     "psr/container": "^1.1 || ^2.0"
   },
   "require-dev": {
-    "doctrine/collections": "^1.6",
+    "doctrine/collections": "^2.0",
     "illuminate/collections": "^9.0",
     "infection/infection": "^0.26.6",
     "mockery/mockery": "^1.5",

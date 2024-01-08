@@ -8,7 +8,10 @@ use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Entity;
 use Spiral\App\Repositories\RoleRepository;
 
-#[Entity(repository: RoleRepository::class)]
+#[
+    Entity(repository: RoleRepository::class),
+    \AllowDynamicProperties
+]
 class Role
 {
     #[Column(type: 'primary')]
