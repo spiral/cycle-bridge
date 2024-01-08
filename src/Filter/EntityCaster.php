@@ -6,6 +6,7 @@ namespace Spiral\Cycle\Filter;
 
 use Cycle\ORM\ORMInterface;
 use Psr\Container\ContainerInterface;
+use Spiral\Exceptions\ExceptionReporterInterface;
 use Spiral\Filters\Exception\SetterException;
 use Spiral\Filters\Model\FilterInterface;
 use Spiral\Filters\Model\Mapper\CasterInterface;
@@ -20,6 +21,7 @@ final class EntityCaster implements CasterInterface
 
     public function __construct(
         protected readonly ContainerInterface $container,
+        protected readonly ExceptionReporterInterface $reporter,
     ) {
     }
 
@@ -34,11 +36,18 @@ final class EntityCaster implements CasterInterface
 
     public function setValue(FilterInterface $filter, \ReflectionProperty $property, mixed $value): void
     {
-        $role = $this->resolveRole($property->getType());
-        $object = $this->getOrm()->getRepository($role)->findByPK($value);
+        try {
+            $role = $this->resolveRole($property->getType());
+            $object = $this->getOrm()->getRepository($role)->findByPK($value);
+        } catch (\Throwable $e) {
+            $this->reporter->report($e);
+            throw new SetterException(previous: $e);
+        }
 
         if ($object === null && !$property->getType()->allowsNull()) {
-            throw new SetterException(message: \sprintf('Unable to find entity `%s` by primary key "%s"', $role, $value));
+            throw new SetterException(
+                message: \sprintf('Unable to find entity `%s` by primary key "%s"', $role, $value),
+            );
         }
 
         $property->setValue($filter, $object);

@@ -8,6 +8,7 @@ use Spiral\App\Controller\Filter\RoleFilter;
 use Spiral\App\Database\Factory\RoleFactory;
 use Spiral\App\Database\Factory\UserFactory;
 use Spiral\Cycle\Filter\EntityCaster;
+use Spiral\Exceptions\ExceptionReporterInterface;
 use Spiral\Filters\Exception\SetterException;
 use Spiral\Tests\DatabaseTest;
 
@@ -24,7 +25,10 @@ final class EntityCasterTest extends DatabaseTest
     {
         $filter = new \ReflectionClass(RoleFilter::class);
 
-        $caster = new EntityCaster($this->getContainer());
+        $caster = new EntityCaster(
+            $this->getContainer(),
+            $this->getContainer()->get(ExceptionReporterInterface::class)
+        );
 
         $role = RoleFactory::new()->makeOne();
         UserFactory::new()->addRole($role)->createOne();
@@ -46,7 +50,10 @@ final class EntityCasterTest extends DatabaseTest
 
         $filter = new \ReflectionClass(RoleFilter::class);
 
-        $caster = new EntityCaster($this->getContainer());
+        $caster = new EntityCaster(
+            $this->getContainer(),
+            $this->getContainer()->get(ExceptionReporterInterface::class)
+        );
 
         $property = $filter->getProperty('role');
 
@@ -59,7 +66,10 @@ final class EntityCasterTest extends DatabaseTest
     {
         $filter = new \ReflectionClass(RoleFilter::class);
 
-        $caster = new EntityCaster($this->getContainer());
+        $caster = new EntityCaster(
+            $this->getContainer(),
+            $this->getContainer()->get(ExceptionReporterInterface::class)
+        );
 
         $property = $filter->getProperty('nullableRole');
 
