@@ -8,14 +8,15 @@ use Cycle\Annotated;
 use Spiral\Attributes\ReaderInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Bootloader\Attributes\AttributesBootloader;
-use Spiral\Tokenizer\Bootloader\TokenizerBootloader;
-use Spiral\Tokenizer\ClassesInterface;
+use Spiral\Cycle\Annotated\Locator\ListenerEmbeddingsLocator;
+use Spiral\Cycle\Annotated\Locator\ListenerEntityLocator;
+use Spiral\Tokenizer\Bootloader\TokenizerListenerBootloader;
 
 final class AnnotatedBootloader extends Bootloader
 {
     protected const DEPENDENCIES = [
         SchemaBootloader::class,
-        TokenizerBootloader::class,
+        TokenizerListenerBootloader::class,
         AttributesBootloader::class,
     ];
 
@@ -27,8 +28,20 @@ final class AnnotatedBootloader extends Bootloader
         Annotated\MergeIndexes::class => [self::class, 'initMergeIndexes'],
     ];
 
-    public function init(SchemaBootloader $schema): void
-    {
+    protected const SINGLETONS = [
+        ListenerEntityLocator::class => ListenerEntityLocator::class,
+        ListenerEmbeddingsLocator::class => ListenerEmbeddingsLocator::class,
+    ];
+
+    public function init(
+        SchemaBootloader $schema,
+        TokenizerListenerBootloader $tokenizer,
+        ListenerEntityLocator $entityLocator,
+        ListenerEmbeddingsLocator $embeddingsLocator
+    ): void {
+        $tokenizer->addListener($entityLocator);
+        $tokenizer->addListener($embeddingsLocator);
+
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Embeddings::class);
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Entities::class);
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\TableInheritance::class);
@@ -36,14 +49,16 @@ final class AnnotatedBootloader extends Bootloader
         $schema->addGenerator(SchemaBootloader::GROUP_RENDER, Annotated\MergeIndexes::class);
     }
 
-    private function initEmbeddings(ClassesInterface $classes, ReaderInterface $reader): Annotated\Embeddings
-    {
-        return new Annotated\Embeddings($classes, $reader);
+    private function initEmbeddings(
+        ReaderInterface $reader,
+        ListenerEmbeddingsLocator $embeddingsLocator
+    ): Annotated\Embeddings {
+        return new Annotated\Embeddings($embeddingsLocator, $reader);
     }
 
-    public function initEntities(ClassesInterface $classes, ReaderInterface $reader): Annotated\Entities
+    public function initEntities(ReaderInterface $reader, ListenerEntityLocator $entityLocator): Annotated\Entities
     {
-        return new Annotated\Entities($classes, $reader);
+        return new Annotated\Entities($entityLocator, $reader);
     }
 
     public function initMergeColumns(ReaderInterface $reader): Annotated\MergeColumns
@@ -61,4 +76,3 @@ final class AnnotatedBootloader extends Bootloader
         return new Annotated\MergeIndexes($reader);
     }
 }
-
