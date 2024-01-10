@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Console\Command\CycleOrm;
 
 use Spiral\Cycle\Bootloader\SchemaBootloader;
+use Cycle\Schema\Generator\PrintChanges;
 use Cycle\Schema\Generator\SyncTables;
 use Cycle\Schema\Registry;
 use Spiral\Boot\MemoryInterface;
 use Spiral\Cycle\Config\CycleConfig;
-use Spiral\Cycle\Console\Command\CycleOrm\Generator\ShowChanges;
 use Spiral\Cycle\Console\Command\Migrate\AbstractCommand;
 use Spiral\Cycle\Schema\Compiler;
 
@@ -28,17 +28,17 @@ final class SyncCommand extends AbstractCommand
             return self::FAILURE;
         }
 
-        $show = new ShowChanges($this->output);
+        $print = new PrintChanges($this->output);
 
         $schemaCompiler = Compiler::compile(
             $registry,
-            \array_merge($bootloader->getGenerators($config), [$show, new SyncTables()]),
+            \array_merge($bootloader->getGenerators($config), [$print, new SyncTables()]),
             $config->getSchemaDefaults(),
         );
 
         $schemaCompiler->toMemory($memory);
 
-        if ($show->hasChanges()) {
+        if ($print->hasChanges()) {
             $this->info('ORM Schema has been synchronized with database.');
         }
 

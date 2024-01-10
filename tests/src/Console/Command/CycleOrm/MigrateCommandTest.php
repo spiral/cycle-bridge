@@ -21,11 +21,11 @@ final class MigrateCommandTest extends ConsoleTest
     public const USER_MIGRATION = [
         'default.users',
         'create table',
-        'add column id',
-        'add column user_id',
-        'add column name',
+        'add column [id]',
+        'add column [user_id]',
+        'add column [name]',
         'add index on [user_id]',
-        'add foreign key on user_id',
+        'add foreign key on [user_id]',
     ];
 
     protected function setUp(): void
@@ -57,7 +57,7 @@ final class MigrateCommandTest extends ConsoleTest
             '--no-interaction' => true,
         ], [
             'Detecting schema changes...',
-            'no database changes has been detected',
+            'No database changes has been detected',
         ]);
     }
 
@@ -65,7 +65,7 @@ final class MigrateCommandTest extends ConsoleTest
     {
         $this->runCommand('cycle:migrate');
         $this->runCommand('migrate');
-        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], 'no database changes');
+        $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', [], 'No database changes');
     }
 
     public function testMigrationShouldBeCreatedWhenNewEntityAppeared(): void
@@ -102,7 +102,7 @@ final class MigrateCommandTest extends ConsoleTest
         $this->assertConsoleCommandOutputContainsStrings('cycle:migrate', ['-r' => true], [
             'default.tags',
             'create table',
-            'add column id',
+            'add column [id]',
         ]);
 
         $fs->delete($entityPatch);
