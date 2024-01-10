@@ -10,6 +10,9 @@ use Cycle\Schema\Registry;
 use Cycle\Database\Schema\AbstractTable;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @deprecated. Use {@see \Cycle\Schema\Generator\PrintChanges} instead. Will be removed in v3.0.
+ */
 final class ShowChanges implements GeneratorInterface
 {
     private array $changes = [];
