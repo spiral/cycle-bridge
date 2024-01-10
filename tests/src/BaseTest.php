@@ -86,11 +86,15 @@ abstract class BaseTest extends TestCase
 
             // Auth
             CycleBridge\AuthTokensBootloader::class,
+
             // Validation
             CycleBridge\ValidationBootloader::class,
 
             // Scaffolder
             CycleBridge\ScaffolderBootloader::class,
+
+            // EntityBehavior
+            CycleBridge\EntityBehaviorBootloader::class,
 
             // App
             AppBootloader::class,
