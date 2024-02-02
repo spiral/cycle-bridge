@@ -35,7 +35,7 @@ final class SchemaBootloaderTest extends BaseTest
     {
         $generators = $this->bootloader->getGenerators($this->getContainer()->get(CycleConfig::class));
 
-        $this->assertCount(15, $generators);
+        $this->assertCount(10, $generators);
         $this->assertContainsOnlyInstancesOf(GeneratorInterface::class, $generators);
     }
 

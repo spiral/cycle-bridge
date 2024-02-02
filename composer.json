@@ -26,6 +26,7 @@
     "cycle/schema-migrations-generator": "^2.1",
     "cycle/schema-renderer": "^1.2",
     "cycle/schema-builder": "^2.7",
+    "cycle/schema-provider": "^1.0",
     "doctrine/inflector": "^1.4 || ^2.0",
     "spiral/attributes": "^2.10 || ^3.0",
     "spiral/reactor": "^3.0",
