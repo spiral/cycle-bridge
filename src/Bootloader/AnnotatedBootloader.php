@@ -5,72 +5,78 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Bootloader;
 
 use Cycle\Annotated;
+use Cycle\Annotated\Locator\EmbeddingLocatorInterface;
+use Cycle\Annotated\Locator\EntityLocatorInterface;
 use Spiral\Attributes\ReaderInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Bootloader\Attributes\AttributesBootloader;
+use Spiral\Core\FactoryInterface;
 use Spiral\Cycle\Annotated\Locator\ListenerEmbeddingsLocator;
 use Spiral\Cycle\Annotated\Locator\ListenerEntityLocator;
+use Spiral\Cycle\Config\CycleConfig;
+use Spiral\Cycle\Schema\Provider\AnnotatedSchemaProvider;
 use Spiral\Tokenizer\Bootloader\TokenizerListenerBootloader;
 
 final class AnnotatedBootloader extends Bootloader
 {
-    protected const DEPENDENCIES = [
-        SchemaBootloader::class,
-        TokenizerListenerBootloader::class,
-        AttributesBootloader::class,
-    ];
+    public function defineDependencies(): array
+    {
+        return [
+            SchemaBootloader::class,
+            TokenizerListenerBootloader::class,
+            AttributesBootloader::class,
+        ];
+    }
 
-    protected const BINDINGS = [
-        Annotated\Embeddings::class => [self::class, 'initEmbeddings'],
-        Annotated\Entities::class => [self::class, 'initEntities'],
-        Annotated\MergeColumns::class => [self::class, 'initMergeColumns'],
-        Annotated\TableInheritance::class => [self::class, 'initTableInheritance'],
-        Annotated\MergeIndexes::class => [self::class, 'initMergeIndexes'],
-    ];
-
-    protected const SINGLETONS = [
-        ListenerEntityLocator::class => ListenerEntityLocator::class,
-        ListenerEmbeddingsLocator::class => ListenerEmbeddingsLocator::class,
-    ];
+    public function defineSingletons(): array
+    {
+        return [
+            ListenerEntityLocator::class => ListenerEntityLocator::class,
+            ListenerEmbeddingsLocator::class => ListenerEmbeddingsLocator::class,
+            EmbeddingLocatorInterface::class => ListenerEmbeddingsLocator::class,
+            EntityLocatorInterface::class => ListenerEntityLocator::class,
+            AnnotatedSchemaProvider::class => static function (FactoryInterface $factory, SchemaBootloader $schema, CycleConfig $config) {
+                return $factory->make(AnnotatedSchemaProvider::class, ['generators' => $schema->getGenerators($config)]);
+            },
+        ];
+    }
 
     public function init(
-        SchemaBootloader $schema,
         TokenizerListenerBootloader $tokenizer,
         ListenerEntityLocator $entityLocator,
         ListenerEmbeddingsLocator $embeddingsLocator
     ): void {
         $tokenizer->addListener($entityLocator);
         $tokenizer->addListener($embeddingsLocator);
-
-        $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Embeddings::class);
-        $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\Entities::class);
-        $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\TableInheritance::class);
-        $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\MergeColumns::class);
-        $schema->addGenerator(SchemaBootloader::GROUP_RENDER, Annotated\MergeIndexes::class);
     }
 
-    private function initEmbeddings(
-        ReaderInterface $reader,
-        ListenerEmbeddingsLocator $embeddingsLocator
-    ): Annotated\Embeddings {
-        return new Annotated\Embeddings($embeddingsLocator, $reader);
-    }
-
+    /**
+     * @deprecated since v2.10.0. Will be removed in v3.0.0.
+     */
     public function initEntities(ReaderInterface $reader, ListenerEntityLocator $entityLocator): Annotated\Entities
     {
         return new Annotated\Entities($entityLocator, $reader);
     }
 
+    /**
+     * @deprecated since v2.10.0. Will be removed in v3.0.0.
+     */
     public function initMergeColumns(ReaderInterface $reader): Annotated\MergeColumns
     {
         return new Annotated\MergeColumns($reader);
     }
 
+    /**
+     * @deprecated since v2.10.0. Will be removed in v3.0.0.
+     */
     public function initTableInheritance(ReaderInterface $reader): Annotated\TableInheritance
     {
         return new Annotated\TableInheritance($reader);
     }
 
+    /**
+     * @deprecated since v2.10.0. Will be removed in v3.0.0.
+     */
     public function initMergeIndexes(ReaderInterface $reader): Annotated\MergeIndexes
     {
         return new Annotated\MergeIndexes($reader);

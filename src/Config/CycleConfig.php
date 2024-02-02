@@ -59,4 +59,9 @@ final class CycleConfig extends InjectableConfig
     {
         return (bool)($this->config['warmup'] ?? false);
     }
+
+    public function getSchemaProviders(): array
+    {
+        return (array)($this->config['schemaProviders'] ?? []);
+    }
 }

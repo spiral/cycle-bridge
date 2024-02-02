@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Bootloader;
 
+use Cycle\ORM\Schema;
 use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Defaults;
 use Cycle\Schema\Generator;
 use Cycle\Schema\GeneratorInterface;
+use Cycle\Schema\Provider\SchemaProviderInterface;
+use Cycle\Schema\Provider\Support\SchemaProviderPipeline;
 use Cycle\Schema\Registry;
+use Psr\Container\ContainerInterface;
 use Spiral\Boot\Bootloader\Bootloader;
-use Spiral\Boot\MemoryInterface;
 use Spiral\Core\Container;
 use Spiral\Core\FactoryInterface;
 use Spiral\Cycle\Config\CycleConfig;
-use Spiral\Cycle\Schema\Compiler;
 use Spiral\Tokenizer\Bootloader\TokenizerBootloader;
 
 final class SchemaBootloader extends Bootloader implements Container\SingletonInterface
@@ -22,16 +24,6 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
     public const GROUP_INDEX = 'index';
     public const GROUP_RENDER = 'render';
     public const GROUP_POSTPROCESS = 'postprocess';
-
-    protected const DEPENDENCIES = [
-        TokenizerBootloader::class,
-        CycleOrmBootloader::class,
-    ];
-
-    protected const BINDINGS = [
-        SchemaInterface::class => [self::class, 'schema'],
-        Registry::class => [self::class, 'initRegistry']
-    ];
 
     /** @var string[][]|GeneratorInterface[][] */
     private array $defaultGenerators;
@@ -61,7 +53,31 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
         ];
     }
 
-    public function addGenerator(string $group, string $generator): void
+    public function defineDependencies(): array
+    {
+        return [
+            TokenizerBootloader::class,
+            CycleOrmBootloader::class,
+        ];
+    }
+
+    public function defineBindings(): array
+    {
+        return [
+            Registry::class => [self::class, 'initRegistry'],
+            SchemaInterface::class => static fn (SchemaProviderInterface $provider): SchemaInterface => new Schema(
+                $provider->read() ?? []
+            ),
+            SchemaProviderInterface::class => static function (ContainerInterface $container): SchemaProviderInterface {
+                /** @var CycleConfig $config */
+                $config = $container->get(CycleConfig::class);
+
+                return (new SchemaProviderPipeline($container))->withConfig($config->getSchemaProviders());
+            },
+        ];
+    }
+
+    public function addGenerator(string $group, string|GeneratorInterface $generator): void
     {
         $this->defaultGenerators[$group][] = $generator;
     }
@@ -91,26 +107,6 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
         }
 
         return $result;
-    }
-
-    /**
-     * @throws \Throwable
-     */
-    protected function schema(MemoryInterface $memory, CycleConfig $config): SchemaInterface
-    {
-        $schemaCompiler = Compiler::fromMemory($memory);
-
-        if ($schemaCompiler->isEmpty() || ! $config->cacheSchema()) {
-            $schemaCompiler = Compiler::compile(
-                $this->container->get(Registry::class),
-                $this->getGenerators($config),
-                $config->getSchemaDefaults()
-            );
-
-            $schemaCompiler->toMemory($memory);
-        }
-
-        return $schemaCompiler->toSchema();
     }
 
     private function initRegistry(FactoryInterface $factory, CycleConfig $config): Registry
