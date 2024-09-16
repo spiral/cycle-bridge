@@ -30,6 +30,7 @@ final class MigrationsBootloaderTest extends BaseTest
         $this->assertDirectoryAliasDefined('migrations');
         $this->assertSame([
             'directory' => $this->getDirectoryByAlias('migrations'),
+            'vendorDirectories' => [],
             'strategy' => SingleFileStrategy::class,
             'nameGenerator' => NameBasedOnChangesGenerator::class,
             'table' => 'migrations',

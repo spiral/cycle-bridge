@@ -17,6 +17,7 @@ use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Boot\DirectoriesInterface;
 use Spiral\Boot\EnvironmentInterface;
 use Spiral\Config\ConfiguratorInterface;
+use Spiral\Config\Patch\Append;
 use Spiral\Tokenizer\Bootloader\TokenizerBootloader;
 
 final class MigrationsBootloader extends Bootloader
@@ -33,8 +34,12 @@ final class MigrationsBootloader extends Bootloader
         GeneratorStrategyInterface::class => [self::class, 'initGeneratorStrategy'],
     ];
 
+    public function __construct(
+        private readonly ConfiguratorInterface $config,
+    ) {
+    }
+
     public function init(
-        ConfiguratorInterface $config,
         EnvironmentInterface $env,
         DirectoriesInterface $dirs
     ): void {
@@ -42,15 +47,24 @@ final class MigrationsBootloader extends Bootloader
             $dirs->set('migrations', $dirs->get('app') . 'migrations');
         }
 
-        $config->setDefaults(
+        $this->config->setDefaults(
             MigrationConfig::CONFIG,
             [
                 'directory' => $dirs->get('migrations'),
+                'vendorDirectories' => [],
                 'strategy' => SingleFileStrategy::class,
                 'nameGenerator' => NameBasedOnChangesGenerator::class,
                 'table' => 'migrations',
                 'safe' => $env->get('SAFE_MIGRATIONS', false),
             ]
+        );
+    }
+
+    public function addVendorDirectory(string $directory): void
+    {
+        $this->config->modify(
+            MigrationConfig::CONFIG,
+            new Append('vendorDirectories', null, $directory),
         );
     }
 
