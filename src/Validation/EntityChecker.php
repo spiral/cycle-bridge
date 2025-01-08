@@ -10,7 +10,6 @@ use Cycle\ORM\ORMInterface;
 use Cycle\ORM\SchemaInterface;
 use Cycle\ORM\Select;
 use Cycle\ORM\Select\Repository;
-use RuntimeException;
 use Spiral\Core\Container\SingletonInterface;
 use Spiral\Validator\AbstractChecker;
 
@@ -20,7 +19,7 @@ use Spiral\Validator\AbstractChecker;
 class EntityChecker extends AbstractChecker implements SingletonInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public const MESSAGES = [
         'exists' => '[[Entity not exists.]]',
@@ -28,9 +27,8 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
     ];
 
     public function __construct(
-        private ORMInterface $orm
-    ) {
-    }
+        private ORMInterface $orm,
+    ) {}
 
     /**
      * Checks if the entity exists by a given field
@@ -43,10 +41,10 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
         string $role,
         ?string $field = null,
         bool $ignoreCase = false,
-        bool $multiple = false
+        bool $multiple = false,
     ): bool {
         $repository = $this->orm->getRepository($role);
-        $pk = (array)$this->orm->getSchema()->define($role, SchemaInterface::PRIMARY_KEY);
+        $pk = (array) $this->orm->getSchema()->define($role, SchemaInterface::PRIMARY_KEY);
         $isComposite = \count($pk) > 1;
         $isPK = $field === null || (!$isComposite && $pk[0] === $field);
 
@@ -57,8 +55,8 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
             if ($repository instanceof Repository) {
                 return $repository->select()->wherePK(...(array) $value)->count() === \count($value);
             }
-            throw new RuntimeException(
-                \sprintf('The `%s` repository doesn\'t support the multiple validation.', $repository::class)
+            throw new \RuntimeException(
+                \sprintf('The `%s` repository doesn\'t support the multiple validation.', $repository::class),
             );
         }
         \assert($field !== null);
@@ -72,9 +70,9 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
                     ->where($field, 'IN', new Parameter((array) $value))
                     ->count() === \count($value);
             }
-            throw new RuntimeException(\sprintf(
+            throw new \RuntimeException(\sprintf(
                 'The `%s` repository doesn\'t support the multiple validation by custom field.',
-                $repository::class
+                $repository::class,
             ));
         }
 
@@ -82,9 +80,9 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
             return $this->whereCaseInsensitive($repository->select(), $field, $value, $multiple)->fetchOne() !== null;
         }
 
-        throw new RuntimeException(\sprintf(
+        throw new \RuntimeException(\sprintf(
             'The `%s` repository doesn\'t support the case insensitive validation by custom field.',
-            $repository::class
+            $repository::class,
         ));
     }
 
@@ -96,7 +94,7 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
         string $role,
         string $field,
         array $withFields = [],
-        bool $ignoreCase = false
+        bool $ignoreCase = false,
     ): bool {
         $values = $this->withValues($withFields);
         $values[$field] = $value;
@@ -163,7 +161,7 @@ class EntityChecker extends AbstractChecker implements SingletonInterface
             return $select->where($column, \is_string($value) ? \mb_strtolower($value) : $value);
         }
 
-        throw new RuntimeException(
+        throw new \RuntimeException(
             'The `exists` rule doesn\'t work in multiple case insensitive mode.',
         );
     }

@@ -9,7 +9,6 @@ use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
 use Cycle\ORM\SchemaInterface;
 use Cycle\ORM\Select;
-use Cycle\ORM\Select\Repository;
 use Mockery as m;
 use Mockery\LegacyMockInterface;
 use Mockery\MockInterface;
@@ -37,26 +36,25 @@ trait EntityCheckerTrait
      */
     private function makeRepository(array $items = [], array|string $pk = 'id'): RepositoryInterface
     {
-        return new class($items, (array)$pk) implements RepositoryInterface {
+        return new class($items, (array) $pk) implements RepositoryInterface {
             /**
              * @param array<int, non-empty-array<non-empty-string, mixed>> $items
              */
             public function __construct(
                 private array $items,
-                private array $pk
-            ) {
-            }
+                private array $pk,
+            ) {}
 
             public function findByPK(mixed $id): ?object
             {
-                $id = (array)$id;
+                $id = (array) $id;
                 foreach ($this->items as $item) {
                     foreach ($this->pk as $i => $pk) {
                         if (!isset($id[$i]) || $item[$pk] !== $id[$i]) {
                             continue 2;
                         }
                     }
-                    return (object)$item;
+                    return (object) $item;
                 }
                 return null;
             }
@@ -68,7 +66,7 @@ trait EntityCheckerTrait
                     $result = \array_intersect_assoc($item, $scope);
                     \ksort($result);
                     if ($result === $scope) {
-                        return (object)$item;
+                        return (object) $item;
                     }
                 }
                 return null;
@@ -79,7 +77,7 @@ trait EntityCheckerTrait
                 $result = [];
                 foreach ($this->items as $item) {
                     if (\array_intersect_assoc($item, $scope) === $scope) {
-                        $result[] = (object)$item;
+                        $result[] = (object) $item;
                     }
                 }
                 return $result;
@@ -92,21 +90,20 @@ trait EntityCheckerTrait
                      * @param array<int, non-empty-array<non-empty-string, mixed>> $items
                      */
                     public function __construct(
-                        private array $items
-                    ) {
-                    }
+                        private array $items,
+                    ) {}
 
                     public function where(string $field, string $operator, Parameter $parameter): self
                     {
                         $this->items = array_filter(
                             $this->items,
-                            fn(mixed $value) => \in_array($value[$field], (array)$parameter->getValue(), true)
+                            fn(mixed $value) => \in_array($value[$field], (array) $parameter->getValue(), true),
                         );
 
                         return $this;
                     }
 
-                    public function count(string $column = null): int
+                    public function count(?string $column = null): int
                     {
                         return \count($this->items);
                     }

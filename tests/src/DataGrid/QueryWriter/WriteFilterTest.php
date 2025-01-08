@@ -17,12 +17,12 @@ class WriteFilterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\Equals('name', 'Antony')
+            new Filter\Equals('name', 'Antony'),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE "name" = \'Antony\'',
-            $select
+            $select,
         );
     }
 
@@ -31,7 +31,7 @@ class WriteFilterTest extends BaseTest
         $this->expectException(CompilerException::class);
         $this->compile(
             $this->initQuery(),
-            new Filter\Equals('balance', new IntValue())
+            new Filter\Equals('balance', new IntValue()),
         );
     }
 
@@ -39,12 +39,12 @@ class WriteFilterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\Like('name', 'Antony')
+            new Filter\Like('name', 'Antony'),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE "name" LIKE \'%Antony%\'',
-            $select
+            $select,
         );
     }
 
@@ -52,12 +52,12 @@ class WriteFilterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\Like('name', 'Antony', '%%%s')
+            new Filter\Like('name', 'Antony', '%%%s'),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE "name" LIKE \'%Antony\'',
-            $select
+            $select,
         );
     }
 
@@ -67,13 +67,13 @@ class WriteFilterTest extends BaseTest
             $this->initQuery(),
             new Filter\All(
                 new Filter\Equals('name', 'Antony'),
-                new Filter\Equals('balance', 100)
-            )
+                new Filter\Equals('balance', 100),
+            ),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE ("name" = \'Antony\' AND "balance" = 100)',
-            $select
+            $select,
         );
     }
 
@@ -83,13 +83,13 @@ class WriteFilterTest extends BaseTest
             $this->initQuery(),
             new Filter\Any(
                 new Filter\Equals('name', 'Antony'),
-                new Filter\Equals('balance', 100)
-            )
+                new Filter\Equals('balance', 100),
+            ),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE (("name" = \'Antony\') OR ("balance" = 100))',
-            $select
+            $select,
         );
     }
 
@@ -100,18 +100,18 @@ class WriteFilterTest extends BaseTest
             new Filter\All(
                 new Filter\Any(
                     new Filter\Equals('a', 'aa'),
-                    new Filter\Equals('b', 'bb')
+                    new Filter\Equals('b', 'bb'),
                 ),
                 new Filter\Any(
                     new Filter\Equals('c', 'cc'),
-                    new Filter\Equals('d', 'dd')
-                )
-            )
+                    new Filter\Equals('d', 'dd'),
+                ),
+            ),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE ((("a" = \'aa\') OR ("b" = \'bb\')) AND (("c" = \'cc\') OR ("d" = \'dd\')))',
-            $select
+            $select,
         );
     }
 
@@ -119,12 +119,12 @@ class WriteFilterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\InArray('id', [1, 2, 3])
+            new Filter\InArray('id', [1, 2, 3]),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE "id" IN (1,2,3)',
-            $select
+            $select,
         );
     }
 
@@ -132,12 +132,12 @@ class WriteFilterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\NotInArray('id', [1, 2, 3])
+            new Filter\NotInArray('id', [1, 2, 3]),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE "id" NOT IN (1,2,3)',
-            $select
+            $select,
         );
     }
 
@@ -145,12 +145,12 @@ class WriteFilterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\Gt('value', 5)
+            new Filter\Gt('value', 5),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE "value" > 5',
-            $select
+            $select,
         );
     }
 
@@ -158,12 +158,12 @@ class WriteFilterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\Gte('value', 5)
+            new Filter\Gte('value', 5),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE "value" >= 5',
-            $select
+            $select,
         );
     }
 
@@ -171,12 +171,12 @@ class WriteFilterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\Lt('value', 5)
+            new Filter\Lt('value', 5),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE "value" < 5',
-            $select
+            $select,
         );
     }
 
@@ -184,12 +184,12 @@ class WriteFilterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\Lte('value', 5)
+            new Filter\Lte('value', 5),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE "value" <= 5',
-            $select
+            $select,
         );
     }
 
@@ -202,12 +202,12 @@ class WriteFilterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\NotEquals('name', 'Antony')
+            new Filter\NotEquals('name', 'Antony'),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE "name" != \'Antony\'',
-            $select
+            $select,
         );
     }
 
@@ -215,12 +215,12 @@ class WriteFilterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new FragmentInjectionFilter(new Filter\Equals('date(created)', '2020-06-06'))
+            new FragmentInjectionFilter(new Filter\Equals('date(created)', '2020-06-06')),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE date(created) = \'2020-06-06\'',
-            $select
+            $select,
         );
     }
 
@@ -228,12 +228,12 @@ class WriteFilterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new ExpressionInjectionFilter(new Filter\Equals('date(created)', '2020-06-06'))
+            new ExpressionInjectionFilter(new Filter\Equals('date(created)', '2020-06-06')),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE date("created") = \'2020-06-06\'',
-            $select
+            $select,
         );
     }
 }

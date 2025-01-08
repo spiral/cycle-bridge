@@ -25,10 +25,11 @@ final class ListenerEmbeddingsLocatorTest extends TestCase
             [
                 new Embedding(
                     new Embeddable(),
-                    new \ReflectionClass(Address::class)
+                    new \ReflectionClass(Address::class),
                 ),
             ],
-            $locator->getEmbeddings());
+            $locator->getEmbeddings(),
+        );
     }
 
     public function testListenWithoutAttribute(): void
@@ -44,7 +45,7 @@ final class ListenerEmbeddingsLocatorTest extends TestCase
     {
         $this->expectException(AnnotationException::class);
         $this->expectExceptionMessage(
-            \sprintf('Tokenizer did not finalize %s listener.', ListenerEmbeddingsLocator::class)
+            \sprintf('Tokenizer did not finalize %s listener.', ListenerEmbeddingsLocator::class),
         );
 
         $locator = new ListenerEmbeddingsLocator(new AttributeReader());

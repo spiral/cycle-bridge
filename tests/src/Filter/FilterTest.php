@@ -11,13 +11,6 @@ use Spiral\Tests\DatabaseTest;
 
 final class FilterTest extends DatabaseTest
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->cleanIdentityMap();
-    }
-
     public function testResolveEntity(): void
     {
         $role = RoleFactory::new()->makeOne();
@@ -25,7 +18,7 @@ final class FilterTest extends DatabaseTest
 
         $response = $this->fakeHttp()->post('/role', [
             'role' => $role->id,
-            'name' => 'test'
+            'name' => 'test',
         ]);
 
         $response->assertBodySame(\json_encode([
@@ -41,7 +34,14 @@ final class FilterTest extends DatabaseTest
 
         $this->fakeHttp()->post('/role', [
             'role' => 2,
-            'name' => 'test'
+            'name' => 'test',
         ]);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->cleanIdentityMap();
     }
 }

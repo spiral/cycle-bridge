@@ -22,14 +22,16 @@ final class PrototypeBootloaderTest extends BaseTest
         ]);
     }
 
-    /** @dataProvider propertiesDataProvider */
+    /**
+     * @dataProvider propertiesDataProvider
+     */
     public function testBindProperties(string $expected, string $property): void
     {
         $registry = $this->getContainer()->get(PrototypeRegistry::class);
 
         $this->assertInstanceOf(
             $expected,
-            $this->getContainer()->get($registry->resolveProperty($property)->type->name())
+            $this->getContainer()->get($registry->resolveProperty($property)->type->name()),
         );
     }
 
@@ -39,7 +41,7 @@ final class PrototypeBootloaderTest extends BaseTest
 
         $this->assertInstanceOf(
             UserRepository::class,
-            $this->getContainer()->get($registry->resolveProperty('users')->type->name())
+            $this->getContainer()->get($registry->resolveProperty('users')->type->name()),
         );
     }
 

@@ -45,8 +45,8 @@ final class ListCommandTest extends ConsoleTest
             new Database(
                 'another',
                 '',
-                $dm->driver('other')
-            )
+                $dm->driver('other'),
+            ),
         );
 
         $output = $this->runCommand('db:list', ['db' => 'another']);

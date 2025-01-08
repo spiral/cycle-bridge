@@ -20,7 +20,7 @@ final class RenderCommand extends AbstractCommand
     public function perform(
         OutputInterface $output,
         SchemaInterface $schema,
-        SchemaToArrayConverter $converter
+        SchemaToArrayConverter $converter,
     ): int {
         $renderer = match ($this->argument('format')) {
             'mermaid' => new MermaidRenderer(),
@@ -28,14 +28,14 @@ final class RenderCommand extends AbstractCommand
             'color' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_CONSOLE_COLOR),
             'plain' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_PLAIN_TEXT),
             default => throw new \InvalidArgumentException(
-                sprintf("Format `%s` isn't supported.", $this->argument('format'))
-            )
+                sprintf("Format `%s` isn't supported.", $this->argument('format')),
+            ),
         };
 
         $output->writeln(
             $renderer->render(
-                $converter->convert($schema)
-            )
+                $converter->convert($schema),
+            ),
         );
 
         return self::SUCCESS;

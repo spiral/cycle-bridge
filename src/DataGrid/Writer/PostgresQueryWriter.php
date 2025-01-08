@@ -18,9 +18,6 @@ use Spiral\DataGrid\WriterInterface;
  */
 class PostgresQueryWriter implements WriterInterface
 {
-    /**
-     * @inheritDoc
-     */
     public function write(mixed $source, SpecificationInterface $specification, Compiler $compiler): mixed
     {
         if (!$this->targetAcceptable($source)) {
@@ -31,7 +28,7 @@ class PostgresQueryWriter implements WriterInterface
             return $source->where(
                 $specification->getExpression(),
                 'ILIKE',
-                sprintf($specification->getPattern(), $this->fetchValue($specification->getValue()))
+                sprintf($specification->getPattern(), $this->fetchValue($specification->getValue())),
             );
         }
 
@@ -40,7 +37,6 @@ class PostgresQueryWriter implements WriterInterface
 
     /**
      * @param mixed $target
-     * @return bool
      *
      * @psalm-suppress InternalMethod
      */

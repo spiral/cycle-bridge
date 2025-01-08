@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\DataGrid\Specification\Filter;
 
-use LogicException;
 use Cycle\Database\Injection;
 use Spiral\DataGrid\Specification\Filter\Between;
 use Spiral\DataGrid\Specification\Filter\Expression;
@@ -21,7 +20,7 @@ abstract class InjectionFilter implements FilterInterface
     public function __construct(SpecificationInterface $expression)
     {
         if (!$expression instanceof Expression && !$expression instanceof Between) {
-            throw new LogicException('Only expression filters allowed');
+            throw new \LogicException('Only expression filters allowed');
         }
 
         $this->expression = $expression;

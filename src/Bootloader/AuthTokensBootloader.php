@@ -17,7 +17,6 @@ use Spiral\Tokenizer\Bootloader\TokenizerBootloader;
 final class AuthTokensBootloader extends Bootloader
 {
     private const TOKEN_STORAGE_NAME = 'cycle';
-
     protected const DEPENDENCIES = [
         CycleOrmBootloader::class,
         AnnotatedBootloader::class,
@@ -25,13 +24,12 @@ final class AuthTokensBootloader extends Bootloader
 
     public function __construct(
         private readonly ConfiguratorInterface $config,
-    ) {
-    }
+    ) {}
 
     public function init(
         TokenizerBootloader $tokenizer,
         HttpAuthBootloader $bootloader,
-        EnvironmentInterface $env
+        EnvironmentInterface $env,
     ): void {
         $bootloader->addTokenStorage(self::TOKEN_STORAGE_NAME, CycleStorage::class);
 

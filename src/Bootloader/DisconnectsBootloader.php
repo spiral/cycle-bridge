@@ -27,7 +27,7 @@ final class DisconnectsBootloader extends Bootloader
                 foreach ($dbal->getDrivers() as $driver) {
                     $driver->disconnect();
                 }
-            }
+            },
         );
     }
 }

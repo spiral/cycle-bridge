@@ -46,7 +46,7 @@ final class RenderCommandTest extends ConsoleTest
         $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'color'], [
             '[35m[user][39m :: [32mdefault[39m.[32musers[39m',
             'Entity: [34mSpiral\App\Entities\User[39m',
-            'Mapper: [34mcustom_mapper[39m'
+            'Mapper: [34mcustom_mapper[39m',
         ]);
     }
 

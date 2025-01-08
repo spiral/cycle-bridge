@@ -8,7 +8,7 @@ return [
     'logger' => [
         'default' => null,
         'drivers' => [
-            'sqlite' => 'file' // Log channel for Sq
+            'sqlite' => 'file', // Log channel for Sq
         ],
     ],
 
@@ -46,12 +46,12 @@ return [
     'drivers' => [
         'runtime' => new Config\SQLiteDriverConfig(
             connection: new Config\SQLite\MemoryConnectionConfig(),
-            queryCache: true
+            queryCache: true,
         ),
         'other' => new Config\PostgresDriverConfig(
             connection: new Config\Postgres\DsnConnectionConfig(
-                dsn: 'pgsql:host=127.0.0.1;dbname=database'
-            )
+                dsn: 'pgsql:host=127.0.0.1;dbname=database',
+            ),
         ),
     ],
 
@@ -59,6 +59,6 @@ return [
         'dbRuntime' => 'runtime',
         'dbOther' => 'other',
         'dbSqlite' => 'runtime',
-        'dbPostgres' => 'other'
+        'dbPostgres' => 'other',
     ],
 ];

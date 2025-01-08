@@ -12,14 +12,14 @@ abstract class ConsoleTest extends BaseTest
         $this->cleanupMigrations();
     }
 
-    private function cleanupMigrations(): void
-    {
-        $this->cleanupDirectories($this->getDirectoryByAlias('migrations'));
-    }
-
     protected function tearDown(): void
     {
         parent::tearDown();
         $this->cleanupMigrations();
+    }
+
+    private function cleanupMigrations(): void
+    {
+        $this->cleanupDirectories($this->getDirectoryByAlias('migrations'));
     }
 }

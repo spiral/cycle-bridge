@@ -15,13 +15,11 @@ use Spiral\Filters\Model\Mapper\CasterRegistryInterface;
 final class AppBootloader extends DomainBootloader
 {
     protected const BINDINGS = [
-        RoleRepositoryInterface::class => RoleRepository::class
+        RoleRepositoryInterface::class => RoleRepository::class,
     ];
-
     protected const SINGLETONS = [
         CoreInterface::class => [self::class, 'domainCore'],
     ];
-
     protected const INTERCEPTORS = [
         CycleInterceptor::class,
     ];

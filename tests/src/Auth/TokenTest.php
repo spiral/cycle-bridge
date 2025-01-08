@@ -22,7 +22,6 @@ final class TokenTest extends BaseTest
     }
 
     /**
-     * @return void
      *
      * @throws \ReflectionException
      */
@@ -39,7 +38,6 @@ final class TokenTest extends BaseTest
     }
 
     /**
-     * @return void
      *
      * @throws \ReflectionException
      */
@@ -56,12 +54,9 @@ final class TokenTest extends BaseTest
     }
 
     /**
-     * @param object $object
-     * @param string $property
-     * @param $value
      *
-     * @return object
      *
+     * @param mixed $value
      * @throws \ReflectionException
      */
     protected function setProtectedProperty(object $object, string $property, $value): object
@@ -80,7 +75,7 @@ final class TokenTest extends BaseTest
             '1',
             'secret',
             $payload,
-            new \DateTimeImmutable()
+            new \DateTimeImmutable(),
         );
     }
 }

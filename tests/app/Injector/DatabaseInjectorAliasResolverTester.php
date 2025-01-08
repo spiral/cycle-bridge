@@ -14,8 +14,7 @@ final class DatabaseInjectorAliasResolverTester
         public DatabaseInterface $dbOther,
         public Database          $dbSqlite,
         public Database          $dbPostgres,
-    ) {
-    }
+    ) {}
 
     public static function getDefaultDatabase(DatabaseInterface $usingUndefinedAlias)
     {

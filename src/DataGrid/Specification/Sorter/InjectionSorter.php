@@ -32,19 +32,19 @@ abstract class InjectionSorter extends AbstractSorter
 
         if (!\class_exists($injector)) {
             throw new \LogicException(
-                \sprintf('Class "%s" does not exist', $injector)
+                \sprintf('Class "%s" does not exist', $injector),
             );
         }
 
         if (!\is_subclass_of($injector, FragmentInterface::class)) {
             throw new \LogicException(
-                'INJECTION class does not implement FragmentInterface'
+                'INJECTION class does not implement FragmentInterface',
             );
         }
 
         return \array_map(
-            static fn (string $expression): FragmentInterface => new $injector($expression),
-            $this->expression->getExpressions()
+            static fn(string $expression): FragmentInterface => new $injector($expression),
+            $this->expression->getExpressions(),
         );
     }
 

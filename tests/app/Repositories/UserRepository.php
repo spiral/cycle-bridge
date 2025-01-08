@@ -6,6 +6,4 @@ namespace Spiral\App\Repositories;
 
 use Cycle\ORM\Select\Repository;
 
-class UserRepository extends Repository
-{
-}
+class UserRepository extends Repository {}

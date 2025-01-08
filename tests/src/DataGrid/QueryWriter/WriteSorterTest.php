@@ -15,12 +15,12 @@ class WriteSorterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Sorter\AscSorter('balance')
+            new Sorter\AscSorter('balance'),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" ORDER BY "balance" ASC',
-            $select
+            $select,
         );
     }
 
@@ -28,12 +28,12 @@ class WriteSorterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Sorter\AscSorter('ISNULL(balance)')
+            new Sorter\AscSorter('ISNULL(balance)'),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" ORDER BY ISNULL("balance") ASC',
-            $select
+            $select,
         );
     }
 
@@ -41,12 +41,12 @@ class WriteSorterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Sorter\DescSorter('balance')
+            new Sorter\DescSorter('balance'),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" ORDER BY "balance" DESC',
-            $select
+            $select,
         );
     }
 
@@ -56,12 +56,12 @@ class WriteSorterTest extends BaseTest
             $this->initQuery(),
             new Sorter\AscSorter('balance'),
             new Sorter\AscSorter('credits'),
-            new Sorter\DescSorter('attempts')
+            new Sorter\DescSorter('attempts'),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" ORDER BY "balance" ASC, "credits" ASC, "attempts" DESC',
-            $select
+            $select,
         );
     }
 
@@ -70,26 +70,26 @@ class WriteSorterTest extends BaseTest
         $unary = new Sorter\SorterSet(
             new Sorter\AscSorter('balance'),
             new Sorter\AscSorter('credits'),
-            new Sorter\DescSorter('attempts')
+            new Sorter\DescSorter('attempts'),
         );
         $select = $this->compile(
             $this->initQuery(),
-            $unary
+            $unary,
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" ORDER BY "balance" ASC, "credits" ASC, "attempts" DESC',
-            $select
+            $select,
         );
 
         $select = $this->compile(
             $this->initQuery(),
-            new Sorter\SorterSet($unary)
+            new Sorter\SorterSet($unary),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" ORDER BY "balance" ASC, "credits" ASC, "attempts" DESC',
-            $select
+            $select,
         );
     }
 
@@ -103,12 +103,12 @@ class WriteSorterTest extends BaseTest
         $sorter = new Sorter\DirectionalSorter(
             new Sorter\SorterSet(
                 new Sorter\AscSorter('balance'),
-                new Sorter\AscSorter('credits')
+                new Sorter\AscSorter('credits'),
             ),
             new Sorter\SorterSet(
                 new Sorter\DescSorter('balance'),
-                new Sorter\DescSorter('credits')
-            )
+                new Sorter\DescSorter('credits'),
+            ),
         );
 
         if ($resultDirection === null) {
@@ -116,16 +116,16 @@ class WriteSorterTest extends BaseTest
         } else {
             $select = $this->compile(
                 $this->initQuery(),
-                $sorter->withDirection($direction)
+                $sorter->withDirection($direction),
             );
 
             $this->assertEqualSQL(
                 sprintf(
                     'SELECT * FROM "users" ORDER BY "balance" %s, "credits" %s',
                     $resultDirection,
-                    $resultDirection
+                    $resultDirection,
                 ),
-                $select
+                $select,
             );
         }
     }
@@ -135,30 +135,30 @@ class WriteSorterTest extends BaseTest
         $sorter = new Sorter\DirectionalSorter(
             new Sorter\SorterSet(
                 new Sorter\AscSorter('balance'),
-                new Sorter\DescSorter('credits')
+                new Sorter\DescSorter('credits'),
             ),
             new Sorter\SorterSet(
                 new Sorter\DescSorter('balance'),
-                new Sorter\AscSorter('credits')
-            )
+                new Sorter\AscSorter('credits'),
+            ),
         );
 
         $select = $this->compile(
             $this->initQuery(),
-            $sorter->withDirection('asc')
+            $sorter->withDirection('asc'),
         );
         $this->assertEqualSQL(
             'SELECT * FROM "users" ORDER BY "balance" ASC, "credits" DESC',
-            $select
+            $select,
         );
 
         $select = $this->compile(
             $this->initQuery(),
-            $sorter->withDirection('desc')
+            $sorter->withDirection('desc'),
         );
         $this->assertEqualSQL(
             'SELECT * FROM "users" ORDER BY "balance" DESC, "credits" ASC',
-            $select
+            $select,
         );
     }
 
@@ -176,16 +176,16 @@ class WriteSorterTest extends BaseTest
         } else {
             $select = $this->compile(
                 $this->initQuery(),
-                $sorter->withDirection($direction)
+                $sorter->withDirection($direction),
             );
 
             $this->assertEqualSQL(
                 sprintf(
                     'SELECT * FROM "users" ORDER BY "balance" %s, "credits" %s',
                     $resultDirection,
-                    $resultDirection
+                    $resultDirection,
                 ),
-                $select
+                $select,
             );
         }
     }
@@ -194,12 +194,12 @@ class WriteSorterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new FragmentInjectionSorter(new Sorter\AscSorter("json_field->>'date'"))
+            new FragmentInjectionSorter(new Sorter\AscSorter("json_field->>'date'")),
         );
 
         $this->assertEqualSQL(
             "SELECT * FROM \"users\" ORDER BY json_field->>'date' ASC",
-            $select
+            $select,
         );
     }
 
@@ -207,12 +207,12 @@ class WriteSorterTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new ExpressionInjectionSorter(new Sorter\AscSorter('date(created)'))
+            new ExpressionInjectionSorter(new Sorter\AscSorter('date(created)')),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" ORDER BY date("created") ASC',
-            $select
+            $select,
         );
     }
 

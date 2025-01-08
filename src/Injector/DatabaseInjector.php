@@ -15,11 +15,10 @@ use Spiral\Core\Container\InjectorInterface;
 final class DatabaseInjector implements InjectorInterface
 {
     public function __construct(
-        private readonly DatabaseManager $dm
-    ) {
-    }
+        private readonly DatabaseManager $dm,
+    ) {}
 
-    public function createInjection(\ReflectionClass $class, string $context = null): DatabaseInterface
+    public function createInjection(\ReflectionClass $class, ?string $context = null): DatabaseInterface
     {
         // if context is empty default database will be returned
         try {

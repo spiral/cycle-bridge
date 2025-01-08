@@ -19,12 +19,12 @@ final class ListenerEmbeddingsLocator implements EmbeddingLocatorInterface, Toke
      * @var Embedding[]
      */
     private array $embeddings = [];
+
     private bool $collected = false;
 
     public function __construct(
-        private readonly ReaderInterface $reader
-    ) {
-    }
+        private readonly ReaderInterface $reader,
+    ) {}
 
     public function listen(\ReflectionClass $class): void
     {

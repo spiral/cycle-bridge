@@ -26,7 +26,6 @@ final class MigrationsBootloader extends Bootloader
         TokenizerBootloader::class,
         DatabaseBootloader::class,
     ];
-
     protected const SINGLETONS = [
         Migrator::class => Migrator::class,
         RepositoryInterface::class => FileRepository::class,
@@ -36,12 +35,11 @@ final class MigrationsBootloader extends Bootloader
 
     public function __construct(
         private readonly ConfiguratorInterface $config,
-    ) {
-    }
+    ) {}
 
     public function init(
         EnvironmentInterface $env,
-        DirectoriesInterface $dirs
+        DirectoriesInterface $dirs,
     ): void {
         if (! $dirs->has('migrations')) {
             $dirs->set('migrations', $dirs->get('app') . 'migrations');
@@ -56,7 +54,7 @@ final class MigrationsBootloader extends Bootloader
                 'nameGenerator' => NameBasedOnChangesGenerator::class,
                 'table' => 'migrations',
                 'safe' => $env->get('SAFE_MIGRATIONS', false),
-            ]
+            ],
         );
     }
 
@@ -70,7 +68,7 @@ final class MigrationsBootloader extends Bootloader
 
     private function initGeneratorStrategy(
         MigrationConfig $config,
-        ContainerInterface $container
+        ContainerInterface $container,
     ): GeneratorStrategyInterface {
         $strategy = $config->toArray()['strategy'] ?? SingleFileStrategy::class;
 

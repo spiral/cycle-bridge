@@ -15,23 +15,6 @@ use Spiral\Cycle\DataGrid\Writer\QueryWriter;
 
 final class GeneratorTest extends BaseTest
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $users = $this->db->table('users')->getSchema();
-        $users->primary('id');
-        $users->enum('status', ['active', 'disabled']);
-        $users->string('name');
-        $users->save();
-
-        $this->db->table('users')->insertMultiple(['status', 'name'], [
-            ['active', 'Antony'],
-            ['active', 'John'],
-            ['disabled', 'Bob'],
-        ]);
-    }
-
     public function testSelect(): void
     {
         $this->assertCount(3, $this->db->table('users'));
@@ -46,7 +29,7 @@ final class GeneratorTest extends BaseTest
             ->withInput(new ArrayInput([]))
             ->create(
                 $this->db->table('users')->select('*'),
-                $schema
+                $schema,
             );
 
         $this->assertEquals([
@@ -76,11 +59,11 @@ final class GeneratorTest extends BaseTest
                 new ArrayInput([
                     GridFactory::KEY_PAGINATE => ['page' => 2],
                     GridFactory::KEY_FETCH_COUNT => true,
-                ])
+                ]),
             )
             ->create(
                 $this->db->table('users')->select('*'),
-                $schema
+                $schema,
             );
 
         $this->assertEquals([
@@ -109,14 +92,14 @@ final class GeneratorTest extends BaseTest
             ->withInput(
                 new ArrayInput([
                     GridFactory::KEY_PAGINATE => ['page' => 2],
-                ])
+                ]),
             )
             ->withDefaults([
                 GridFactory::KEY_FETCH_COUNT => true,
             ])
             ->create(
                 $this->db->table('users')->select('*'),
-                $schema
+                $schema,
             )
             ->withView(static function ($u) {
                 return $u['name'];
@@ -146,7 +129,7 @@ final class GeneratorTest extends BaseTest
             ])
             ->create(
                 $this->db->table('users')->select('*'),
-                $schema
+                $schema,
             )
             ->withView(static function ($u) {
                 return $u['name'];
@@ -175,7 +158,7 @@ final class GeneratorTest extends BaseTest
             ])
             ->create(
                 $this->db->table('users')->select('*'),
-                $schema
+                $schema,
             )
             ->withView(static function ($u) {
                 return $u['name'];
@@ -204,13 +187,30 @@ final class GeneratorTest extends BaseTest
             ])
             ->create(
                 $this->db->table('users')->select('*'),
-                $schema
+                $schema,
             )
             ->withView(static function ($u) {
                 return $u['name'];
             });
 
         $this->assertSame([], $view->getOption(Grid::SORTERS));
+    }
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $users = $this->db->table('users')->getSchema();
+        $users->primary('id');
+        $users->enum('status', ['active', 'disabled']);
+        $users->string('name');
+        $users->save();
+
+        $this->db->table('users')->insertMultiple(['status', 'name'], [
+            ['active', 'Antony'],
+            ['active', 'John'],
+            ['disabled', 'Bob'],
+        ]);
     }
 
     private function initCompiler(): Compiler

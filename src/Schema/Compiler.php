@@ -45,7 +45,7 @@ final class Compiler
     {
         return $memory->saveData(
             self::MEMORY_SECTION,
-            empty($this->schema) ? self::EMPTY_SCHEMA : $this->schema
+            empty($this->schema) ? self::EMPTY_SCHEMA : $this->schema,
         );
     }
 

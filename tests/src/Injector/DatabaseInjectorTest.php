@@ -7,7 +7,6 @@ namespace Spiral\Tests\Injector;
 use Cycle\Database\Database;
 use Cycle\Database\DatabaseInterface;
 use Spiral\App\Injector\DatabaseInjectorAliasResolverTester;
-use Spiral\Core\Container;
 use Spiral\Tests\BaseTest;
 
 final class DatabaseInjectorTest extends BaseTest

@@ -15,7 +15,7 @@ final class DataGridBootloaderTest extends BaseTest
     {
         $this->assertInstanceOf(
             Compiler::class,
-            $compiler = $this->getContainer()->get(Compiler::class)
+            $compiler = $this->getContainer()->get(Compiler::class),
         );
 
         $writers = $this->accessProtected($compiler, 'writers');
@@ -29,7 +29,7 @@ final class DataGridBootloaderTest extends BaseTest
     {
         $this->assertInstanceOf(
             Compiler::class,
-            $compiler = $this->getContainer()->get(Compiler::class)
+            $compiler = $this->getContainer()->get(Compiler::class),
         );
 
         $writers = $this->accessProtected($compiler, 'writers');

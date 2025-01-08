@@ -24,10 +24,11 @@ final class ListenerEntityLocatorTest extends TestCase
             [
                 new Entity(
                     new \Cycle\Annotated\Annotation\Entity(repository: UserRepository::class),
-                    new \ReflectionClass(User::class)
+                    new \ReflectionClass(User::class),
                 ),
             ],
-            $locator->getEntities());
+            $locator->getEntities(),
+        );
     }
 
     public function testListenWithoutAttribute(): void
@@ -43,7 +44,7 @@ final class ListenerEntityLocatorTest extends TestCase
     {
         $this->expectException(AnnotationException::class);
         $this->expectExceptionMessage(
-            \sprintf('Tokenizer did not finalize %s listener.', ListenerEntityLocator::class)
+            \sprintf('Tokenizer did not finalize %s listener.', ListenerEntityLocator::class),
         );
 
         $locator = new ListenerEntityLocator(new AttributeReader());

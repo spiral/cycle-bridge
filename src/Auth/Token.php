@@ -6,7 +6,6 @@ namespace Spiral\Cycle\Auth;
 
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Entity;
-use DateTimeInterface;
 use Spiral\Auth\TokenInterface;
 use Spiral\Auth\Exception\TokenStorageException;
 
@@ -22,10 +21,10 @@ class Token implements TokenInterface
     private string $hashedValue;
 
     #[Column(type: 'datetime')]
-    private DateTimeInterface $createdAt;
+    private \DateTimeInterface $createdAt;
 
     #[Column(type: 'datetime', nullable: true)]
-    private ?DateTimeInterface $expiresAt = null;
+    private ?\DateTimeInterface $expiresAt = null;
 
     #[Column(type: 'blob')]
     private $payload;
@@ -36,8 +35,8 @@ class Token implements TokenInterface
         string $id,
         string $secretValue,
         array $payload,
-        DateTimeInterface $createdAt,
-        ?DateTimeInterface $expiresAt = null
+        \DateTimeInterface $createdAt,
+        ?\DateTimeInterface $expiresAt = null,
     ) {
         $this->id = $id;
 
@@ -55,7 +54,6 @@ class Token implements TokenInterface
         $this->secretValue = $value;
     }
 
-    /** @inheritDoc */
     public function getID(): string
     {
         return sprintf('%s:%s', $this->id, $this->secretValue);
@@ -66,22 +64,20 @@ class Token implements TokenInterface
         return $this->hashedValue;
     }
 
-    public function getCreatedAt(): DateTimeInterface
+    public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    /** @inheritDoc */
-    public function getExpiresAt(): ?DateTimeInterface
+    public function getExpiresAt(): ?\DateTimeInterface
     {
         return $this->expiresAt;
     }
 
-    /** @inheritDoc */
     public function getPayload(): array
     {
         if (is_array($this->normalizedPayload)) {
-          return $this->normalizedPayload;
+            return $this->normalizedPayload;
         }
 
         if (is_resource($this->payload)) {

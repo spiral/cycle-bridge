@@ -15,16 +15,21 @@ use Spiral\Tests\BaseTest;
 abstract class OrmWithPrepareServicesMockStub implements ORMInterface
 {
     // `method_exists` must return true
-    public function prepareServices(): void
-    {
-    }
+    public function prepareServices(): void {}
 }
 
 final class CycleOrmWarmedUpBootloaderTest extends BaseTest
 {
     public const ENV = [
-        'CYCLE_SCHEMA_WARMUP' => true
+        'CYCLE_SCHEMA_WARMUP' => true,
     ];
+
+    public function testOrmWarmupConfig(): void
+    {
+        $config = $this->getContainer()->get(CycleConfig::class);
+
+        $this->assertTrue($config->warmup());
+    }
 
     protected function setUp(): void
     {
@@ -44,12 +49,5 @@ final class CycleOrmWarmedUpBootloaderTest extends BaseTest
         });
 
         parent::setUp();
-    }
-
-    public function testOrmWarmupConfig(): void
-    {
-        $config = $this->getContainer()->get(CycleConfig::class);
-
-        $this->assertTrue($config->warmup());
     }
 }

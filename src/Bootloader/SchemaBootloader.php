@@ -22,22 +22,20 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
     public const GROUP_INDEX = 'index';
     public const GROUP_RENDER = 'render';
     public const GROUP_POSTPROCESS = 'postprocess';
-
     protected const DEPENDENCIES = [
         TokenizerBootloader::class,
         CycleOrmBootloader::class,
     ];
-
     protected const BINDINGS = [
         SchemaInterface::class => [self::class, 'schema'],
-        Registry::class => [self::class, 'initRegistry']
+        Registry::class => [self::class, 'initRegistry'],
     ];
 
     /** @var string[][]|GeneratorInterface[][] */
     private array $defaultGenerators;
 
     public function __construct(
-        private readonly Container $container
+        private readonly Container $container,
     ) {
         $this->defaultGenerators = [
             self::GROUP_INDEX => [
@@ -104,7 +102,7 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
             $schemaCompiler = Compiler::compile(
                 $this->container->get(Registry::class),
                 $this->getGenerators($config),
-                $config->getSchemaDefaults()
+                $config->getSchemaDefaults(),
             );
 
             $schemaCompiler->toMemory($memory);
@@ -121,4 +119,3 @@ final class SchemaBootloader extends Bootloader implements Container\SingletonIn
         return $factory->make(Registry::class, ['defaults' => $defaults]);
     }
 }
-

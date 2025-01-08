@@ -16,26 +16,6 @@ final class EntityCheckerTest extends BaseTest
 
     private DatabaseInterface $db;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->db = $this->getContainer()->get(DatabaseInterface::class);
-
-        $users = $this->db->table('users')->getSchema();
-        $users->primary('id');
-        $users->string('name');
-        $users->string('email');
-        $users->string('company');
-        $users->integer('user_id');
-        $users->save();
-
-        $this->db->table('users')->insertMultiple(['id', 'name', 'email', 'company'], [
-            [1, 'Antony', 'test@mail.com', 'foo'],
-            [2, 'John', 'test2@mail.com', 'bar'],
-        ]);
-    }
-
     /**
      * @see \Spiral\Cycle\Validation\EntityChecker::exists()
      */
@@ -69,7 +49,7 @@ final class EntityCheckerTest extends BaseTest
                     'email' => [
                         'test@mail.com',
                         'test2@mail.com',
-                    ]
+                    ],
                 ],
                 'valid' => true,
             ],
@@ -80,7 +60,7 @@ final class EntityCheckerTest extends BaseTest
                     'email' => [
                         'test@mail.com',
                         'test2@mail.com',
-                    ]
+                    ],
                 ],
                 'valid' => false,
             ],
@@ -91,7 +71,7 @@ final class EntityCheckerTest extends BaseTest
                     'email' => [
                         'test@mail.com',
                         'test2@mail.com',
-                    ]
+                    ],
                 ],
                 'valid' => true,
             ],
@@ -102,7 +82,7 @@ final class EntityCheckerTest extends BaseTest
                     'email' => [
                         'test@mail.com',
                         'not-exist@mail.com',
-                    ]
+                    ],
                 ],
                 'valid' => false,
             ],
@@ -170,7 +150,7 @@ final class EntityCheckerTest extends BaseTest
     public function testExistsAndUnique(
         array $rules,
         array $entityData,
-        bool $valid
+        bool $valid,
     ): void {
         $provider = $this->getContainer()->get(ValidationProviderInterface::class);
         $validator = $provider->getValidation(FilterDefinition::class)->validate($entityData, $rules);
@@ -183,14 +163,14 @@ final class EntityCheckerTest extends BaseTest
         return [
             'pk ignore case true multiple - found' => [
                 'rules' => [
-                    'email' => [['entity::exists', User::class, 'email', 'ignoreCase' => true, 'multiple' => true]]
+                    'email' => [['entity::exists', User::class, 'email', 'ignoreCase' => true, 'multiple' => true]],
                 ],
                 'entityData' => [strtoupper(self::ENTITY_PK) => [1, 2], 'email' => 'TEST@mail.com'],
                 'exceptionText' => 'The `exists` rule doesn\'t work in multiple case insensitive mode.',
             ],
             'pk ignore case true multiple - not found' => [
                 'rules' => [
-                    'email' => [['entity::exists', User::class, 'email', 'ignoreCase' => true, 'multiple' => true]]
+                    'email' => [['entity::exists', User::class, 'email', 'ignoreCase' => true, 'multiple' => true]],
                 ],
                 'entityData' => [strtoupper(self::ENTITY_PK) => [2, 96], 'email' => 'TEST@mail.com'],
                 'exceptionText' => 'The `exists` rule doesn\'t work in multiple case insensitive mode.',
@@ -204,12 +184,32 @@ final class EntityCheckerTest extends BaseTest
     public function testExistsAndUniqueExceptions(
         array $rules,
         array $entityData,
-        string $exceptionText
+        string $exceptionText,
     ): void {
         $provider = $this->getContainer()->get(ValidationProviderInterface::class);
         $validator = $provider->getValidation(FilterDefinition::class)->validate($entityData, $rules);
 
         $this->expectExceptionMessage($exceptionText);
         $validator->isValid();
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->db = $this->getContainer()->get(DatabaseInterface::class);
+
+        $users = $this->db->table('users')->getSchema();
+        $users->primary('id');
+        $users->string('name');
+        $users->string('email');
+        $users->string('company');
+        $users->integer('user_id');
+        $users->save();
+
+        $this->db->table('users')->insertMultiple(['id', 'name', 'email', 'company'], [
+            [1, 'Antony', 'test@mail.com', 'foo'],
+            [2, 'John', 'test2@mail.com', 'bar'],
+        ]);
     }
 }

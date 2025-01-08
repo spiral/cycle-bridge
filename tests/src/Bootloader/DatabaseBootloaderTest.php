@@ -18,23 +18,6 @@ use Spiral\Tests\ConfigAttribute;
 
 final class DatabaseBootloaderTest extends BaseTest
 {
-    protected function setUp(): void
-    {
-        $this->updateConfig('database.default', 'default');
-        $this->updateConfig('database.databases', [
-            'default' => [
-                'driver' => 'test',
-            ],
-        ]);
-        $this->updateConfig('database.drivers', [
-            'test' => new Config\SQLiteDriverConfig(
-                connection: new Config\SQLite\MemoryConnectionConfig(),
-            ),
-        ]);
-
-        parent::setUp();
-    }
-
     public function testGetsDatabaseManager(): void
     {
         $this->assertContainerBoundAsSingleton(DatabaseProviderInterface::class, DatabaseManager::class);
@@ -45,7 +28,7 @@ final class DatabaseBootloaderTest extends BaseTest
     {
         $this->assertInstanceOf(
             Database::class,
-            $database = $this->getContainer()->get(DatabaseInterface::class)
+            $database = $this->getContainer()->get(DatabaseInterface::class),
         );
         \assert($database instanceof DatabaseInterface);
 
@@ -65,6 +48,23 @@ final class DatabaseBootloaderTest extends BaseTest
     public function testGetBarDriverLogger(): void
     {
         $this->runGetterTest('bar');
+    }
+
+    protected function setUp(): void
+    {
+        $this->updateConfig('database.default', 'default');
+        $this->updateConfig('database.databases', [
+            'default' => [
+                'driver' => 'test',
+            ],
+        ]);
+        $this->updateConfig('database.drivers', [
+            'test' => new Config\SQLiteDriverConfig(
+                connection: new Config\SQLite\MemoryConnectionConfig(),
+            ),
+        ]);
+
+        parent::setUp();
     }
 
     private function runGetterTest(string $driverChannel): void

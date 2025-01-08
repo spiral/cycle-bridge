@@ -13,12 +13,12 @@ class WritePaginationTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Pagination\Limit(10)
+            new Pagination\Limit(10),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" LIMIT 10',
-            $select
+            $select,
         );
     }
 
@@ -27,12 +27,12 @@ class WritePaginationTest extends BaseTest
         $select = $this->compile(
             $this->initQuery(),
             new Pagination\Limit(10),
-            new Pagination\Offset(100)
+            new Pagination\Offset(100),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" LIMIT 10 OFFSET 100',
-            $select
+            $select,
         );
     }
 
@@ -40,12 +40,12 @@ class WritePaginationTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            (new Pagination\PagePaginator(25))->withValue([])
+            (new Pagination\PagePaginator(25))->withValue([]),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" LIMIT 25',
-            $select
+            $select,
         );
     }
 
@@ -53,12 +53,12 @@ class WritePaginationTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            (new Pagination\PagePaginator(25))->withValue(['page' => 2])
+            (new Pagination\PagePaginator(25))->withValue(['page' => 2]),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" LIMIT 25 OFFSET 25',
-            $select
+            $select,
         );
     }
 
@@ -69,12 +69,12 @@ class WritePaginationTest extends BaseTest
             (new Pagination\PagePaginator(25, [50]))->withValue([
                 'page' => '2',
                 'limit' => '50',
-            ])
+            ]),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" LIMIT 50 OFFSET 50',
-            $select
+            $select,
         );
     }
 }

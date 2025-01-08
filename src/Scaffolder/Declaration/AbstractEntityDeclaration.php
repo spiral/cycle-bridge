@@ -95,11 +95,11 @@ abstract class AbstractEntityDeclaration extends AbstractDeclaration
                 'smallInteger',
                 'bigint',
                 'bigInteger',
-                'bigIncremental'
+                'bigIncremental',
             ],
             'bool'  => ['boolean', 'bool'],
             'float' => ['double', 'float', 'decimal'],
-            \DateTimeImmutable::class => ['datetime', 'date', 'time', 'timestamp']
+            \DateTimeImmutable::class => ['datetime', 'date', 'time', 'timestamp'],
         ];
 
         foreach ($phpMapping as $phpType => $candidates) {

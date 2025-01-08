@@ -19,21 +19,21 @@ class WriteConvertedTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\Between('field', [1, 2])
+            new Filter\Between('field', [1, 2]),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE ("field" >= 1 AND "field" <= 2)',
-            $select
+            $select,
         );
 
         $select = $this->compile(
             $this->initQuery(),
-            (new Filter\Between('field', new StringValue()))->withValue([1, 2])
+            (new Filter\Between('field', new StringValue()))->withValue([1, 2]),
         );
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE ("field" >= \'1\' AND "field" <= \'2\')',
-            $select
+            $select,
         );
     }
 
@@ -41,12 +41,12 @@ class WriteConvertedTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new FragmentInjectionFilter(new Filter\Between('ROUND(field)', [1, 2]))
+            new FragmentInjectionFilter(new Filter\Between('ROUND(field)', [1, 2])),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE (ROUND(field) >= 1 AND ROUND(field) <= 2)',
-            $select
+            $select,
         );
     }
 
@@ -54,27 +54,24 @@ class WriteConvertedTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\ValueBetween(12, ['created', 'updated'])
+            new Filter\ValueBetween(12, ['created', 'updated']),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE ("updated" >= 12 AND "created" <= 12)',
-            $select
+            $select,
         );
 
         $select = $this->compile(
             $this->initQuery(),
-            (new Filter\ValueBetween(new StringValue(), ['created', 'updated']))->withValue(12)
+            (new Filter\ValueBetween(new StringValue(), ['created', 'updated']))->withValue(12),
         );
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE ("updated" >= \'12\' AND "created" <= \'12\')',
-            $select
+            $select,
         );
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function compile($source, SpecificationInterface ...$specifications)
     {
         $compiler = new Compiler();

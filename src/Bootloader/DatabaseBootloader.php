@@ -40,7 +40,7 @@ final class DatabaseBootloader extends Bootloader implements SingletonInterface
                 'aliases' => [],
                 'databases' => [],
                 'drivers' => [],
-            ]
+            ],
         );
 
         $container->bindInjector(DatabaseInterface::class, DatabaseInjector::class);
@@ -48,7 +48,7 @@ final class DatabaseBootloader extends Bootloader implements SingletonInterface
 
     protected function initManager(
         DatabaseConfig $config,
-        LoggerFactoryInterface $loggerFactory
+        LoggerFactoryInterface $loggerFactory,
     ): DatabaseProviderInterface {
         return new DatabaseManager($config, $loggerFactory);
     }

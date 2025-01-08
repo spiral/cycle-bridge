@@ -20,21 +20,21 @@ class WriteOriginalTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\Between('field', [1, 2])
+            new Filter\Between('field', [1, 2]),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE "field" BETWEEN 1 AND 2',
-            $select
+            $select,
         );
 
         $select = $this->compile(
             $this->initQuery(),
-            (new Filter\Between('field', new StringValue()))->withValue([1, 3])
+            (new Filter\Between('field', new StringValue()))->withValue([1, 3]),
         );
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE "field" BETWEEN \'1\' AND \'3\'',
-            $select
+            $select,
         );
     }
 
@@ -42,12 +42,12 @@ class WriteOriginalTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new FragmentInjectionFilter(new Filter\Between('ROUND(field)', [1, 2]))
+            new FragmentInjectionFilter(new Filter\Between('ROUND(field)', [1, 2])),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE ROUND(field) BETWEEN 1 AND 2',
-            $select
+            $select,
         );
     }
 
@@ -55,27 +55,24 @@ class WriteOriginalTest extends BaseTest
     {
         $select = $this->compile(
             $this->initQuery(),
-            new Filter\ValueBetween(12, ['created', 'updated'])
+            new Filter\ValueBetween(12, ['created', 'updated']),
         );
 
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE 12 BETWEEN \'created\' AND \'updated\'',
-            $select
+            $select,
         );
 
         $select = $this->compile(
             $this->initQuery(),
-            (new Filter\ValueBetween(new IntValue(), ['created', 'updated']))->withValue('12')
+            (new Filter\ValueBetween(new IntValue(), ['created', 'updated']))->withValue('12'),
         );
         $this->assertEqualSQL(
             'SELECT * FROM "users" WHERE 12 BETWEEN \'created\' AND \'updated\'',
-            $select
+            $select,
         );
     }
 
-    /**
-     * @inheritDoc
-     */
     protected function compile($source, SpecificationInterface ...$specifications)
     {
         $compiler = new Compiler();

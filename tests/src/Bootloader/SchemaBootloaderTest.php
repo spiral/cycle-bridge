@@ -20,12 +20,6 @@ final class SchemaBootloaderTest extends BaseTest
 {
     private SchemaBootloader $bootloader;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->bootloader = $this->getContainer()->get(SchemaBootloader::class);
-    }
-
     public function testGetsSchema(): void
     {
         $this->assertContainerBound(SchemaInterface::class);
@@ -77,5 +71,11 @@ final class SchemaBootloaderTest extends BaseTest
         $this->assertSame(Source::class, $defaults[SchemaInterface::SOURCE]);
         $this->assertNull($defaults[SchemaInterface::SCOPE]);
         $this->assertSame(['foo', 'bar'], $defaults[SchemaInterface::TYPECAST_HANDLER]);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->bootloader = $this->getContainer()->get(SchemaBootloader::class);
     }
 }

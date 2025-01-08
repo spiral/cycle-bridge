@@ -44,7 +44,7 @@ final class ListCommand extends Command
                 'Status:',
                 'Tables:',
                 'Count Records:',
-            ]
+            ],
         );
 
         foreach ($databases as $database) {
@@ -93,24 +93,19 @@ final class ListCommand extends Command
                     "<fg=red>{$exception->getMessage()}</fg=red>",
                     '<comment>---</comment>',
                     '<comment>---</comment>',
-                ]
-            )
+                ],
+            ),
         );
     }
 
-    /**
-     * @param  Table  $grid
-     * @param  array  $header
-     * @param  Database  $database
-     */
     private function renderTables(Table $grid, array $header, Database $database): void
     {
         foreach ($database->getTables() as $table) {
             $grid->addRow(
                 array_merge(
                     $header,
-                    [$table->getName(), number_format($table->count())]
-                )
+                    [$table->getName(), number_format($table->count())],
+                ),
             );
             $header = ['', '', '', '', ''];
         }

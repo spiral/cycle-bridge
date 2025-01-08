@@ -60,13 +60,13 @@ class MigrationCommand extends AbstractCommand
                 $fields[$name] = $type;
             }
 
-            $declaration->declareCreation((string)$this->option('table'), $fields);
+            $declaration->declareCreation((string) $this->option('table'), $fields);
         }
 
         $filename = $migrator->getRepository()->registerMigration(
-            (string)$this->argument('name'),
+            (string) $this->argument('name'),
             $declaration->getClass()->getName(),
-            (string)$declaration->getFile(),
+            (string) $declaration->getFile(),
         );
 
         $this->writeln(

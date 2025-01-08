@@ -17,7 +17,6 @@ final class MigrateCommandTest extends ConsoleTest
         'SAFE_MIGRATIONS' => true,
         'USE_MIGRATIONS' => true,
     ];
-
     public const USER_MIGRATION = [
         'default.users',
         'create table',
@@ -27,13 +26,6 @@ final class MigrateCommandTest extends ConsoleTest
         'add index on [user_id]',
         'add foreign key on [user_id]',
     ];
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->runCommand('migrate:init', ['-vvv' => true]);
-    }
 
     public function testMigrate(): void
     {
@@ -132,5 +124,12 @@ final class MigrateCommandTest extends ConsoleTest
         $this->runCommand('cycle:migrate');
 
         $this->assertSame(['foo'], $memory->loadData('cycle')['role'][SchemaInterface::TYPECAST_HANDLER]);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->runCommand('migrate:init', ['-vvv' => true]);
     }
 }

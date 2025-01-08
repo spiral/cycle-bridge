@@ -19,8 +19,7 @@ final class ShowChanges implements GeneratorInterface
 
     public function __construct(
         private readonly OutputInterface $output,
-    ) {
-    }
+    ) {}
 
     public function run(Registry $registry): Registry
     {
