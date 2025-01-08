@@ -90,6 +90,7 @@
         "cs:diff": "php-cs-fixer fix --dry-run -v --diff",
         "cs:fix": "php-cs-fixer fix -v",
         "psalm": "psalm",
-        "psalm:baseline": "psalm --set-baseline=psalm-baseline.xml"
+        "psalm:baseline": "psalm --set-baseline=psalm-baseline.xml",
+        "test": "phpunit --color=always"
     }
 }
