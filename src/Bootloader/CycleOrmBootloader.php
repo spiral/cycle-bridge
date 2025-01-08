@@ -84,7 +84,7 @@ final class CycleOrmBootloader extends Bootloader
         CycleConfig $config
     ): FactoryInterface {
         $relationConfig = new RelationConfig(
-            RelationConfig::getDefault()->toArray() + $config->getCustomRelations()
+            $config->getCustomRelations() + RelationConfig::getDefault()->toArray()
         );
 
         $factory = new Factory(
