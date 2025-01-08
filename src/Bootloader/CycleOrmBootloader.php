@@ -30,7 +30,6 @@ final class CycleOrmBootloader extends Bootloader
         SchemaBootloader::class,
         AnnotatedBootloader::class,
     ];
-
     protected const SINGLETONS = [
         ORMInterface::class => ORM::class,
         EntityManagerInterface::class => EntityManager::class,
@@ -39,9 +38,8 @@ final class CycleOrmBootloader extends Bootloader
 
     public function __construct(
         private readonly ConfiguratorInterface $config,
-        private readonly EnvironmentInterface $env
-    ) {
-    }
+        private readonly EnvironmentInterface $env,
+    ) {}
 
     public function init(Container $container, FinalizerInterface $finalizer): void
     {
@@ -58,7 +56,7 @@ final class CycleOrmBootloader extends Bootloader
                 if ($container->hasInstance(ORMInterface::class)) {
                     $container->get(ORMInterface::class)->getHeap()->clean();
                 }
-            }
+            },
         );
 
         $container->bindInjector(RepositoryInterface::class, RepositoryInjector::class);
@@ -81,17 +79,17 @@ final class CycleOrmBootloader extends Bootloader
     private function factory(
         DatabaseProviderInterface $dbal,
         Container $container,
-        CycleConfig $config
+        CycleConfig $config,
     ): FactoryInterface {
         $relationConfig = new RelationConfig(
-            $config->getCustomRelations() + RelationConfig::getDefault()->toArray()
+            $config->getCustomRelations() + RelationConfig::getDefault()->toArray(),
         );
 
         $factory = new Factory(
             $dbal,
             $relationConfig,
             $container,
-            $config->getDefaultCollectionFactory()
+            $config->getDefaultCollectionFactory(),
         );
 
         foreach ($config->getCollectionFactories() as $alias => $collectionFactory) {
@@ -113,7 +111,7 @@ final class CycleOrmBootloader extends Bootloader
                     'collections' => [],
                 ],
                 'warmup' => $this->env->get('CYCLE_SCHEMA_WARMUP', false),
-            ]
+            ],
         );
     }
 }

@@ -24,9 +24,8 @@ class CycleInterceptor implements CoreInterceptorInterface
     private array $cache = [];
 
     public function __construct(
-        protected ORMInterface $orm
-    ) {
-    }
+        protected ORMInterface $orm,
+    ) {}
 
     public function process(string $controller, string $action, array $parameters, CoreInterface $core): mixed
     {
@@ -38,7 +37,7 @@ class CycleInterceptor implements CoreInterceptorInterface
             if ($value === null) {
                 throw new ControllerException(
                     "Entity `{$parameter}` can not be found.",
-                    ControllerException::NOT_FOUND
+                    ControllerException::NOT_FOUND,
                 );
             }
 
@@ -55,7 +54,7 @@ class CycleInterceptor implements CoreInterceptorInterface
             if ($entity === null) {
                 throw new ControllerException(
                     "Entity `{$parameter}` can not be found.",
-                    ControllerException::NOT_FOUND
+                    ControllerException::NOT_FOUND,
                 );
             }
 

@@ -16,7 +16,7 @@ final class UpdateCommandTest extends ConsoleTest
     public const ENV = [
         'SAFE_MIGRATIONS' => true,
         'USE_MIGRATIONS' => true,
-        'CYCLE_SCHEMA_CACHE' => true
+        'CYCLE_SCHEMA_CACHE' => true,
     ];
 
     public function testGetSchema(): void
@@ -30,7 +30,7 @@ final class UpdateCommandTest extends ConsoleTest
 
         $this->assertSame(
             \Spiral\App\Entities\User::class,
-            $schema->define('user', Schema::ENTITY)
+            $schema->define('user', Schema::ENTITY),
         );
     }
 
@@ -53,8 +53,7 @@ final class UpdateCommandTest extends ConsoleTest
     {
         $config['schema']['defaults'][SchemaInterface::TYPECAST_HANDLER][] = 'foo';
 
-        $memory = new class implements MemoryInterface
-        {
+        $memory = new class implements MemoryInterface {
             private mixed $data;
 
             public function loadData(string $section): mixed

@@ -36,6 +36,12 @@ class AnnotatedDeclaration extends AbstractEntityDeclaration
         $this->class->addAttribute(Entity::class, $entities);
     }
 
+    public function declare(): void
+    {
+        $this->namespace->addUse(Column::class);
+        $this->namespace->addUse(Entity::class);
+    }
+
     private function makeFieldAttribute(string $name, string $type): array
     {
         $columns = [];
@@ -83,11 +89,5 @@ class AnnotatedDeclaration extends AbstractEntityDeclaration
     private function camelize(string $name): string
     {
         return (new InflectorFactory())->build()->camelize($name);
-    }
-
-    public function declare(): void
-    {
-        $this->namespace->addUse(Column::class);
-        $this->namespace->addUse(Entity::class);
     }
 }

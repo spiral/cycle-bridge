@@ -18,15 +18,6 @@ final class LoggerFactoryTest extends BaseTest
     protected ConfigsInterface $config;
     private LogsInterface $logger;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->logger = m::mock(LogsInterface::class);
-        $this->config = m::mock(ConfigsInterface::class);
-        $this->getContainer()->bind(LogsInterface::class, $this->logger);
-    }
-
     public function testIfLogsInterfaceIsNotRegisteredNullLoggerShouldBeUsed(): void
     {
         $this->getContainer()->removeBinding(LogsInterface::class);
@@ -49,9 +40,9 @@ final class LoggerFactoryTest extends BaseTest
                 'default' => 'foo',
                 'drivers' => [
                     'runtime' => 'bar',
-                    $driver::class => 'baz'
+                    $driver::class => 'baz',
                 ],
-            ]
+            ],
         ]);
 
         $this->logger->shouldReceive('getLogger')
@@ -73,9 +64,9 @@ final class LoggerFactoryTest extends BaseTest
                 'default' => 'foo',
                 'drivers' => [
                     'runtime' => 'bar',
-                    $driver::class => 'baz'
+                    $driver::class => 'baz',
                 ],
-            ]
+            ],
         ]);
 
         $this->logger->shouldReceive('getLogger')
@@ -97,9 +88,9 @@ final class LoggerFactoryTest extends BaseTest
                 'default' => 'foo',
                 'drivers' => [
                     'runtime' => 'bar',
-                    MySQLDriver::class => 'baz'
+                    MySQLDriver::class => 'baz',
                 ],
-            ]
+            ],
         ]);
 
         $this->logger->shouldReceive('getLogger')
@@ -121,9 +112,9 @@ final class LoggerFactoryTest extends BaseTest
                 'default' => null,
                 'drivers' => [
                     'runtime' => 'bar',
-                    MySQLDriver::class => 'baz'
+                    MySQLDriver::class => 'baz',
                 ],
-            ]
+            ],
         ]);
 
         $this->logger->shouldReceive('getLogger')
@@ -133,5 +124,14 @@ final class LoggerFactoryTest extends BaseTest
 
         $factory = new LoggerFactory($this->getContainer(), $this->config);
         $this->assertSame($logger, $factory->getLogger($driver));
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->logger = m::mock(LogsInterface::class);
+        $this->config = m::mock(ConfigsInterface::class);
+        $this->getContainer()->bind(LogsInterface::class, $this->logger);
     }
 }

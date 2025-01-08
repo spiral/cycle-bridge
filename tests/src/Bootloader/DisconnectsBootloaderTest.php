@@ -30,7 +30,7 @@ final class DisconnectsBootloaderTest extends BaseTest
         $db->rollback();
 
         $this->getContainer()->get(BootloadManager::class)->bootload([
-            DisconnectsBootloader::class
+            DisconnectsBootloader::class,
         ]);
 
         $this->assertTrue($db->getDriver(DatabaseInterface::READ)->isConnected());

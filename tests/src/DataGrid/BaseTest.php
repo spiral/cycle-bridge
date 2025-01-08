@@ -20,7 +20,6 @@ abstract class BaseTest extends \Spiral\Tests\BaseTest
         $this->db = $this->getContainer()->get(DatabaseInterface::class);
     }
 
-
     protected function initQuery(): SelectQuery
     {
         return $this->db->select()->from('users');
@@ -38,7 +37,7 @@ abstract class BaseTest extends \Spiral\Tests\BaseTest
     {
         $this->assertSame(
             \preg_replace("/\s+/", '', $expected),
-            \preg_replace("/\s+/", '', (string)$compiled)
+            \preg_replace("/\s+/", '', (string) $compiled),
         );
     }
 }

@@ -6,12 +6,9 @@ namespace Spiral\Cycle\Auth;
 
 use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\ORMInterface;
-use DateTimeImmutable;
-use DateTimeInterface;
 use Spiral\Auth\Exception\TokenStorageException;
 use Spiral\Auth\TokenInterface;
 use Spiral\Auth\TokenStorageInterface;
-use Throwable;
 
 /**
  * Provides the ability to fetch token information from the database via Cycle ORM.
@@ -20,9 +17,8 @@ final class TokenStorage implements TokenStorageInterface
 {
     public function __construct(
         private readonly ORMInterface $orm,
-        private readonly EntityManagerInterface $em
-    ) {
-    }
+        private readonly EntityManagerInterface $em,
+    ) {}
 
     public function load(string $id): ?TokenInterface
     {
@@ -43,7 +39,7 @@ final class TokenStorage implements TokenStorageInterface
         $token->setSecretValue($hash);
 
         $expiresAt = $token->getExpiresAt();
-        if ($expiresAt !== null && $expiresAt < new DateTimeImmutable()) {
+        if ($expiresAt !== null && $expiresAt < new \DateTimeImmutable()) {
             $this->delete($token);
 
             return null;
@@ -52,23 +48,23 @@ final class TokenStorage implements TokenStorageInterface
         return $token;
     }
 
-    public function create(array $payload, DateTimeInterface $expiresAt = null): TokenInterface
+    public function create(array $payload, ?\DateTimeInterface $expiresAt = null): TokenInterface
     {
         try {
             $token = new Token(
                 $this->issueID(),
                 $this->randomHash(128),
                 $payload,
-                new DateTimeImmutable(),
-                $expiresAt
+                new \DateTimeImmutable(),
+                $expiresAt,
             );
 
             $this->em->persist($token);
             $this->em->run();
 
             return $token;
-        } catch (Throwable $e) {
-            throw new TokenStorageException('Unable to create token', (int)$e->getCode(), $e);
+        } catch (\Throwable $e) {
+            throw new TokenStorageException('Unable to create token', (int) $e->getCode(), $e);
         }
     }
 
@@ -77,8 +73,8 @@ final class TokenStorage implements TokenStorageInterface
         try {
             $this->em->delete($token);
             $this->em->run();
-        } catch (Throwable $e) {
-            throw new TokenStorageException('Unable to delete token', (int)$e->getCode(), $e);
+        } catch (\Throwable $e) {
+            throw new TokenStorageException('Unable to delete token', (int) $e->getCode(), $e);
         }
     }
 

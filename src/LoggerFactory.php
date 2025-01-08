@@ -19,12 +19,12 @@ final class LoggerFactory implements LoggerFactoryInterface
 
     public function __construct(
         private readonly ContainerInterface $container,
-        ConfigsInterface $configs
+        ConfigsInterface $configs,
     ) {
         $this->config = $configs->getConfig('database')['logger'] ?? [];
     }
 
-    public function getLogger(DriverInterface $driver = null): LoggerInterface
+    public function getLogger(?DriverInterface $driver = null): LoggerInterface
     {
         if (! $this->container->has(LogsInterface::class)) {
             return new NullLogger();
@@ -34,9 +34,9 @@ final class LoggerFactory implements LoggerFactoryInterface
 
         if ($driver instanceof NamedInterface && isset($this->config['drivers'][$driver->getName()])) {
             $channel = $this->config['drivers'][$driver->getName()];
-        } else if (isset($this->config['drivers'][$driver::class])) {
+        } elseif (isset($this->config['drivers'][$driver::class])) {
             $channel = $this->config['drivers'][$driver::class];
-        } else if (isset($this->config['default']) && $this->config['default'] !== null) {
+        } elseif (isset($this->config['default']) && $this->config['default'] !== null) {
             $channel = $this->config['default'];
         }
 

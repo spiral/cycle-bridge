@@ -11,15 +11,10 @@ use Spiral\DatabaseSeeder\Database\Traits\Transactions;
 
 abstract class DatabaseTest extends BaseTest
 {
-    use Transactions, Helper, DatabaseAsserts, ShowQueries;
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        $this->cleanIdentityMap();
-        $this->getCurrentDatabaseDriver()->disconnect();
-    }
+    use Transactions;
+    use Helper;
+    use DatabaseAsserts;
+    use ShowQueries;
 
     public function persist(object ...$entity): void
     {
@@ -38,5 +33,13 @@ abstract class DatabaseTest extends BaseTest
     public function refreshEntity(object $entity, string $pkField = 'uuid'): object
     {
         return $this->getRepositoryFor($entity)->findByPK($entity->{$pkField});
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->cleanIdentityMap();
+        $this->getCurrentDatabaseDriver()->disconnect();
     }
 }

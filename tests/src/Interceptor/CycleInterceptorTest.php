@@ -16,19 +16,6 @@ final class CycleInterceptorTest extends DatabaseTest
 {
     private User $contextEntity;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->cleanIdentityMap();
-
-        $role = RoleFactory::new(['name' => 'admin'])->makeOne();
-        UserFactory::new(['name' => 'Antony'])->addRole($role)->createOne();
-
-        $this->contextEntity = UserFactory::new(['name' => 'Contextual'])
-            ->addRole(RoleFactory::new()->makeOne())
-            ->createOne();
-    }
-
     public function testCallBadAction(): void
     {
         /** @var CoreInterface $core */
@@ -150,5 +137,18 @@ final class CycleInterceptorTest extends DatabaseTest
             ['user' => 'Contextual'],
             $core->callAction(HomeController::class, 'entity', ['user' => $this->contextEntity]),
         );
+    }
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->cleanIdentityMap();
+
+        $role = RoleFactory::new(['name' => 'admin'])->makeOne();
+        UserFactory::new(['name' => 'Antony'])->addRole($role)->createOne();
+
+        $this->contextEntity = UserFactory::new(['name' => 'Contextual'])
+            ->addRole(RoleFactory::new()->makeOne())
+            ->createOne();
     }
 }

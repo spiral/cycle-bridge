@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Spiral\Tests\Auth;
 
 use Spiral\Auth\TokenInterface;
-use Spiral\Auth\TokenStorageInterface;
 use Spiral\Auth\TokenStorageProviderInterface;
 use Spiral\Cycle\Auth\TokenStorage;
 use Spiral\Tests\BaseTest;
@@ -13,13 +12,6 @@ use Spiral\Tests\BaseTest;
 final class TokenStorageTest extends BaseTest
 {
     private TokenStorage $storage;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->storage = $this->getContainer()->get(TokenStorageProviderInterface::class)->getStorage('cycle');
-    }
 
     public function testTokenShouldBeCreatedWithoutExpiration()
     {
@@ -63,5 +55,12 @@ final class TokenStorageTest extends BaseTest
         $this->getOrm()->getHeap()->clean();
 
         $this->assertNull($this->storage->load($token->getID()));
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->storage = $this->getContainer()->get(TokenStorageProviderInterface::class)->getStorage('cycle');
     }
 }

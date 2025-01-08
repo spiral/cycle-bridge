@@ -17,13 +17,12 @@ final class ScaffolderBootloader extends Bootloader
 {
     public const DEPENDENCIES = [
         ConsoleBootloader::class,
-        BaseScaffolderBootloader::class
+        BaseScaffolderBootloader::class,
     ];
 
     public function __construct(
-        private readonly ContainerInterface $container
-    ) {
-    }
+        private readonly ContainerInterface $container,
+    ) {}
 
     public function init(BaseScaffolderBootloader $scaffolder, ConsoleBootloader $console): void
     {

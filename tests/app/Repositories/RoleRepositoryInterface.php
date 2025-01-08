@@ -6,7 +6,4 @@ namespace Spiral\App\Repositories;
 
 use Cycle\ORM\RepositoryInterface;
 
-interface RoleRepositoryInterface extends RepositoryInterface
-{
-
-}
+interface RoleRepositoryInterface extends RepositoryInterface {}

@@ -14,20 +14,13 @@ use Spiral\Tests\DatabaseTest;
 
 final class EntityCasterTest extends DatabaseTest
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->cleanIdentityMap();
-    }
-
     public function testExistsRole(): void
     {
         $filter = new \ReflectionClass(RoleFilter::class);
 
         $caster = new EntityCaster(
             $this->getContainer(),
-            $this->getContainer()->get(ExceptionReporterInterface::class)
+            $this->getContainer()->get(ExceptionReporterInterface::class),
         );
 
         $role = RoleFactory::new()->makeOne();
@@ -52,7 +45,7 @@ final class EntityCasterTest extends DatabaseTest
 
         $caster = new EntityCaster(
             $this->getContainer(),
-            $this->getContainer()->get(ExceptionReporterInterface::class)
+            $this->getContainer()->get(ExceptionReporterInterface::class),
         );
 
         $property = $filter->getProperty('role');
@@ -68,7 +61,7 @@ final class EntityCasterTest extends DatabaseTest
 
         $caster = new EntityCaster(
             $this->getContainer(),
-            $this->getContainer()->get(ExceptionReporterInterface::class)
+            $this->getContainer()->get(ExceptionReporterInterface::class),
         );
 
         $property = $filter->getProperty('nullableRole');
@@ -78,5 +71,12 @@ final class EntityCasterTest extends DatabaseTest
         $caster->setValue($obj = $filter->newInstance(), $property, 1);
 
         $this->assertNull($obj->nullableRole);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->cleanIdentityMap();
     }
 }

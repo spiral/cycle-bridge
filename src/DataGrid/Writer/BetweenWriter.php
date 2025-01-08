@@ -37,22 +37,22 @@ class BetweenWriter implements WriterInterface
                 $filters = $expression->getFilters($this->asOriginal);
                 if (\count($filters) > 1) {
                     $filters = \array_map(
-                        static fn (SpecificationInterface $filter): InjectionFilter =>
+                        static fn(SpecificationInterface $filter): InjectionFilter =>
                             InjectionFilter::createFrom($specification, $filter),
-                        $filters
+                        $filters,
                     );
 
                     return $source->where(
                         static function () use ($compiler, $source, $filters): void {
                             $compiler->compile($source, ...$filters);
-                        }
+                        },
                     );
                 }
 
                 return $source->where(
                     $specification->getInjection(),
                     'BETWEEN',
-                    ...$specification->getValue()
+                    ...$specification->getValue(),
                 );
             }
         }
@@ -61,7 +61,7 @@ class BetweenWriter implements WriterInterface
             return $source->where(
                 $specification->getExpression(),
                 'BETWEEN',
-                ...$specification->getValue()
+                ...$specification->getValue(),
             );
         }
 
@@ -69,7 +69,7 @@ class BetweenWriter implements WriterInterface
             return $source->where(
                 new Parameter($specification->getValue()),
                 'BETWEEN',
-                ...$specification->getExpression()
+                ...$specification->getExpression(),
             );
         }
 

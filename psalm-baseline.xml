@@ -118,7 +118,7 @@
       <code><![CDATA[$this->config['schema']['generators'] ?? null]]></code>
     </MixedReturnStatement>
     <MixedReturnTypeCoercion>
-      <code><![CDATA[(array)($this->config['schema']['collections']['factories'] ?? [])]]></code>
+      <code><![CDATA[(array) ($this->config['schema']['collections']['factories'] ?? [])]]></code>
       <code><![CDATA[array<string, CollectionFactoryInterface>]]></code>
     </MixedReturnTypeCoercion>
   </file>
@@ -322,7 +322,7 @@
       <code><![CDATA[string]]></code>
     </MixedInferredReturnType>
     <MixedReturnStatement>
-      <code><![CDATA[$this->config->declarationOptions($element)[(string)$this->argument('format')]]]></code>
+      <code><![CDATA[$this->config->declarationOptions($element)[(string) $this->argument('format')]]]></code>
     </MixedReturnStatement>
   </file>
   <file src="src/Console/Command/Scaffolder/MigrationCommand.php">

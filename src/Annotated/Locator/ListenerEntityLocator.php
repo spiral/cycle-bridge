@@ -19,12 +19,12 @@ final class ListenerEntityLocator implements EntityLocatorInterface, Tokenizatio
      * @var Entity[]
      */
     private array $entities = [];
+
     private bool $collected = false;
 
     public function __construct(
-        private readonly ReaderInterface $reader
-    ) {
-    }
+        private readonly ReaderInterface $reader,
+    ) {}
 
     public function listen(\ReflectionClass $class): void
     {

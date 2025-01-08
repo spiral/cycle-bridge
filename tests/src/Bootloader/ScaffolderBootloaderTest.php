@@ -29,7 +29,7 @@ final class ScaffolderBootloaderTest extends BaseTest
                 'postfix'   => 'Migration',
                 'class'     => Declaration\MigrationDeclaration::class,
             ],
-            $declarations['migration']
+            $declarations['migration'],
         );
 
         $this->assertSame(
@@ -40,7 +40,7 @@ final class ScaffolderBootloaderTest extends BaseTest
                     'annotated' => Declaration\Entity\AnnotatedDeclaration::class,
                 ],
             ],
-            $declarations['entity']
+            $declarations['entity'],
         );
 
         $this->assertSame(
@@ -49,7 +49,7 @@ final class ScaffolderBootloaderTest extends BaseTest
                 'postfix'   => 'Repository',
                 'class'     => Declaration\RepositoryDeclaration::class,
             ],
-            $declarations['repository']
+            $declarations['repository'],
         );
     }
 }

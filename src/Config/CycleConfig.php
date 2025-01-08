@@ -32,7 +32,7 @@ final class CycleConfig extends InjectableConfig
      */
     public function getCollectionFactories(): array
     {
-        return (array)($this->config['schema']['collections']['factories'] ?? []);
+        return (array) ($this->config['schema']['collections']['factories'] ?? []);
     }
 
     public function getSchemaGenerators(): ?array
@@ -42,21 +42,21 @@ final class CycleConfig extends InjectableConfig
 
     public function getSchemaDefaults(): array
     {
-        return (array)($this->config['schema']['defaults'] ?? []);
+        return (array) ($this->config['schema']['defaults'] ?? []);
     }
 
     public function cacheSchema(): bool
     {
-        return (bool)($this->config['schema']['cache'] ?? false);
+        return (bool) ($this->config['schema']['cache'] ?? false);
     }
 
     public function getCustomRelations(): array
     {
-        return (array)($this->config['customRelations'] ?? []);
+        return (array) ($this->config['customRelations'] ?? []);
     }
 
     public function warmup(): bool
     {
-        return (bool)($this->config['warmup'] ?? false);
+        return (bool) ($this->config['warmup'] ?? false);
     }
 }

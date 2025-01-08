@@ -17,13 +17,13 @@ final class EntityCaster implements CasterInterface
      * @var array<class-string, non-empty-string>
      */
     private static array $cache = [];
+
     private ?ORMInterface $orm = null;
 
     public function __construct(
         protected readonly ContainerInterface $container,
         protected readonly ExceptionReporterInterface $reporter,
-    ) {
-    }
+    ) {}
 
     public function supports(\ReflectionNamedType $type): bool
     {

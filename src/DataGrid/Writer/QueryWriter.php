@@ -31,7 +31,6 @@ class QueryWriter implements WriterInterface
         Specification\Filter\Gt::class => '>',
         Specification\Filter\Gte::class => '>=',
     ];
-
     protected const ARRAY_OPERATORS = [
         Specification\Filter\InArray::class => 'IN',
         Specification\Filter\NotInArray::class => 'NOT IN',
@@ -51,7 +50,7 @@ class QueryWriter implements WriterInterface
             $specification instanceof SorterInterface => $this->writeSorter($source, $specification, $compiler),
             $specification instanceof Specification\Pagination\Limit => $source->limit($specification->getValue()),
             $specification instanceof Specification\Pagination\Offset => $source->offset($specification->getValue()),
-            default => null
+            default => null,
         };
     }
 
@@ -79,7 +78,7 @@ class QueryWriter implements WriterInterface
                 return $source->where(
                     $filter->getInjection(),
                     $this->getExpressionOperator($expression),
-                    ...$this->getExpressionArgs($expression)
+                    ...$this->getExpressionArgs($expression),
                 );
             }
         }
@@ -88,7 +87,7 @@ class QueryWriter implements WriterInterface
             return $source->where(
                 $filter->getExpression(),
                 $this->getExpressionOperator($filter),
-                ...$this->getExpressionArgs($filter)
+                ...$this->getExpressionArgs($filter),
             );
         }
 

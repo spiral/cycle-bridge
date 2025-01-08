@@ -7,7 +7,6 @@ namespace Spiral\Tests;
 use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
-use ReflectionMethod;
 use Spiral\App\Bootloader\AppBootloader;
 use Spiral\App\Bootloader\SyncTablesBootloader;
 use Spiral\Bootloader as Framework;
@@ -22,12 +21,6 @@ use Spiral\Testing\TestCase;
 
 abstract class BaseTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $this->updateConfigFromAttribute();
-        parent::setUp();
-    }
-
     /**
      * @template TClass
      *
@@ -36,11 +29,11 @@ abstract class BaseTest extends TestCase
      *
      * @return array<int, TClass>
      */
-    public function getTestAttributes(string $attribute, string $method = null): array
+    public function getTestAttributes(string $attribute, ?string $method = null): array
     {
         try {
             $result = [];
-            $attributes = (new ReflectionMethod($this, $method ?? $this->getName(false)))->getAttributes($attribute);
+            $attributes = (new \ReflectionMethod($this, $method ?? $this->getName(false)))->getAttributes($attribute);
             foreach ($attributes as $attr) {
                 $result[] = $attr->newInstance();
             }
@@ -122,9 +115,22 @@ abstract class BaseTest extends TestCase
         $this->beforeBooting(static function (ConfigsInterface $configs) use ($config, $key, $data) {
             $configs->modify(
                 $config,
-                new Set($key, $data)
+                new Set($key, $data),
             );
         });
+    }
+
+    protected function setUp(): void
+    {
+        $this->updateConfigFromAttribute();
+        parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->cleanUpRuntimeDirectory();
     }
 
     protected function updateConfigFromAttribute(): void
@@ -133,13 +139,6 @@ abstract class BaseTest extends TestCase
             \assert($attribute instanceof ConfigAttribute);
             $this->updateConfig($attribute->path, $attribute->closure?->__invoke() ?? $attribute->value);
         }
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        $this->cleanUpRuntimeDirectory();
     }
 
     protected function accessProtected(object $obj, string $prop)

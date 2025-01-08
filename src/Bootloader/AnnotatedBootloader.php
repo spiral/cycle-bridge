@@ -19,7 +19,6 @@ final class AnnotatedBootloader extends Bootloader
         TokenizerListenerBootloader::class,
         AttributesBootloader::class,
     ];
-
     protected const BINDINGS = [
         Annotated\Embeddings::class => [self::class, 'initEmbeddings'],
         Annotated\Entities::class => [self::class, 'initEntities'],
@@ -27,7 +26,6 @@ final class AnnotatedBootloader extends Bootloader
         Annotated\TableInheritance::class => [self::class, 'initTableInheritance'],
         Annotated\MergeIndexes::class => [self::class, 'initMergeIndexes'],
     ];
-
     protected const SINGLETONS = [
         ListenerEntityLocator::class => ListenerEntityLocator::class,
         ListenerEmbeddingsLocator::class => ListenerEmbeddingsLocator::class,
@@ -37,7 +35,7 @@ final class AnnotatedBootloader extends Bootloader
         SchemaBootloader $schema,
         TokenizerListenerBootloader $tokenizer,
         ListenerEntityLocator $entityLocator,
-        ListenerEmbeddingsLocator $embeddingsLocator
+        ListenerEmbeddingsLocator $embeddingsLocator,
     ): void {
         $tokenizer->addListener($entityLocator);
         $tokenizer->addListener($embeddingsLocator);
@@ -47,13 +45,6 @@ final class AnnotatedBootloader extends Bootloader
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\TableInheritance::class);
         $schema->addGenerator(SchemaBootloader::GROUP_INDEX, Annotated\MergeColumns::class);
         $schema->addGenerator(SchemaBootloader::GROUP_RENDER, Annotated\MergeIndexes::class);
-    }
-
-    private function initEmbeddings(
-        ReaderInterface $reader,
-        ListenerEmbeddingsLocator $embeddingsLocator
-    ): Annotated\Embeddings {
-        return new Annotated\Embeddings($embeddingsLocator, $reader);
     }
 
     public function initEntities(ReaderInterface $reader, ListenerEntityLocator $entityLocator): Annotated\Entities
@@ -74,5 +65,12 @@ final class AnnotatedBootloader extends Bootloader
     public function initMergeIndexes(ReaderInterface $reader): Annotated\MergeIndexes
     {
         return new Annotated\MergeIndexes($reader);
+    }
+
+    private function initEmbeddings(
+        ReaderInterface $reader,
+        ListenerEmbeddingsLocator $embeddingsLocator,
+    ): Annotated\Embeddings {
+        return new Annotated\Embeddings($embeddingsLocator, $reader);
     }
 }

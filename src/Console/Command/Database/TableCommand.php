@@ -27,7 +27,6 @@ final class TableCommand extends Command
     protected const OPTIONS = [
         ['database', 'db', InputOption::VALUE_OPTIONAL, 'Source database', 'default'],
     ];
-
     private const SKIP = '<comment>---</comment>';
 
     public function perform(DatabaseProviderInterface $dbal): int
@@ -39,14 +38,14 @@ final class TableCommand extends Command
 
         if (! $schema->exists()) {
             throw new DBALException(
-                "Table {$database->getName()}.{$this->argument('table')} does not exists."
+                "Table {$database->getName()}.{$this->argument('table')} does not exists.",
             );
         }
 
         $this->sprintf(
             "\n<fg=cyan>Columns of </fg=cyan><comment>%s.%s</comment>:\n",
             $database->getName(),
-            $this->argument('table')
+            $this->argument('table'),
         );
 
         $this->describeColumns($schema);
@@ -73,7 +72,7 @@ final class TableCommand extends Command
                 'Abstract Type:',
                 'PHP Type:',
                 'Default Value:',
-            ]
+            ],
         );
 
         foreach ($schema->getColumns() as $column) {
@@ -92,7 +91,7 @@ final class TableCommand extends Command
                     $this->describeAbstractType($column),
                     $column->getType(),
                     $defaultValue ?? self::SKIP,
-                ]
+                ],
             );
         }
 
@@ -104,7 +103,7 @@ final class TableCommand extends Command
         $this->sprintf(
             "\n<fg=cyan>Indexes of </fg=cyan><comment>%s.%s</comment>:\n",
             $database->getName(),
-            $this->argument('table')
+            $this->argument('table'),
         );
 
         $indexesTable = $this->table(['Name:', 'Type:', 'Columns:']);
@@ -114,7 +113,7 @@ final class TableCommand extends Command
                     $index->getName(),
                     $index->isUnique() ? 'UNIQUE INDEX' : 'INDEX',
                     \implode(', ', $index->getColumns()),
-                ]
+                ],
             );
         }
 
@@ -126,7 +125,7 @@ final class TableCommand extends Command
         $this->sprintf(
             "\n<fg=cyan>Foreign Keys of </fg=cyan><comment>%s.%s</comment>:\n",
             $database->getName(),
-            $this->argument('table')
+            $this->argument('table'),
         );
         $foreignTable = $this->table(
             [
@@ -136,7 +135,7 @@ final class TableCommand extends Command
                 'Foreign Column:',
                 'On Delete:',
                 'On Update:',
-            ]
+            ],
         );
 
         foreach ($foreignKeys as $reference) {
@@ -148,7 +147,7 @@ final class TableCommand extends Command
                     \implode(', ', $reference->getForeignKeys()),
                     $reference->getDeleteRule(),
                     $reference->getUpdateRule(),
-                ]
+                ],
             );
         }
 
@@ -200,4 +199,3 @@ final class TableCommand extends Command
         return $abstractType;
     }
 }
-

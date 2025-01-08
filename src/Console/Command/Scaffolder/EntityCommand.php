@@ -13,7 +13,6 @@ use Spiral\Scaffolder\Config\ScaffolderConfig;
 use Spiral\Scaffolder\Exception\ScaffolderException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Throwable;
 
 use function Spiral\Scaffolder\trimPostfix;
 
@@ -86,28 +85,28 @@ class EntityCommand extends AbstractCommand
     /**
      * Create entity declaration.
      *
-     * @throws Throwable
+     * @throws \Throwable
      */
     public function perform(Console $console, ScaffolderConfig $config): int
     {
-        $accessibility = (string)$this->option('accessibility');
+        $accessibility = (string) $this->option('accessibility');
         $this->validateAccessibility($accessibility);
 
         /** @var AnnotatedDeclaration $declaration */
         $declaration = $this->createDeclaration(AnnotatedDeclaration::class);
 
-        $repository = trimPostfix((string)$this->argument('name'), 'repository');
+        $repository = trimPostfix((string) $this->argument('name'), 'repository');
         if ($this->option('repository')) {
             $repositoryClass = $config->className(RepositoryDeclaration::TYPE, $repository);
             $repositoryNamespace = $config->classNamespace(RepositoryDeclaration::TYPE, $repository);
             $declaration->setRepository("\\$repositoryNamespace\\$repositoryClass");
         }
 
-        $declaration->setRole((string)$this->option('role'));
-        $declaration->setMapper((string)$this->option('mapper'));
-        $declaration->setTable((string)$this->option('table'));
-        $declaration->setDatabase((string)$this->option('database'));
-        $declaration->setInflection((string)$this->option('inflection'));
+        $declaration->setRole((string) $this->option('role'));
+        $declaration->setMapper((string) $this->option('mapper'));
+        $declaration->setTable((string) $this->option('table'));
+        $declaration->setDatabase((string) $this->option('database'));
+        $declaration->setInflection((string) $this->option('inflection'));
 
         foreach ($this->option('field') as $field) {
             if (!\str_contains($field, ':')) {
@@ -135,7 +134,7 @@ class EntityCommand extends AbstractCommand
 
     protected function declarationClass(string $element): string
     {
-        return $this->config->declarationOptions($element)[(string)$this->argument('format')];
+        return $this->config->declarationOptions($element)[(string) $this->argument('format')];
     }
 
     private function validateAccessibility(string $accessibility): void

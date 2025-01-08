@@ -54,7 +54,7 @@ final class CommandBootloader extends Bootloader
 
         $console->addUpdateSequence(
             'cycle',
-            '<fg=magenta>[cycle]</fg=magenta> <fg=cyan>update Cycle schema...</fg=cyan>'
+            '<fg=magenta>[cycle]</fg=magenta> <fg=cyan>update Cycle schema...</fg=cyan>',
         );
 
         $console->addCommand(CycleOrm\SyncCommand::class);

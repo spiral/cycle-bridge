@@ -15,22 +15,6 @@ use Spiral\Tests\ConfigAttribute;
 
 final class SchemaCollectionsTest extends BaseTest
 {
-    protected function setUp(): void
-    {
-        $this->updateConfig(
-            'cycle.schema.collections',
-            [
-                'default' => 'array',
-                'factories' => [
-                    'array' => new ArrayCollectionFactory(),
-                    'doctrine' => new DoctrineCollectionFactory(),
-                    'illuminate' => new IlluminateCollectionFactory(),
-                ],
-            ],
-        );
-        parent::setUp();
-    }
-
     #[ConfigAttribute(path: 'cycle.schema.collections.default', value: null)]
     public function testWhenCollectionsConfigIsNotSetArrayShouldBeUsed(): void
     {
@@ -90,6 +74,22 @@ final class SchemaCollectionsTest extends BaseTest
 
         $this->assertCount(1, $user->friendsAsIlluminateCollection);
         $this->assertInstanceOf(Collection::class, $user->friendsAsIlluminateCollection);
+    }
+
+    protected function setUp(): void
+    {
+        $this->updateConfig(
+            'cycle.schema.collections',
+            [
+                'default' => 'array',
+                'factories' => [
+                    'array' => new ArrayCollectionFactory(),
+                    'doctrine' => new DoctrineCollectionFactory(),
+                    'illuminate' => new IlluminateCollectionFactory(),
+                ],
+            ],
+        );
+        parent::setUp();
     }
 
     private function getUser(): User

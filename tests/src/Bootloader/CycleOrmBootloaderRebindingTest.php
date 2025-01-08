@@ -13,6 +13,11 @@ final class CycleOrmBootloaderRebindingTest extends BaseTest
 {
     private CommandGeneratorInterface $commandGenerator;
 
+    public function testGetsOrmWithCustomCommandGenerator(): void
+    {
+        $this->assertSame($this->commandGenerator, $this->getOrm()->getCommandGenerator());
+    }
+
     protected function setUp(): void
     {
         $this->commandGenerator = m::mock(CommandGeneratorInterface::class);
@@ -20,10 +25,5 @@ final class CycleOrmBootloaderRebindingTest extends BaseTest
             $container->bind(CommandGeneratorInterface::class, $this->commandGenerator);
         });
         parent::setUp();
-    }
-
-    public function testGetsOrmWithCustomCommandGenerator(): void
-    {
-        $this->assertSame($this->commandGenerator, $this->getOrm()->getCommandGenerator());
     }
 }

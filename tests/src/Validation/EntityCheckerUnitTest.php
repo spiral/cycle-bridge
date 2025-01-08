@@ -28,7 +28,7 @@ final class EntityCheckerUnitTest extends TestCase
             ->andReturn(
                 $this->makeRepository([
                     ['id' => 42, 'value' => 'test value'],
-                ])
+                ]),
             );
         $checker = new EntityChecker($orm);
 
@@ -43,7 +43,7 @@ final class EntityCheckerUnitTest extends TestCase
             ->andReturn(
                 $this->makeRepository([
                     ['id1' => 42, 'id2' => 69, 'value' => 'test value'],
-                ], $pk)
+                ], $pk),
             );
         $checker = new EntityChecker($orm);
 
@@ -60,7 +60,7 @@ final class EntityCheckerUnitTest extends TestCase
             ->andReturn(
                 $this->makeRepository([
                     ['id' => 42, 'foo' => 'bar', 'value' => 'test value'],
-                ])
+                ]),
             );
         $checker = new EntityChecker($orm);
 
