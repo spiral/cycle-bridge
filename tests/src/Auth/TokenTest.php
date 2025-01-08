@@ -22,7 +22,6 @@ final class TokenTest extends BaseTest
     }
 
     /**
-     *
      * @throws \ReflectionException
      */
     public function testGetPayloadWithBadPayload(): void
