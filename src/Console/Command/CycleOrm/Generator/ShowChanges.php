@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @deprecated. Use {@see \Cycle\Schema\Generator\PrintChanges} instead. Will be removed in v3.0.
+ * @codeCoverageIgnore
  */
 final class ShowChanges implements GeneratorInterface
 {

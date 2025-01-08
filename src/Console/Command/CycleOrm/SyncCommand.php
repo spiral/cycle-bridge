@@ -7,11 +7,9 @@ namespace Spiral\Cycle\Console\Command\CycleOrm;
 use Spiral\Cycle\Bootloader\SchemaBootloader;
 use Cycle\Schema\Generator\PrintChanges;
 use Cycle\Schema\Generator\SyncTables;
-use Cycle\Schema\Registry;
-use Spiral\Boot\MemoryInterface;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Console\Command\Migrate\AbstractCommand;
-use Spiral\Cycle\Schema\Compiler;
+use Spiral\Cycle\Schema\Provider\AnnotatedSchemaProvider;
 
 final class SyncCommand extends AbstractCommand
 {
@@ -21,8 +19,7 @@ final class SyncCommand extends AbstractCommand
     public function perform(
         SchemaBootloader $bootloader,
         CycleConfig $config,
-        Registry $registry,
-        MemoryInterface $memory,
+        AnnotatedSchemaProvider $provider,
     ): int {
         if (!$this->verifyEnvironment(message: 'This operation is not recommended for production environment.')) {
             return self::FAILURE;
@@ -30,13 +27,10 @@ final class SyncCommand extends AbstractCommand
 
         $print = new PrintChanges($this->output);
 
-        $schemaCompiler = Compiler::compile(
-            $registry,
-            \array_merge($bootloader->getGenerators($config), [$print, new SyncTables()]),
-            $config->getSchemaDefaults(),
+        $provider = $provider->withGenerators(
+            \array_merge($bootloader->getGenerators($config), [$print, new SyncTables()])
         );
-
-        $schemaCompiler->toMemory($memory);
+        $provider->read();
 
         if ($print->hasChanges()) {
             $this->info('ORM Schema has been synchronized with database.');

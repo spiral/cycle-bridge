@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\App\Bootloader;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use Spiral\App\Repositories\RoleRepository;
 use Spiral\App\Repositories\RoleRepositoryInterface;
 use Spiral\Bootloader\DomainBootloader;
@@ -28,6 +29,8 @@ final class AppBootloader extends DomainBootloader
 
     public function init(CasterRegistryInterface $casterRegistry, EntityCaster $caster): void
     {
+        AnnotationReader::addGlobalIgnoredName('note');
+
         $casterRegistry->register($caster);
     }
 }

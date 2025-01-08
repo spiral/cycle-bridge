@@ -9,6 +9,10 @@ use Cycle\ORM\SchemaInterface;
 use Cycle\Schema\Registry;
 use Spiral\Boot\MemoryInterface;
 
+/**
+ * @deprecated since v2.10.0. Will be removed in v3.0.0. Use {@see \Cycle\Schema\Compiler} instead.
+ * @codeCoverageIgnore
+ */
 final class Compiler
 {
     private const MEMORY_SECTION = 'cycle';

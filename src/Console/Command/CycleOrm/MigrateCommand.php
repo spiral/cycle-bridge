@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Console\Command\CycleOrm;
 
+use Cycle\Schema\Compiler;
 use Cycle\Schema\Generator\Migrations\Strategy\GeneratorStrategyInterface;
 use Cycle\Schema\Generator\Migrations\Strategy\MultipleFilesStrategy;
 use Cycle\Schema\Generator\PrintChanges;
@@ -13,11 +14,10 @@ use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Console\Command\Migrate\AbstractCommand;
 use Cycle\Migrations\State;
 use Cycle\Schema\Generator\Migrations\GenerateMigrations;
-use Spiral\Cycle\Schema\Compiler;
 use Cycle\Schema\Registry;
-use Spiral\Boot\MemoryInterface;
 use Spiral\Console\Console;
 use Cycle\Migrations\Migrator;
+use Spiral\Cycle\Schema\Provider\AnnotatedSchemaProvider;
 use Symfony\Component\Console\Input\InputOption;
 
 final class MigrateCommand extends AbstractCommand
@@ -33,9 +33,9 @@ final class MigrateCommand extends AbstractCommand
         SchemaBootloader $bootloader,
         CycleConfig $config,
         Registry $registry,
-        MemoryInterface $memory,
         Migrator $migrator,
         Console $console,
+        AnnotatedSchemaProvider $provider,
     ): int {
         $migrator->configure();
 
@@ -54,15 +54,10 @@ final class MigrateCommand extends AbstractCommand
 
         $this->comment('Detecting schema changes...');
 
-        $schemaCompiler = Compiler::compile(
-            $registry,
-            \array_merge($bootloader->getGenerators($config), [
-                $print = new PrintChanges($this->output),
-            ]),
-            $config->getSchemaDefaults(),
-        );
-
-        $schemaCompiler->toMemory($memory);
+        $provider = $provider->withGenerators(\array_merge($bootloader->getGenerators($config), [
+            $print = new PrintChanges($this->output)
+        ]));
+        $provider->read();
 
         if ($print->hasChanges()) {
             if ($this->option('split')) {
@@ -72,7 +67,7 @@ final class MigrateCommand extends AbstractCommand
 
             $migrations = $this->container->get(GenerateMigrations::class);
 
-            (new \Cycle\Schema\Compiler())->compile($registry, [$migrations]);
+            (new Compiler())->compile($registry, \array_merge($provider->getGenerators(), [$migrations]));
 
             if ($this->option('run')) {
                 $console->run('migrate', [], $this->output);

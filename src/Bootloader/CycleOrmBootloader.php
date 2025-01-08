@@ -13,15 +13,18 @@ use Cycle\ORM\FactoryInterface;
 use Cycle\ORM\ORM;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
+use Cycle\Schema\Provider\PhpFileSchemaProvider;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\AbstractKernel;
 use Spiral\Boot\Bootloader\Bootloader;
+use Spiral\Boot\DirectoriesInterface;
 use Spiral\Boot\EnvironmentInterface;
 use Spiral\Boot\FinalizerInterface;
 use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Injector\RepositoryInjector;
+use Spiral\Cycle\Schema\Provider\AnnotatedSchemaProvider;
 
 final class CycleOrmBootloader extends Bootloader
 {
@@ -39,7 +42,8 @@ final class CycleOrmBootloader extends Bootloader
 
     public function __construct(
         private readonly ConfiguratorInterface $config,
-        private readonly EnvironmentInterface $env
+        private readonly EnvironmentInterface $env,
+        private readonly DirectoriesInterface $dirs,
     ) {
     }
 
@@ -113,6 +117,13 @@ final class CycleOrmBootloader extends Bootloader
                     'collections' => [],
                 ],
                 'warmup' => $this->env->get('CYCLE_SCHEMA_WARMUP', false),
+                'schemaProviders' => [
+                    PhpFileSchemaProvider::class => PhpFileSchemaProvider::config(
+                        file: $this->dirs->get('runtime') . '/cycle.php',
+                        mode: PhpFileSchemaProvider::MODE_READ_AND_WRITE
+                    ),
+                    AnnotatedSchemaProvider::class
+                ],
             ]
         );
     }

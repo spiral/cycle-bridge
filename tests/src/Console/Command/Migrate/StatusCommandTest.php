@@ -15,7 +15,7 @@ final class StatusCommandTest extends ConsoleTest
         'USE_MIGRATIONS' => true,
     ];
 
-    public function testCheckMigratinoStatus(): void
+    public function testCheckMigrationStatus(): void
     {
         /** @var Database $db */
         $db = $this->getContainer()->get(DatabaseInterface::class);
