@@ -56,6 +56,7 @@ final class TokenTest extends BaseTest
     /**
      *
      *
+     * @param mixed $value
      * @throws \ReflectionException
      */
     protected function setProtectedProperty(object $object, string $property, $value): object
