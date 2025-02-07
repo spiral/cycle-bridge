@@ -41,7 +41,7 @@ final class RenderCommandTest extends ConsoleTest
             'custom_typecast_handler',
         ],
     ])]
-    public function testRenderInColorFormat()
+    public function testRenderInColorFormat(): void
     {
         $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'color'], [
             '[35m[user][39m :: [32mdefault[39m.[32musers[39m',
@@ -67,7 +67,7 @@ final class RenderCommandTest extends ConsoleTest
             'custom_typecast_handler',
         ],
     ])]
-    public function testRedefineSchemaDefaults()
+    public function testRedefineSchemaDefaults(): void
     {
         $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'plain'], [
             'Mapper: custom_mapper',

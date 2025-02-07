@@ -17,7 +17,7 @@ final class DisconnectsBootloader extends Bootloader
     public function init(FinalizerInterface $finalizer, ContainerInterface $container): void
     {
         $finalizer->addFinalizer(
-            function (bool $terminate) use ($container): void {
+            static function (bool $terminate) use ($container): void {
                 if ($terminate) {
                     return;
                 }

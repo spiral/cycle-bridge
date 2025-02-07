@@ -165,14 +165,14 @@ final class EntityCheckerTest extends BaseTest
                 'rules' => [
                     'email' => [['entity::exists', User::class, 'email', 'ignoreCase' => true, 'multiple' => true]],
                 ],
-                'entityData' => [strtoupper(self::ENTITY_PK) => [1, 2], 'email' => 'TEST@mail.com'],
+                'entityData' => [\strtoupper(self::ENTITY_PK) => [1, 2], 'email' => 'TEST@mail.com'],
                 'exceptionText' => 'The `exists` rule doesn\'t work in multiple case insensitive mode.',
             ],
             'pk ignore case true multiple - not found' => [
                 'rules' => [
                     'email' => [['entity::exists', User::class, 'email', 'ignoreCase' => true, 'multiple' => true]],
                 ],
-                'entityData' => [strtoupper(self::ENTITY_PK) => [2, 96], 'email' => 'TEST@mail.com'],
+                'entityData' => [\strtoupper(self::ENTITY_PK) => [2, 96], 'email' => 'TEST@mail.com'],
                 'exceptionText' => 'The `exists` rule doesn\'t work in multiple case insensitive mode.',
             ],
         ];

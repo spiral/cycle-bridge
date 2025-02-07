@@ -10,7 +10,7 @@ use Spiral\Validator\Bootloader\ValidatorBootloader;
 
 final class ValidationBootloader extends Bootloader
 {
-    public function boot(ValidatorBootloader $validation)
+    public function boot(ValidatorBootloader $validation): void
     {
         $validation->addChecker('entity', EntityChecker::class);
     }

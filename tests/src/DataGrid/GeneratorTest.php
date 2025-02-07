@@ -38,7 +38,7 @@ final class GeneratorTest extends BaseTest
                 'status' => 'active',
                 'name' => 'Antony',
             ],
-        ], iterator_to_array($view));
+        ], \iterator_to_array($view));
 
         $this->assertNull($view->getOption(Grid::COUNT));
 
@@ -72,7 +72,7 @@ final class GeneratorTest extends BaseTest
                 'status' => 'active',
                 'name' => 'John',
             ],
-        ], iterator_to_array($view));
+        ], \iterator_to_array($view));
 
         $this->assertSame(3, $view->getOption(Grid::COUNT));
 
@@ -107,7 +107,7 @@ final class GeneratorTest extends BaseTest
 
         $this->assertEquals([
             'John',
-        ], iterator_to_array($view));
+        ], \iterator_to_array($view));
 
         $this->assertSame(3, $view->getOption(Grid::COUNT));
 
@@ -139,7 +139,7 @@ final class GeneratorTest extends BaseTest
             'Bob',
             'John',
             'Antony',
-        ], iterator_to_array($view));
+        ], \iterator_to_array($view));
 
         $this->assertSame([
             'id' => 'desc',
@@ -168,7 +168,7 @@ final class GeneratorTest extends BaseTest
             'Antony',
             'John',
             'Bob',
-        ], iterator_to_array($view));
+        ], \iterator_to_array($view));
 
         $this->assertSame([
             'id' => 'asc',

@@ -28,7 +28,7 @@ class PostgresQueryWriter implements WriterInterface
             return $source->where(
                 $specification->getExpression(),
                 'ILIKE',
-                sprintf($specification->getPattern(), $this->fetchValue($specification->getValue())),
+                \sprintf($specification->getPattern(), $this->fetchValue($specification->getValue())),
             );
         }
 
@@ -43,7 +43,7 @@ class PostgresQueryWriter implements WriterInterface
     protected function targetAcceptable($target): bool
     {
         if (
-            class_exists(SelectQuery::class)
+            \class_exists(SelectQuery::class)
             && $target instanceof SelectQuery
             && $target->getDriver() instanceof PostgresDriver
         ) {

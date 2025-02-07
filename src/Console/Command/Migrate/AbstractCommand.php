@@ -56,7 +56,7 @@ abstract class AbstractCommand extends Command
 
     protected function defineOptions(): array
     {
-        return array_merge(
+        return \array_merge(
             static::OPTIONS,
             [
                 ['force', 's', InputOption::VALUE_NONE, 'Skip safe environment check'],

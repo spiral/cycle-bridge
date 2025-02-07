@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.26.1@d747f6500b38ac4f7dfc5edbcae6e4b637d7add0">
+<files psalm-version="6.4.0@04f312ac6ea48ba1c3e5db4d815bf6d74641c0ee">
   <file src="src/Annotated/Locator/ListenerEntityLocator.php">
     <RedundantConditionGivenDocblockType>
       <code><![CDATA[$attribute !== null]]></code>
@@ -13,12 +13,12 @@
       <code><![CDATA[$this->normalizedPayload]]></code>
       <code><![CDATA[$this->normalizedPayload]]></code>
     </MixedAssignment>
-    <MixedInferredReturnType>
-      <code><![CDATA[array]]></code>
-    </MixedInferredReturnType>
     <MixedReturnStatement>
       <code><![CDATA[$this->normalizedPayload]]></code>
     </MixedReturnStatement>
+    <PossiblyFalseArgument>
+      <code><![CDATA[\stream_get_contents($this->payload)]]></code>
+    </PossiblyFalseArgument>
   </file>
   <file src="src/Auth/TokenStorage.php">
     <ArgumentTypeCoercion>
@@ -53,10 +53,6 @@
       <code><![CDATA[$nameGenerator]]></code>
       <code><![CDATA[$strategy]]></code>
     </MixedAssignment>
-    <MixedInferredReturnType>
-      <code><![CDATA[GeneratorStrategyInterface]]></code>
-      <code><![CDATA[NameGeneratorInterface]]></code>
-    </MixedInferredReturnType>
     <MixedReturnStatement>
       <code><![CDATA[$container->get($nameGenerator)]]></code>
       <code><![CDATA[$container->get($strategy)]]></code>
@@ -93,11 +89,6 @@
       <code><![CDATA[GeneratorInterface[]]]></code>
     </MoreSpecificReturnType>
   </file>
-  <file src="src/Bootloader/ValidationBootloader.php">
-    <MissingReturnType>
-      <code><![CDATA[boot]]></code>
-    </MissingReturnType>
-  </file>
   <file src="src/Config/CycleConfig.php">
     <MixedArrayAccess>
       <code><![CDATA[$config['default']]]></code>
@@ -110,9 +101,6 @@
       <code><![CDATA[$config]]></code>
       <code><![CDATA[$defaultSchema]]></code>
     </MixedAssignment>
-    <MixedInferredReturnType>
-      <code><![CDATA[?array]]></code>
-    </MixedInferredReturnType>
     <MixedReturnStatement>
       <code><![CDATA[$this->config['schema']['generators'] ?? null]]></code>
       <code><![CDATA[$this->config['schema']['generators'] ?? null]]></code>
@@ -157,12 +145,6 @@
       <code><![CDATA[DESCRIPTION]]></code>
       <code><![CDATA[NAME]]></code>
     </InvalidClassConstantType>
-    <MixedArgumentTypeCoercion>
-      <code><![CDATA[[$migrations]]]></code>
-    </MixedArgumentTypeCoercion>
-    <MixedAssignment>
-      <code><![CDATA[$migrations]]></code>
-    </MixedAssignment>
     <PossiblyNullArgument>
       <code><![CDATA[$this->output]]></code>
     </PossiblyNullArgument>
@@ -251,10 +233,6 @@
     <MixedArgument>
       <code><![CDATA[static::OPTIONS]]></code>
     </MixedArgument>
-    <MixedInferredReturnType>
-      <code><![CDATA[bool]]></code>
-      <code><![CDATA[bool]]></code>
-    </MixedInferredReturnType>
     <MixedReturnStatement>
       <code><![CDATA[$question->ask(
             $this->input,
@@ -318,9 +296,6 @@
     <MixedAssignment>
       <code><![CDATA[$field]]></code>
     </MixedAssignment>
-    <MixedInferredReturnType>
-      <code><![CDATA[string]]></code>
-    </MixedInferredReturnType>
     <MixedReturnStatement>
       <code><![CDATA[$this->config->declarationOptions($element)[(string) $this->argument('format')]]]></code>
     </MixedReturnStatement>
@@ -392,9 +367,6 @@
       <code><![CDATA[$injector]]></code>
       <code><![CDATA[$injector]]></code>
     </MixedArgument>
-    <MixedInferredReturnType>
-      <code><![CDATA[string]]></code>
-    </MixedInferredReturnType>
     <MixedReturnStatement>
       <code><![CDATA[$this->expression->getValue()]]></code>
     </MixedReturnStatement>
@@ -438,9 +410,6 @@
       <code><![CDATA[$source]]></code>
       <code><![CDATA[$source]]></code>
     </MixedAssignment>
-    <MixedInferredReturnType>
-      <code><![CDATA[string]]></code>
-    </MixedInferredReturnType>
     <MixedMethodCall>
       <code><![CDATA[limit]]></code>
       <code><![CDATA[offset]]></code>
@@ -466,11 +435,9 @@
       <code><![CDATA[$value]]></code>
     </MixedArgument>
     <MixedAssignment>
+      <code><![CDATA[$object]]></code>
       <code><![CDATA[$this->orm]]></code>
     </MixedAssignment>
-    <MixedInferredReturnType>
-      <code><![CDATA[ORMInterface]]></code>
-    </MixedInferredReturnType>
     <MixedReturnStatement>
       <code><![CDATA[$this->orm]]></code>
       <code><![CDATA[$this->orm]]></code>
@@ -515,6 +482,10 @@
     <MixedAssignment>
       <code><![CDATA[$value]]></code>
     </MixedAssignment>
+    <MixedReturnStatement>
+      <code><![CDATA[$this->orm->getRepository($role)->findByPK($parameter)]]></code>
+      <code><![CDATA[$this->orm->getRepository($role)->findByPK($parameter)]]></code>
+    </MixedReturnStatement>
     <MoreSpecificReturnType>
       <code><![CDATA[array<non-empty-string, non-empty-string>]]></code>
     </MoreSpecificReturnType>
@@ -533,9 +504,6 @@
       <code><![CDATA[$channel]]></code>
       <code><![CDATA[$this->config]]></code>
     </MixedAssignment>
-    <MixedInferredReturnType>
-      <code><![CDATA[LoggerInterface]]></code>
-    </MixedInferredReturnType>
     <MixedMethodCall>
       <code><![CDATA[getLogger]]></code>
     </MixedMethodCall>

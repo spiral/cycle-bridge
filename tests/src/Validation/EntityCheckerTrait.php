@@ -95,9 +95,9 @@ trait EntityCheckerTrait
 
                     public function where(string $field, string $operator, Parameter $parameter): self
                     {
-                        $this->items = array_filter(
+                        $this->items = \array_filter(
                             $this->items,
-                            fn(mixed $value) => \in_array($value[$field], (array) $parameter->getValue(), true),
+                            static fn(mixed $value) => \in_array($value[$field], (array) $parameter->getValue(), true),
                         );
 
                         return $this;

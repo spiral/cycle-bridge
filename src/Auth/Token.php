@@ -41,12 +41,12 @@ class Token implements TokenInterface
         $this->id = $id;
 
         $this->secretValue = $secretValue;
-        $this->hashedValue = hash('sha512', $secretValue);
+        $this->hashedValue = \hash('sha512', $secretValue);
 
         $this->createdAt = $createdAt;
         $this->expiresAt = $expiresAt;
 
-        $this->payload = json_encode($payload);
+        $this->payload = \json_encode($payload);
     }
 
     public function setSecretValue(string $value): void
@@ -56,7 +56,7 @@ class Token implements TokenInterface
 
     public function getID(): string
     {
-        return sprintf('%s:%s', $this->id, $this->secretValue);
+        return \sprintf('%s:%s', $this->id, $this->secretValue);
     }
 
     public function getHashedValue(): string
@@ -76,15 +76,15 @@ class Token implements TokenInterface
 
     public function getPayload(): array
     {
-        if (is_array($this->normalizedPayload)) {
+        if (\is_array($this->normalizedPayload)) {
             return $this->normalizedPayload;
         }
 
-        if (is_resource($this->payload)) {
+        if (\is_resource($this->payload)) {
             // postgres
-            $this->normalizedPayload = json_decode(stream_get_contents($this->payload), true);
-        } elseif (is_string($this->payload)) {
-            $this->normalizedPayload = json_decode($this->payload, true);
+            $this->normalizedPayload = \json_decode(\stream_get_contents($this->payload), true);
+        } elseif (\is_string($this->payload)) {
+            $this->normalizedPayload = \json_decode($this->payload, true);
         }
 
         if ($this->normalizedPayload === null) {

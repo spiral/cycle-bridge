@@ -42,7 +42,7 @@ final class TokenTest extends BaseTest
      */
     public function testGetPayloadWithBadResourcePayload(): void
     {
-        $resourcePayload = fopen('php://memory', 'r');
+        $resourcePayload = \fopen('php://memory', 'r');
 
         $token = $this->setProtectedProperty($this->buildToken(), 'payload', $resourcePayload);
 
@@ -60,7 +60,7 @@ final class TokenTest extends BaseTest
      */
     protected function setProtectedProperty(object $object, string $property, $value): object
     {
-        $refProjectClass = new \ReflectionClass(get_class($object));
+        $refProjectClass = new \ReflectionClass(\get_class($object));
         $classProperty = $refProjectClass->getProperty($property);
         $classProperty->setAccessible(true);
         $classProperty->setValue($object, $value);

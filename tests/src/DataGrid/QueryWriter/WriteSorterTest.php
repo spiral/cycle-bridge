@@ -120,7 +120,7 @@ class WriteSorterTest extends BaseTest
             );
 
             $this->assertEqualSQL(
-                sprintf(
+                \sprintf(
                     'SELECT * FROM "users" ORDER BY "balance" %s, "credits" %s',
                     $resultDirection,
                     $resultDirection,
@@ -180,7 +180,7 @@ class WriteSorterTest extends BaseTest
             );
 
             $this->assertEqualSQL(
-                sprintf(
+                \sprintf(
                     'SELECT * FROM "users" ORDER BY "balance" %s, "credits" %s',
                     $resultDirection,
                     $resultDirection,
