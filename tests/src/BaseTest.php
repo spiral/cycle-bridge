@@ -45,7 +45,7 @@ abstract class BaseTest extends TestCase
 
     public function rootDirectory(): string
     {
-        return dirname(__DIR__ . '/../app');
+        return \dirname(__DIR__ . '/../app');
     }
 
     public function defineBootloaders(): array
@@ -111,8 +111,8 @@ abstract class BaseTest extends TestCase
 
     public function updateConfig(string $key, mixed $data): void
     {
-        [$config, $key] = explode('.', $key, 2);
-        $this->beforeBooting(static function (ConfigsInterface $configs) use ($config, $key, $data) {
+        [$config, $key] = \explode('.', $key, 2);
+        $this->beforeBooting(static function (ConfigsInterface $configs) use ($config, $key, $data): void {
             $configs->modify(
                 $config,
                 new Set($key, $data),

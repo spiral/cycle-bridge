@@ -43,7 +43,7 @@ final class CycleOrmWarmedUpBootloaderTest extends BaseTest
                 return $heap;
             });
 
-        $this->beforeBooting(static function (Container $container) use ($orm) {
+        $this->beforeBooting(static function (Container $container) use ($orm): void {
             $container->bindSingleton(ORMInterface::class, $orm);
             $container->bindSingleton(ORM::class, $orm);
         });

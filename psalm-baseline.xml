@@ -17,7 +17,7 @@
       <code><![CDATA[$this->normalizedPayload]]></code>
     </MixedReturnStatement>
     <PossiblyFalseArgument>
-      <code><![CDATA[stream_get_contents($this->payload)]]></code>
+      <code><![CDATA[\stream_get_contents($this->payload)]]></code>
     </PossiblyFalseArgument>
   </file>
   <file src="src/Auth/TokenStorage.php">
@@ -88,11 +88,6 @@
     <MoreSpecificReturnType>
       <code><![CDATA[GeneratorInterface[]]]></code>
     </MoreSpecificReturnType>
-  </file>
-  <file src="src/Bootloader/ValidationBootloader.php">
-    <MissingReturnType>
-      <code><![CDATA[boot]]></code>
-    </MissingReturnType>
   </file>
   <file src="src/Config/CycleConfig.php">
     <MixedArrayAccess>

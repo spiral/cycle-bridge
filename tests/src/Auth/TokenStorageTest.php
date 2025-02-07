@@ -13,7 +13,7 @@ final class TokenStorageTest extends BaseTest
 {
     private TokenStorage $storage;
 
-    public function testTokenShouldBeCreatedWithoutExpiration()
+    public function testTokenShouldBeCreatedWithoutExpiration(): void
     {
         $token = $this->storage->create(['foo' => 'bar']);
 
@@ -23,7 +23,7 @@ final class TokenStorageTest extends BaseTest
         $this->assertSame(['foo' => 'bar'], $token->getPayload());
     }
 
-    public function testTokenShouldBeCreatedWithExpiration()
+    public function testTokenShouldBeCreatedWithExpiration(): void
     {
         $token = $this->storage->create(['foo' => 'bar'], $date = new \DateTimeImmutable('2010-05-05 12:34:56'));
 
@@ -33,7 +33,7 @@ final class TokenStorageTest extends BaseTest
         $this->assertSame(['foo' => 'bar'], $token->getPayload());
     }
 
-    public function testTokenShouldBeLoadedById()
+    public function testTokenShouldBeLoadedById(): void
     {
         $token = $this->storage->create(['foo' => 'bar']);
 
@@ -47,7 +47,7 @@ final class TokenStorageTest extends BaseTest
         $this->assertSame($loadedToken->getExpiresAt(), $token->getExpiresAt());
     }
 
-    public function testTokenShouldBeDeleted()
+    public function testTokenShouldBeDeleted(): void
     {
         $token = $this->storage->create(['foo' => 'bar']);
         $this->storage->delete($token);

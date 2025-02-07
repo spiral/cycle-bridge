@@ -24,7 +24,7 @@ final class DatabaseInjector implements InjectorInterface
         try {
             return $this->dm->database($context);
         } catch (DBALException $e) {
-            if ($context === null || !str_contains($e->getMessage(), ' no presets for ')) {
+            if ($context === null || !\str_contains($e->getMessage(), ' no presets for ')) {
                 throw $e;
             }
             // get default database

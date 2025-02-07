@@ -65,7 +65,7 @@ final class ListCommand extends Command
             } catch (\Exception $exception) {
                 $this->renderException($grid, $header, $exception);
 
-                if ($database->getName() != end($databases)) {
+                if ($database->getName() != \end($databases)) {
                     $grid->addRow(new TableSeparator());
                 }
 
@@ -74,7 +74,7 @@ final class ListCommand extends Command
 
             $header[] = '<info>connected</info>';
             $this->renderTables($grid, $header, $database);
-            if ($database->getName() != end($databases)) {
+            if ($database->getName() != \end($databases)) {
                 $grid->addRow(new TableSeparator());
             }
         }
@@ -102,14 +102,14 @@ final class ListCommand extends Command
     {
         foreach ($database->getTables() as $table) {
             $grid->addRow(
-                array_merge(
+                \array_merge(
                     $header,
-                    [$table->getName(), number_format($table->count())],
+                    [$table->getName(), \number_format($table->count())],
                 ),
             );
             $header = ['', '', '', '', ''];
         }
 
-        $header[1] && $grid->addRow(array_merge($header, ['no tables', 'no records']));
+        $header[1] && $grid->addRow(\array_merge($header, ['no tables', 'no records']));
     }
 }

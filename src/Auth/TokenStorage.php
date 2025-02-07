@@ -101,6 +101,6 @@ final class TokenStorage implements TokenStorageInterface
 
     private function randomHash(int $length): string
     {
-        return \substr(\bin2hex(random_bytes($length)), 0, $length);
+        return \substr(\bin2hex(\random_bytes($length)), 0, $length);
     }
 }

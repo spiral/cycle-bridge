@@ -16,10 +16,5 @@
     </projectFiles>
     <issueHandlers>
         <MissingClassConstType errorLevel="suppress"/>
-        <UndefinedAttributeClass>
-            <errorLevel type="suppress">
-                <referencedClass name="JetBrains\PhpStorm\ExpectedValues"/>
-            </errorLevel>
-        </UndefinedAttributeClass>
     </issueHandlers>
 </psalm>
