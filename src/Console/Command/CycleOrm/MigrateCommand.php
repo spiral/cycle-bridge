@@ -66,11 +66,14 @@ final class MigrateCommand extends AbstractCommand
 
         if ($print->hasChanges()) {
             if ($this->option('split')) {
-                \assert($this->container instanceof BinderInterface);
-                $this->container->bind(GeneratorStrategyInterface::class, MultipleFilesStrategy::class);
+                $binder = $this->container?->get(BinderInterface::class);
+                \assert($binder instanceof BinderInterface);
+                $binder->getBinder('root')
+                    ->bind(GeneratorStrategyInterface::class, MultipleFilesStrategy::class);
             }
 
             $migrations = $this->container->get(GenerateMigrations::class);
+            \assert($migrations instanceof GenerateMigrations);
 
             (new \Cycle\Schema\Compiler())->compile($registry, [$migrations]);
 
