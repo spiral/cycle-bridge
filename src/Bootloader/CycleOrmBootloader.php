@@ -10,6 +10,7 @@ use Cycle\ORM\EntityManager;
 use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\Factory;
 use Cycle\ORM\FactoryInterface;
+use Cycle\ORM\Options;
 use Cycle\ORM\ORM;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
@@ -34,6 +35,9 @@ final class CycleOrmBootloader extends Bootloader
         ORMInterface::class => ORM::class,
         EntityManagerInterface::class => EntityManager::class,
         FactoryInterface::class => [self::class, 'factory'],
+    ];
+    protected const BINDINGS = [
+        Options::class => [self::class, 'options'],
     ];
 
     public function __construct(
@@ -99,6 +103,12 @@ final class CycleOrmBootloader extends Bootloader
         return $factory;
     }
 
+    private function options(
+        CycleConfig $config,
+    ): Options {
+        return $config->getOptions() ?? new Options();
+    }
+
     private function initOrmConfig(): void
     {
         $this->config->setDefaults(
@@ -111,6 +121,7 @@ final class CycleOrmBootloader extends Bootloader
                     'collections' => [],
                 ],
                 'warmup' => $this->env->get('CYCLE_SCHEMA_WARMUP', false),
+                'options' => null,
             ],
         );
     }

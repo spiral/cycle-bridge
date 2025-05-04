@@ -32,7 +32,7 @@
         "php": ">=8.1",
         "cycle/annotated": "^4.2.3",
         "cycle/migrations": "^4.2.4",
-        "cycle/orm": "^2.9.3",
+        "cycle/orm": "^2.11.0",
         "cycle/schema-migrations-generator": "^2.3",
         "cycle/schema-renderer": "^1.2",
         "cycle/schema-builder": "^2.11.1",
@@ -64,7 +64,7 @@
         "spiral/nyholm-bridge": "^1.3",
         "spiral/testing": "^2.9",
         "spiral/validator": "^1.5.4",
-        "vimeo/psalm": "^6.4"
+        "vimeo/psalm": "^6.10"
     },
     "autoload": {
         "psr-4": {

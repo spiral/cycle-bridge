@@ -6,6 +6,7 @@ namespace Spiral\Cycle\Config;
 
 use Cycle\ORM\Collection\ArrayCollectionFactory;
 use Cycle\ORM\Collection\CollectionFactoryInterface;
+use Cycle\ORM\Options;
 use Spiral\Core\InjectableConfig;
 
 final class CycleConfig extends InjectableConfig
@@ -58,5 +59,10 @@ final class CycleConfig extends InjectableConfig
     public function warmup(): bool
     {
         return (bool) ($this->config['warmup'] ?? false);
+    }
+
+    public function getOptions(): ?Options
+    {
+        return $this->config['options'] ?? null;
     }
 }
