@@ -84,4 +84,25 @@ final class CycleOrmBootloaderTest extends BaseTest
 
         $finalizer->finalize(true);
     }
+
+    public function testContainerProvidesOptionsSingleton(): void
+    {
+        $opt1 = $this->getContainer()->get(\Cycle\ORM\Options::class);
+        $opt2 = $this->getContainer()->get(\Cycle\ORM\Options::class);
+
+        $this->assertInstanceOf(\Cycle\ORM\Options::class, $opt1);
+        $this->assertSame($opt1, $opt2); // singleton
+    }
+
+    public function testOrmReceivesOptions(): void
+    {
+        $orm = $this->getContainer()->get(\Cycle\ORM\ORMInterface::class);
+        $this->assertInstanceOf(\Cycle\ORM\ORM::class, $orm);
+
+        $rp = new \ReflectionProperty($orm, 'options');
+        $rp->setAccessible(true);
+        $options = $rp->getValue($orm);
+
+        $this->assertInstanceOf(\Cycle\ORM\Options::class, $options);
+    }
 }
