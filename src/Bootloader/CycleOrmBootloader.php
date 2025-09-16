@@ -22,6 +22,7 @@ use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Injector\RepositoryInjector;
+use Cycle\ORM\Options;
 
 final class CycleOrmBootloader extends Bootloader
 {
@@ -34,6 +35,7 @@ final class CycleOrmBootloader extends Bootloader
         ORMInterface::class => ORM::class,
         EntityManagerInterface::class => EntityManager::class,
         FactoryInterface::class => [self::class, 'factory'],
+        Options::class => [self::class, 'options'],
     ];
 
     public function __construct(
@@ -99,6 +101,11 @@ final class CycleOrmBootloader extends Bootloader
         return $factory;
     }
 
+    private function options(CycleConfig $config): Options
+    {
+        return $config->getOptions();
+    }
+
     private function initOrmConfig(): void
     {
         $this->config->setDefaults(
@@ -111,6 +118,7 @@ final class CycleOrmBootloader extends Bootloader
                     'collections' => [],
                 ],
                 'warmup' => $this->env->get('CYCLE_SCHEMA_WARMUP', false),
+                'options' => null,
             ],
         );
     }
