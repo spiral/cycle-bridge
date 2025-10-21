@@ -8,14 +8,13 @@ use Spiral\Console\Console;
 use Spiral\Tests\ConfigAttribute;
 use Spiral\Tests\ConsoleTest;
 use Cycle\ORM\SchemaInterface;
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 final class RenderCommandTest extends ConsoleTest
 {
     public function testRenderInMermaidFormat(): void
     {
-        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'mermaid'], [
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['--format' => 'mermaid'], [
             'classDiagram',
             'class user',
             'class role',
@@ -26,7 +25,7 @@ final class RenderCommandTest extends ConsoleTest
 
     public function testRenderInPHPFormat(): void
     {
-        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'php'], [
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['--format' => 'php'], [
             '<?php',
             'declare(strict_types=1);',
             'use Cycle\ORM\Relation;',
@@ -46,7 +45,7 @@ final class RenderCommandTest extends ConsoleTest
     ])]
     public function testRenderInColorFormat(): void
     {
-        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'color'], [
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['--format' => 'color'], [
             '[35m[user][39m :: [32mdefault[39m.[32musers[39m',
             'Entity: [34mSpiral\App\Entities\User[39m',
             'Mapper: [34mcustom_mapper[39m',
@@ -58,7 +57,7 @@ final class RenderCommandTest extends ConsoleTest
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Format `unknown` isn't supported.");
 
-        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'unknown']);
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['--format' => 'unknown']);
     }
 
     #[ConfigAttribute(path: 'cycle.schema.defaults', value: [
@@ -72,7 +71,7 @@ final class RenderCommandTest extends ConsoleTest
     ])]
     public function testRedefineSchemaDefaults(): void
     {
-        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['format' => 'plain'], [
+        $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['--format' => 'plain'], [
             'Mapper: custom_mapper',
             'Repository: custom_repository',
             'Scope: custom_scope',
@@ -81,64 +80,74 @@ final class RenderCommandTest extends ConsoleTest
         ]);
     }
 
-    public function testOutputOnlyForPhpFormat(): void
+    /**
+     * @return array<string, array{0:string,1:bool,2:bool,3:bool}>
+     *              [format, expectAnsi, expectMermaidKeyword, expectPhp]
+     */
+    public static function fileFormatsProvider(): array
     {
-        $out = \sys_get_temp_dir() . '/schema_' . bin2hex(\random_bytes(4)) . '.php';
-        @unlink($out);
-
-        $this->assertConsoleCommandOutputContainsStrings(
-            'cycle:render',
-            ['format' => 'mermaid', '--output' => $out],
-            ['The --output option is currently supported only with format=php.']
-        );
-
-        $this->assertFileDoesNotExist($out);
+        return [
+            'plain'   => ['plain',   false, false, false],
+            'color'   => ['color',   true,  false, false],
+            'mermaid' => ['mermaid', false, true,  false],
+            'php'     => ['php',     false, false, true],
+        ];
     }
 
-    public function testWritesPhpSchemaToFile(): void
-    {
-        $out = \sys_get_temp_dir() . '/schema_' . bin2hex(\random_bytes(4)) . '.php';
+    /**
+     * @dataProvider fileFormatsProvider
+     */
+    public function testWritesSchemaToFileForAllFormats(
+        string $format,
+        bool $expectAnsi,
+        bool $expectMermaid,
+        bool $expectPhp
+    ): void {
+        $out = \sys_get_temp_dir() . '/schema_' . \bin2hex(\random_bytes(4));
         @unlink($out);
 
         $this->assertConsoleCommandOutputContainsStrings(
             'cycle:render',
-            ['format' => 'php', '--output' => $out, '--overwrite' => true],
+            ['--format' => $format, '--output' => $out],
             ['Schema written to']
         );
 
         $this->assertFileExists($out);
-        $schema = require $out;
-        $this->assertIsArray($schema);
+        $content = \file_get_contents($out);
+        $this->assertIsString($content);
+        $this->assertGreaterThan(0, \strlen($content));
 
-        @unlink($out);
+        // ANSI detection (color)
+        $hasAnsi = (bool)\preg_match('/\x1B\[[0-9;]*m/', $content);
+        $this->assertSame($expectAnsi, $hasAnsi, "ANSI expectation failed for format={$format}");
+
+        // Mermaid detection (line starts with known diagram markers)
+        $hasMermaid = (bool)\preg_match('/^(graph|classDiagram|erDiagram)\b/m', $content);
+        $this->assertSame($expectMermaid, $hasMermaid, "Mermaid expectation failed for format={$format}");
+
+        // PHP detection (file starts with `<?php`)
+        $hasPhp = (bool)\preg_match('/^\s*<\?php\b/m', $content);
+        $this->assertSame($expectPhp, $hasPhp, "PHP expectation failed for format={$format}");
+
+        if ($expectPhp) {
+            $schema = require $out;
+            $this->assertIsArray($schema);
+            $this->assertNotEmpty($schema);
+        } else {
+            $this->assertDoesNotMatchRegularExpression('/^\s*<\?php\b/m', $content);
+        }
+
+        @\unlink($out);
     }
 
-    public function testPreventOverwriteWithoutFlag(): void
+    public function testOverwriteOldFile(): void
     {
         $out = \sys_get_temp_dir() . '/schema_' . \bin2hex(\random_bytes(4)) . '.php';
         \file_put_contents($out, "<?php return ['_touched' => true];");
 
         $this->assertConsoleCommandOutputContainsStrings(
             'cycle:render',
-            ['format' => 'php', '--output' => $out],
-            ['File already exists:', 'use --overwrite to replace']
-        );
-
-        // файл остался прежним
-        $schema = require $out;
-        $this->assertArrayHasKey('_touched', $schema);
-
-        @unlink($out);
-    }
-
-    public function testOverwriteWithFlag(): void
-    {
-        $out = \sys_get_temp_dir() . '/schema_' . \bin2hex(\random_bytes(4)) . '.php';
-        \file_put_contents($out, "<?php return ['_touched' => true];");
-
-        $this->assertConsoleCommandOutputContainsStrings(
-            'cycle:render',
-            ['format' => 'php', '--output' => $out, '--overwrite' => true],
+            ['--format' => 'php', '--output' => $out],
             ['Schema written to']
         );
 
@@ -154,20 +163,18 @@ final class RenderCommandTest extends ConsoleTest
         $out = \sys_get_temp_dir() . '/schema_' . \bin2hex(\random_bytes(4)) . '.php';
         @unlink($out);
 
-        // В фикстурах Spiral обычно есть роли 'user','role','token' (смотри существующий тест mermaid)
         $requested = ['user', 'role'];
 
         $this->assertConsoleCommandOutputContainsStrings(
             'cycle:render',
-            ['format' => 'php', '--output' => $out, '--overwrite' => true, '--role' => [implode(',', $requested)]],
+            ['roles' => [implode(',', $requested)], '--format' => 'php', '--output' => $out],
             ['Schema written to']
         );
 
         $schema = require $out;
         $this->assertIsArray($schema);
 
-        // Все ключи схемы должны быть из запрошенного набора
-        foreach (array_keys($schema) as $key) {
+        foreach (\array_keys($schema) as $key) {
             $this->assertContains($key, $requested);
         }
 
@@ -183,10 +190,9 @@ final class RenderCommandTest extends ConsoleTest
         $this->assertConsoleCommandOutputContainsStrings(
             'cycle:render',
             [
-                'format'    => 'php',
+                'roles'      => ['user,does_not_exist'],
+                '--format'    => 'php',
                 '--output'    => $out,
-                '--overwrite' => true,
-                '--role'      => ['user,does_not_exist'],
             ],
             [
                 'Warning: unknown role(s) ignored: does_not_exist.',
@@ -199,53 +205,31 @@ final class RenderCommandTest extends ConsoleTest
         $this->assertArrayHasKey('user', $schema);
         $this->assertArrayNotHasKey('does_not_exist', $schema);
 
-        @unlink($out);
+        @\unlink($out);
     }
 
-    public function testAllUnknownRolesLeadsToNothingToWrite(): void
+    public function testAllUnknownRolesBehavior(): void
     {
         $out = \sys_get_temp_dir() . '/schema_' . \bin2hex(\random_bytes(4)) . '.php';
-        @unlink($out);
+        @\unlink($out);
 
         $this->assertConsoleCommandOutputContainsStrings(
             'cycle:render',
-            ['format' => 'php', '--output' => $out, '--role' => ['foo,bar']],
+            ['roles' => ['foo,bar'], '--format' => 'php', '--output' => $out],
             [
-                'Nothing to write.',
+                'Nothing to write',
             ]
         );
 
         $this->assertFileDoesNotExist($out);
-    }
 
-    public function testRolesCsvAndRepeatOptionsAreMerged(): void
-    {
-        $out = sys_get_temp_dir() . '/schema_' . bin2hex(random_bytes(4)) . '.php';
-        @unlink($out);
-
-        // проверяем смешанный ввод: повторяемая опция + CSV + разный регистр
         $this->assertConsoleCommandOutputContainsStrings(
             'cycle:render',
+            ['roles' => ['foo,bar'], '--format' => 'plain'],
             [
-                'format'    => 'php',
-                '--output'    => $out,
-                '--overwrite' => true,
-                '--role'      => ['User', 'role,address'],
-            ],
-            ['Schema written to']
+                'No roles matched the provided filter',
+            ]
         );
-
-        $schema = require $out;
-        $this->assertIsArray($schema);
-
-        // ожидаем хотя бы user/role/token (если они есть в фикстуре)
-        $keys = array_keys($schema);
-        $this->assertNotEmpty($keys);
-        foreach ($keys as $k) {
-            $this->assertContains($k, ['user', 'role', 'address']);
-        }
-
-        @unlink($out);
     }
 
     public function testRolesFilterWorksForPlainStdout(): void
@@ -255,7 +239,7 @@ final class RenderCommandTest extends ConsoleTest
 
         $out = new BufferedOutput();
 
-        $code = $console->run('cycle:render', ['format' => 'mermaid', '--role' => ['role']], $out);
+        $code = $console->run('cycle:render', ['roles' => ['role'], '--format' => 'mermaid'], $out);
 
         $display = $out->fetch();
 

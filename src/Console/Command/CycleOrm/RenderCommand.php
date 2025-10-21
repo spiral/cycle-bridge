@@ -9,8 +9,6 @@ use Cycle\Schema\Renderer\OutputSchemaRenderer;
 use Cycle\Schema\Renderer\PhpSchemaRenderer;
 use Cycle\Schema\Renderer\SchemaToArrayConverter;
 use Spiral\Cycle\Console\Command\Migrate\AbstractCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Cycle\Schema\Renderer\MermaidRenderer\MermaidRenderer;
 use Spiral\Console\Attribute\AsCommand;
@@ -19,21 +17,21 @@ use Spiral\Console\Attribute\Option;
 
 #[AsCommand(
     name: 'cycle:render',
-    description: 'Render available CycleORM schemas')
-]
+    description: "Render Cycle ORM schema.\n\n"
+    . "Examples:\n"
+    . "  php app.php cycle:render user,post,comment\n"
+    . "  php app.php cycle:render --format=php --output=cycle-schema.php\n\n"
+)]
 final class RenderCommand extends AbstractCommand
 {
-    #[Argument(name: 'format', description: 'The format of the output')]
-    private string $format;
+    #[Argument(name: 'roles', description: 'Comma-separated roles to export (e.g. "user,post,comment"); omit to export full schema.')]
+    private array $roles = [];
 
-    #[Option(name: 'output', shortcut: 'o', description: 'Path to file for saving schema (currently only for format=php)')]
+    #[Option(name: 'output', shortcut: 'o', description: 'Write/overwrite output to file (path). If omitted, prints to STDOUT.')]
     private ?string $outputPath = null;
 
-    #[Option(name: 'overwrite', description: 'Overwrite existing output')]
-    private bool $overwrite = false;
-
-    #[Option(name: 'role', shortcut: 'r', description: 'Specify roles for output in schema (supports comma separated values)')]
-    private array $role = [];
+    #[Option(name: 'format', description: "Output format: php|mermaid|color|plain (default: 'color' for ANSI-capable terminals, otherwise 'plain').")]
+    private ?string $format = null;
 
     public function perform(
         OutputInterface $output,
@@ -41,19 +39,26 @@ final class RenderCommand extends AbstractCommand
         SchemaToArrayConverter $converter,
     ): int
     {
-        $renderer = match ($this->format) {
-            'mermaid' => new MermaidRenderer(),
-            'php' => new PhpSchemaRenderer(),
-            'color' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_CONSOLE_COLOR),
-            'plain' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_PLAIN_TEXT),
-            default => throw new \InvalidArgumentException(
-                \sprintf("Format `%s` isn't supported.", $this->format),
-            ),
-        };
+        if ($this->format === null) {
+            $renderer = new OutputSchemaRenderer(
+                $output->isDecorated() && $this->outputPath === null ?
+                    OutputSchemaRenderer::FORMAT_CONSOLE_COLOR : OutputSchemaRenderer::FORMAT_PLAIN_TEXT
+            );
+        } else {
+            $renderer = match ($this->format) {
+                'mermaid' => new MermaidRenderer(),
+                'php' => new PhpSchemaRenderer(),
+                'color' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_CONSOLE_COLOR),
+                'plain' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_PLAIN_TEXT),
+                default => throw new \InvalidArgumentException(
+                    \sprintf("Format `%s` isn't supported.", $this->format),
+                ),
+            };
+        }
 
         $schemaArray = $converter->convert($schema);
-        $requestedRoles = $this->parseRolesOption($this->role);
 
+        $requestedRoles = $this->parseRolesOption($this->roles);
         $existingRoles = array_keys($schemaArray);
         $rolesMap = [];
         foreach ($existingRoles as $role) {
@@ -61,7 +66,7 @@ final class RenderCommand extends AbstractCommand
         }
 
         $resolvedRoles = [];
-        $unknownRoles  = [];
+        $unknownRoles = [];
 
         foreach ($requestedRoles as $role) {
             $key = \strtolower($role);
@@ -75,39 +80,17 @@ final class RenderCommand extends AbstractCommand
         if ($requestedRoles !== []) {
             $schemaArray = \array_intersect_key($schemaArray, $resolvedRoles);
             if ($schemaArray === []) {
-                $output->writeln(\sprintf(
-                    '<comment>No roles matched the provided filter: %s</comment>',
-                    \implode(', ',  $requestedRoles)
-                ));
+                $output->writeln(\sprintf( '<comment>No roles matched the provided filter: %s</comment>', \implode(', ', $requestedRoles) ));
             }
         }
 
         if ($unknownRoles !== [] && $schemaArray !== []) {
-            $output->writeln(\sprintf(
-                '<comment>Warning: unknown role(s) ignored: %s.</comment>',
-                \implode(', ',  $unknownRoles)
-            ));
+            $output->writeln(\sprintf('<comment>Warning: unknown role(s) ignored: %s.</comment>', \implode(', ', $unknownRoles)));
         }
 
         $path = $this->outputPath;
-
-        if ($schemaArray === []) {
-            if ($path !== null) {
-                $output->writeln('<comment>Nothing to write.</comment>');
-            } else {
-                $output->writeln('');
-            }
-            return self::SUCCESS;
-        }
-
         if ($path !== null) {
-            if ($this->format !== 'php') {
-                $this->error('The --output option is currently supported only with format=php.');
-                return self::FAILURE;
-            }
-
             $dir = \dirname($path);
-
             if ($dir !== '' && $dir !== '.' && !\is_dir($dir)) {
                 if (!\mkdir($dir, 0775, true) && !\is_dir($dir)) {
                     $this->error(\sprintf('Failed to create directory: %s', $dir));
@@ -115,43 +98,19 @@ final class RenderCommand extends AbstractCommand
                 }
             }
 
-            $exists = \is_file($path);
-            if ($exists && !$this->overwrite) {
-                $this->error(\sprintf('File already exists: %s (use --overwrite to replace)', $path));
-                return self::FAILURE;
-            }
-
             $rendered = $renderer->render($schemaArray);
             $payload  = \rtrim($rendered, "\r\n") . \PHP_EOL;
 
-            $tmpDir = $dir === '.' ? \getcwd() : $dir;
-            $tmp = $tmpDir !== false ? \tempnam($tmpDir, 'schema_') : false;
-            if ($tmp === false) {
-                $this->error('Failed to create a temporary file.');
-                return self::FAILURE;
-            }
-
-            if (\file_put_contents($tmp, $payload) === false) {
-                @\unlink($tmp);
-                $this->error(\sprintf('Failed to write schema to temp file in "%s".', $tmpDir));
-                return self::FAILURE;
-            }
-
-            if (!\rename($tmp, $path)) {
-                if ($exists) {
-                    @\unlink($path);
-                    if (\rename($tmp, $path)) {
-                        @\chmod($path, 0664);
-                        $output->writeln(\sprintf('<info>Schema written to %s</info>', $path));
-                        return self::SUCCESS;
-                    }
+            if ($schemaArray !== []) {
+                if (\file_put_contents($path, $payload) === false) {
+                    $this->error(\sprintf('Failed to write schema to temp file in "%s".', $path));
+                    return self::FAILURE;
                 }
-                @\unlink($tmp);
-                $this->error(\sprintf('Failed to move temp file to "%s".', $path));
+            } else {
+                $this->error(\sprintf('Nothing to write to "%s".', $path));
                 return self::FAILURE;
             }
 
-            @\chmod($path, 0664);
             $output->writeln(\sprintf('<info>Schema written to %s</info>', $path));
             return self::SUCCESS;
         }
