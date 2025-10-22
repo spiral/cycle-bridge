@@ -15,12 +15,42 @@ use Spiral\Console\Attribute\AsCommand;
 use Spiral\Console\Attribute\Argument;
 use Spiral\Console\Attribute\Option;
 
+/**
+ * Renders Cycle ORM schema in various formats.
+ *
+ * Exports the complete Cycle ORM schema or specific entity roles to different
+ * output formats including PHP arrays, Mermaid diagrams, colored console output,
+ * or plain text. Output can be displayed in terminal or saved to a file.
+ *
+ * ```bash
+ * # Display full schema with colors (default for ANSI terminals)
+ * php app.php cycle:render
+ *
+ * # Display schema for specific entity roles only
+ * php app.php cycle:render user,post,comment
+ *
+ * # Export entire schema as PHP array to file
+ * php app.php cycle:render --format=php --output=cycle-schema.php
+ *
+ * # Export filtered schema to PHP file (short option)
+ * php app.php cycle:render user,post --format=php -o schema.php
+ *
+ * # Generate Mermaid ER diagram
+ * php app.php cycle:render --format=mermaid --output=schema.mmd
+ *
+ * # Export plain text schema without colors
+ * php app.php cycle:render --format=plain
+ *
+ * # Export specific roles as Mermaid diagram
+ * php app.php cycle:render user,post,comment --format=mermaid -o entities.mmd
+ *
+ * # Export to file with automatic directory creation
+ * php app.php cycle:render --format=php -o export/schemas/cycle-schema.php
+ * ```
+ */
 #[AsCommand(
     name: 'cycle:render',
-    description: "Render Cycle ORM schema.\n\n"
-    . "Examples:\n"
-    . "  php app.php cycle:render user,post,comment\n"
-    . "  php app.php cycle:render --format=php --output=cycle-schema.php\n\n"
+    description: 'Render Cycle ORM schema in various formats (php, mermaid, color, plain).',
 )]
 final class RenderCommand extends AbstractCommand
 {
@@ -37,29 +67,25 @@ final class RenderCommand extends AbstractCommand
         OutputInterface $output,
         SchemaInterface $schema,
         SchemaToArrayConverter $converter,
-    ): int
-    {
-        if ($this->format === null) {
-            $renderer = new OutputSchemaRenderer(
+    ): int {
+        $renderer = match ($this->format) {
+            'mermaid' => new MermaidRenderer(),
+            'php' => new PhpSchemaRenderer(),
+            'color' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_CONSOLE_COLOR),
+            'plain' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_PLAIN_TEXT),
+            null => new OutputSchemaRenderer(
                 $output->isDecorated() && $this->outputPath === null ?
-                    OutputSchemaRenderer::FORMAT_CONSOLE_COLOR : OutputSchemaRenderer::FORMAT_PLAIN_TEXT
-            );
-        } else {
-            $renderer = match ($this->format) {
-                'mermaid' => new MermaidRenderer(),
-                'php' => new PhpSchemaRenderer(),
-                'color' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_CONSOLE_COLOR),
-                'plain' => new OutputSchemaRenderer(OutputSchemaRenderer::FORMAT_PLAIN_TEXT),
-                default => throw new \InvalidArgumentException(
-                    \sprintf("Format `%s` isn't supported.", $this->format),
-                ),
-            };
-        }
+                    OutputSchemaRenderer::FORMAT_CONSOLE_COLOR : OutputSchemaRenderer::FORMAT_PLAIN_TEXT,
+            ),
+            default => throw new \InvalidArgumentException(
+                \sprintf("Format `%s` isn't supported.", $this->format),
+            ),
+        };
 
         $schemaArray = $converter->convert($schema);
 
         $requestedRoles = $this->parseRolesOption($this->roles);
-        $existingRoles = array_keys($schemaArray);
+        $existingRoles = \array_keys($schemaArray);
         $rolesMap = [];
         foreach ($existingRoles as $role) {
             $rolesMap[\strtolower($role)] = true;
@@ -80,7 +106,7 @@ final class RenderCommand extends AbstractCommand
         if ($requestedRoles !== []) {
             $schemaArray = \array_intersect_key($schemaArray, $resolvedRoles);
             if ($schemaArray === []) {
-                $output->writeln(\sprintf( '<comment>No roles matched the provided filter: %s</comment>', \implode(', ', $requestedRoles) ));
+                $output->writeln(\sprintf('<comment>No roles matched the provided filter: %s</comment>', \implode(', ', $requestedRoles)));
             }
         }
 
@@ -121,16 +147,14 @@ final class RenderCommand extends AbstractCommand
         return self::SUCCESS;
     }
 
-
     /**
-     * @param array $raw
      * @return array<string>
      */
     private function parseRolesOption(array $raw): array
     {
         $allRoles = [];
         foreach ($raw as $piece) {
-            $roles = \array_map('trim', explode(',', $piece));
+            $roles = \array_map('trim', \explode(',', $piece));
             foreach ($roles as $role) {
                 if ($role !== '') {
                     $allRoles[] = $role;
