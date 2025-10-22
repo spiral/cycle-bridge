@@ -85,65 +85,58 @@ final class RenderCommand extends AbstractCommand
         $schemaArray = $converter->convert($schema);
 
         $requestedRoles = $this->parseRolesOption($this->roles);
-        $existingRoles = \array_keys($schemaArray);
-        $rolesMap = [];
-        foreach ($existingRoles as $role) {
-            $rolesMap[\strtolower($role)] = true;
-        }
-
-        $resolvedRoles = [];
-        $unknownRoles = [];
-
-        foreach ($requestedRoles as $role) {
-            $key = \strtolower($role);
-            if (isset($rolesMap[$key])) {
-                $resolvedRoles[$key] = true;
-            } else {
-                $unknownRoles[] = $role;
-            }
-        }
 
         if ($requestedRoles !== []) {
-            $schemaArray = \array_intersect_key($schemaArray, $resolvedRoles);
-            if ($schemaArray === []) {
-                $output->writeln(\sprintf('<comment>No roles matched the provided filter: %s</comment>', \implode(', ', $requestedRoles)));
+            $lowerMap = [];
+            $resolvedRoles = [];
+            $unknownRoles = [];
+
+            foreach ($schemaArray as $role => $v) {
+                $lowerMap[\strtolower($role)] = $v;
             }
+
+            foreach ($requestedRoles as $role) {
+                $s = $schemaArray[$role] ?? $lowerMap[\strtolower($role)] ?? null;
+                $s === null
+                    ? $unknownRoles[] = $role
+                    : $resolvedRoles[$role] = $s;
+            }
+
+            $unknownRoles !== [] and $this->warning(\sprintf(
+                'No roles were found for `%s`.',
+                \implode('`, `', $unknownRoles),
+            ));
+            $schemaArray = $resolvedRoles;
+            unset($resolvedRoles, $lowerMap, $unknownRoles);
         }
 
-        if ($unknownRoles !== [] && $schemaArray !== []) {
-            $output->writeln(\sprintf('<comment>Warning: unknown role(s) ignored: %s.</comment>', \implode(', ', $unknownRoles)));
+        if ($schemaArray === []) {
+            return self::FAILURE;
         }
 
         $path = $this->outputPath;
-        if ($path !== null) {
-            $dir = \dirname($path);
-            if ($dir !== '' && $dir !== '.' && !\is_dir($dir)) {
-                if (!\mkdir($dir, 0775, true) && !\is_dir($dir)) {
-                    $this->error(\sprintf('Failed to create directory: %s', $dir));
-                    return self::FAILURE;
-                }
-            }
+        $rendered = $renderer->render($schemaArray);
 
-            $rendered = $renderer->render($schemaArray);
-            $payload  = \rtrim($rendered, "\r\n") . \PHP_EOL;
-
-            if ($schemaArray !== []) {
-                if (\file_put_contents($path, $payload) === false) {
-                    $this->error(\sprintf('Failed to write schema to temp file in "%s".', $path));
-                    return self::FAILURE;
-                }
-            } else {
-                $this->error(\sprintf('Nothing to write to "%s".', $path));
-                return self::FAILURE;
-            }
-
-            $output->writeln(\sprintf('<info>Schema written to %s</info>', $path));
+        if ($path === null) {
+            $output->writeln($rendered);
             return self::SUCCESS;
         }
 
-        $rendered = $renderer->render($schemaArray);
-        $output->writeln($rendered);
+        $dir = \dirname($path);
+        if ($dir !== '' && $dir !== '.' && !\is_dir($dir)) {
+            if (!\mkdir($dir, 0775, true) && !\is_dir($dir)) {
+                $this->error(\sprintf('Failed to create directory: %s.', $dir));
+                return self::FAILURE;
+            }
+        }
 
+
+        if (\file_put_contents($path, $rendered) === false) {
+            $this->error(\sprintf('Failed to write schema to file: %s.', $path));
+            return self::FAILURE;
+        }
+
+        $this->info(\sprintf('Schema successfully written to %s.', $path));
         return self::SUCCESS;
     }
 

@@ -12,6 +12,20 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 final class RenderCommandTest extends ConsoleTest
 {
+    /**
+     * @return array<string, array{0:string,1:bool,2:bool,3:bool}>
+     *              [format, expectAnsi, expectMermaidKeyword, expectPhp]
+     */
+    public static function fileFormatsProvider(): array
+    {
+        return [
+            'plain'   => ['plain',   false, false, false],
+            'color'   => ['color',   true,  false, false],
+            'mermaid' => ['mermaid', false, true,  false],
+            'php'     => ['php',     false, false, true],
+        ];
+    }
+
     public function testRenderInMermaidFormat(): void
     {
         $this->assertConsoleCommandOutputContainsStrings('cycle:render', ['--format' => 'mermaid'], [
@@ -81,35 +95,21 @@ final class RenderCommandTest extends ConsoleTest
     }
 
     /**
-     * @return array<string, array{0:string,1:bool,2:bool,3:bool}>
-     *              [format, expectAnsi, expectMermaidKeyword, expectPhp]
-     */
-    public static function fileFormatsProvider(): array
-    {
-        return [
-            'plain'   => ['plain',   false, false, false],
-            'color'   => ['color',   true,  false, false],
-            'mermaid' => ['mermaid', false, true,  false],
-            'php'     => ['php',     false, false, true],
-        ];
-    }
-
-    /**
      * @dataProvider fileFormatsProvider
      */
     public function testWritesSchemaToFileForAllFormats(
         string $format,
         bool $expectAnsi,
         bool $expectMermaid,
-        bool $expectPhp
+        bool $expectPhp,
     ): void {
         $out = \sys_get_temp_dir() . '/schema_' . \bin2hex(\random_bytes(4));
-        @unlink($out);
+        @\unlink($out);
 
         $this->assertConsoleCommandOutputContainsStrings(
             'cycle:render',
             ['--format' => $format, '--output' => $out],
-            ['Schema written to']
+            ['Schema successfully written to'],
         );
 
         $this->assertFileExists($out);
@@ -118,15 +118,15 @@ final class RenderCommandTest extends ConsoleTest
         $this->assertGreaterThan(0, \strlen($content));
 
         // ANSI detection (color)
-        $hasAnsi = (bool)\preg_match('/\x1B\[[0-9;]*m/', $content);
+        $hasAnsi = (bool) \preg_match('/\x1B\[[0-9;]*m/', $content);
         $this->assertSame($expectAnsi, $hasAnsi, "ANSI expectation failed for format={$format}");
 
         // Mermaid detection (line starts with known diagram markers)
-        $hasMermaid = (bool)\preg_match('/^(graph|classDiagram|erDiagram)\b/m', $content);
+        $hasMermaid = (bool) \preg_match('/^(graph|classDiagram|erDiagram)\b/m', $content);
         $this->assertSame($expectMermaid, $hasMermaid, "Mermaid expectation failed for format={$format}");
 
         // PHP detection (file starts with `<?php`)
-        $hasPhp = (bool)\preg_match('/^\s*<\?php\b/m', $content);
+        $hasPhp = (bool) \preg_match('/^\s*<\?php\b/m', $content);
         $this->assertSame($expectPhp, $hasPhp, "PHP expectation failed for format={$format}");
 
         if ($expectPhp) {
@@ -148,27 +148,27 @@ final class RenderCommandTest extends ConsoleTest
         $this->assertConsoleCommandOutputContainsStrings(
             'cycle:render',
             ['--format' => 'php', '--output' => $out],
-            ['Schema written to']
+            ['Schema successfully written'],
         );
 
         $schema = require $out;
         $this->assertIsArray($schema);
         $this->assertArrayNotHasKey('_touched', $schema);
 
-        @unlink($out);
+        @\unlink($out);
     }
 
     public function testRolesFilterSubset(): void
     {
         $out = \sys_get_temp_dir() . '/schema_' . \bin2hex(\random_bytes(4)) . '.php';
-        @unlink($out);
+        @\unlink($out);
 
         $requested = ['user', 'role'];
 
         $this->assertConsoleCommandOutputContainsStrings(
             'cycle:render',
-            ['roles' => [implode(',', $requested)], '--format' => 'php', '--output' => $out],
-            ['Schema written to']
+            ['roles' => [\implode(',', $requested)], '--format' => 'php', '--output' => $out],
+            ['Schema successfully written'],
         );
 
         $schema = require $out;
@@ -178,13 +178,13 @@ final class RenderCommandTest extends ConsoleTest
             $this->assertContains($key, $requested);
         }
 
-        @unlink($out);
+        @\unlink($out);
     }
 
     public function testWarnOnUnknownRolesButProceed(): void
     {
         $out = \sys_get_temp_dir() . '/schema_' . \bin2hex(\random_bytes(4)) . '.php';
-        @unlink($out);
+        @\unlink($out);
 
         // 'user' существует, 'does_not_exist' — нет
         $this->assertConsoleCommandOutputContainsStrings(
@@ -195,9 +195,9 @@ final class RenderCommandTest extends ConsoleTest
                 '--output'    => $out,
             ],
             [
-                'Warning: unknown role(s) ignored: does_not_exist.',
-                'Schema written to',
-            ]
+                'No roles were found for `does_not_exist`.',
+                'Schema successfully written',
+            ],
         );
 
         $schema = require $out;
@@ -217,8 +217,8 @@ final class RenderCommandTest extends ConsoleTest
             'cycle:render',
             ['roles' => ['foo,bar'], '--format' => 'php', '--output' => $out],
             [
-                'Nothing to write',
-            ]
+                'No roles were found for `foo`, `bar`.',
+            ],
         );
 
         $this->assertFileDoesNotExist($out);
@@ -227,8 +227,8 @@ final class RenderCommandTest extends ConsoleTest
             'cycle:render',
             ['roles' => ['foo,bar'], '--format' => 'plain'],
             [
-                'No roles matched the provided filter',
-            ]
+                'No roles were found for `foo`, `bar`.',
+            ],
         );
     }
 
