@@ -12,6 +12,8 @@ use Cycle\ORM\Factory;
 use Cycle\ORM\FactoryInterface;
 use Cycle\ORM\ORM;
 use Cycle\ORM\ORMInterface;
+use Cycle\ORM\Relation\BulkLoader;
+use Cycle\ORM\Relation\BulkLoaderInterface;
 use Cycle\ORM\RepositoryInterface;
 use Psr\Container\ContainerInterface;
 use Spiral\Boot\AbstractKernel;
@@ -36,6 +38,7 @@ final class CycleOrmBootloader extends Bootloader
         EntityManagerInterface::class => EntityManager::class,
         FactoryInterface::class => [self::class, 'factory'],
         Options::class => [self::class, 'options'],
+        BulkLoaderInterface::class => [self::class, 'bulkLoader'],
     ];
 
     public function __construct(
@@ -121,5 +124,10 @@ final class CycleOrmBootloader extends Bootloader
                 'options' => null,
             ],
         );
+    }
+
+    private function bulkLoader(ORMInterface $orm): BulkLoaderInterface
+    {
+        return new BulkLoader($orm);
     }
 }

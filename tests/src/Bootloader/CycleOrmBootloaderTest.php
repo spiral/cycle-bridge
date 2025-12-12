@@ -10,6 +10,8 @@ use Cycle\ORM\FactoryInterface;
 use Cycle\ORM\Heap\HeapInterface;
 use Cycle\ORM\ORM;
 use Cycle\ORM\ORMInterface;
+use Cycle\ORM\Relation\BulkLoader;
+use Cycle\ORM\Relation\BulkLoaderInterface;
 use Spiral\Boot\FinalizerInterface;
 use Spiral\Core\ConfigsInterface;
 use Spiral\Cycle\Config\CycleConfig;
@@ -27,6 +29,11 @@ final class CycleOrmBootloaderTest extends BaseTest
     public function testGetsOrmFactory(): void
     {
         $this->assertContainerBoundAsSingleton(FactoryInterface::class, \Cycle\ORM\Factory::class);
+    }
+
+    public function testGetBulkLoader(): void
+    {
+        $this->assertContainerBoundAsSingleton(BulkLoaderInterface::class, BulkLoader::class);
     }
 
     public function testGetsEntityManager(): void
