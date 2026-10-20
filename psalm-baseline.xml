@@ -1,11 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="6.4.0@04f312ac6ea48ba1c3e5db4d815bf6d74641c0ee">
+<files psalm-version="6.20.0@804f03c0c183d149fcd4b8c7c0c9b3fbf836d34c">
+  <file src="src/Annotated/Locator/ListenerEmbeddingsLocator.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function finalize(): void]]></code>
+      <code><![CDATA[public function getEmbeddings(): array]]></code>
+      <code><![CDATA[public function listen(\ReflectionClass $class): void]]></code>
+    </MissingOverrideAttribute>
+  </file>
   <file src="src/Annotated/Locator/ListenerEntityLocator.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function finalize(): void]]></code>
+      <code><![CDATA[public function getEntities(): array]]></code>
+      <code><![CDATA[public function listen(\ReflectionClass $class): void]]></code>
+    </MissingOverrideAttribute>
     <RedundantConditionGivenDocblockType>
       <code><![CDATA[$attribute !== null]]></code>
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="src/Auth/Token.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[Token]]></code>
+    </ClassMustBeFinal>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getExpiresAt(): ?\DateTimeInterface]]></code>
+      <code><![CDATA[public function getID(): string]]></code>
+      <code><![CDATA[public function getPayload(): array]]></code>
+    </MissingOverrideAttribute>
     <MissingPropertyType>
       <code><![CDATA[$payload]]></code>
     </MissingPropertyType>
@@ -27,11 +47,22 @@
     <DocblockTypeContradiction>
       <code><![CDATA[$token === null]]></code>
     </DocblockTypeContradiction>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function create(array $payload, ?\DateTimeInterface $expiresAt = null): TokenInterface]]></code>
+      <code><![CDATA[public function delete(TokenInterface $token): void]]></code>
+      <code><![CDATA[public function load(string $id): ?TokenInterface]]></code>
+    </MissingOverrideAttribute>
     <PossiblyUndefinedArrayOffset>
       <code><![CDATA[$hash]]></code>
     </PossiblyUndefinedArrayOffset>
   </file>
   <file src="src/Bootloader/CycleOrmBootloader.php">
+    <InternalClass>
+      <code><![CDATA[new BulkLoader($orm)]]></code>
+    </InternalClass>
+    <InternalMethod>
+      <code><![CDATA[new BulkLoader($orm)]]></code>
+    </InternalMethod>
     <MixedArgument>
       <code><![CDATA[$orm]]></code>
     </MixedArgument>
@@ -43,6 +74,11 @@
     <DeprecatedInterface>
       <code><![CDATA[DatabaseBootloader]]></code>
     </DeprecatedInterface>
+  </file>
+  <file src="src/Bootloader/EntityBehaviorBootloader.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function defineBindings(): array]]></code>
+    </MissingOverrideAttribute>
   </file>
   <file src="src/Bootloader/MigrationsBootloader.php">
     <MixedArgument>
@@ -111,6 +147,9 @@
     </MixedReturnTypeCoercion>
   </file>
   <file src="src/Console/Command/CycleOrm/Generator/ShowChanges.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function run(Registry $registry): Registry]]></code>
+    </MissingOverrideAttribute>
     <MixedArgument>
       <code><![CDATA[$fk->getColumns()]]></code>
       <code><![CDATA[$index->getColumns()]]></code>
@@ -154,13 +193,12 @@
     </PossiblyNullReference>
   </file>
   <file src="src/Console/Command/CycleOrm/RenderCommand.php">
-    <InvalidClassConstantType>
-      <code><![CDATA[DESCRIPTION]]></code>
-      <code><![CDATA[SIGNATURE]]></code>
-    </InvalidClassConstantType>
     <MixedArgument>
-      <code><![CDATA[$this->argument('format')]]></code>
+      <code><![CDATA[$piece]]></code>
     </MixedArgument>
+    <MixedAssignment>
+      <code><![CDATA[$piece]]></code>
+    </MixedAssignment>
   </file>
   <file src="src/Console/Command/CycleOrm/SyncCommand.php">
     <InvalidClassConstantType>
@@ -230,6 +268,9 @@
     </MixedMethodCall>
   </file>
   <file src="src/Console/Command/Migrate/AbstractCommand.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[protected function defineOptions(): array]]></code>
+    </MissingOverrideAttribute>
     <MixedArgument>
       <code><![CDATA[static::OPTIONS]]></code>
     </MixedArgument>
@@ -286,6 +327,9 @@
     <ArgumentTypeCoercion>
       <code><![CDATA[$element]]></code>
     </ArgumentTypeCoercion>
+    <ClassMustBeFinal>
+      <code><![CDATA[EntityCommand]]></code>
+    </ClassMustBeFinal>
     <InvalidClassConstantType>
       <code><![CDATA[DESCRIPTION]]></code>
       <code><![CDATA[NAME]]></code>
@@ -301,6 +345,9 @@
     </MixedReturnStatement>
   </file>
   <file src="src/Console/Command/Scaffolder/MigrationCommand.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[MigrationCommand]]></code>
+    </ClassMustBeFinal>
     <InvalidClassConstantType>
       <code><![CDATA[DESCRIPTION]]></code>
       <code><![CDATA[NAME]]></code>
@@ -316,17 +363,26 @@
     </PossiblyNullArgument>
   </file>
   <file src="src/Console/Command/Scaffolder/RepositoryCommand.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[RepositoryCommand]]></code>
+    </ClassMustBeFinal>
     <InvalidClassConstantType>
       <code><![CDATA[DESCRIPTION]]></code>
       <code><![CDATA[NAME]]></code>
     </InvalidClassConstantType>
   </file>
   <file src="src/DataGrid/Specification/Filter/ExpressionInjectionFilter.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[ExpressionInjectionFilter]]></code>
+    </ClassMustBeFinal>
     <InvalidClassConstantType>
       <code><![CDATA[INJECTION]]></code>
     </InvalidClassConstantType>
   </file>
   <file src="src/DataGrid/Specification/Filter/FragmentInjectionFilter.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[FragmentInjectionFilter]]></code>
+    </ClassMustBeFinal>
     <InvalidClassConstantType>
       <code><![CDATA[INJECTION]]></code>
     </InvalidClassConstantType>
@@ -335,6 +391,10 @@
     <LessSpecificReturnStatement>
       <code><![CDATA[new $injector($this->expression->getExpression())]]></code>
     </LessSpecificReturnStatement>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getValue(): mixed]]></code>
+      <code><![CDATA[public function withValue($value): ?SpecificationInterface]]></code>
+    </MissingOverrideAttribute>
     <MissingParamType>
       <code><![CDATA[$value]]></code>
     </MissingParamType>
@@ -363,6 +423,9 @@
     </InvalidClassConstantType>
   </file>
   <file src="src/DataGrid/Specification/Sorter/InjectionSorter.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getValue(): string]]></code>
+    </MissingOverrideAttribute>
     <MixedArgument>
       <code><![CDATA[$injector]]></code>
       <code><![CDATA[$injector]]></code>
@@ -372,6 +435,12 @@
     </MixedReturnStatement>
   </file>
   <file src="src/DataGrid/Writer/BetweenWriter.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[BetweenWriter]]></code>
+    </ClassMustBeFinal>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function write(mixed $source, SpecificationInterface $specification, Compiler $compiler): mixed]]></code>
+    </MissingOverrideAttribute>
     <MixedMethodCall>
       <code><![CDATA[where]]></code>
       <code><![CDATA[where]]></code>
@@ -381,6 +450,12 @@
     </MixedMethodCall>
   </file>
   <file src="src/DataGrid/Writer/PostgresQueryWriter.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[PostgresQueryWriter]]></code>
+    </ClassMustBeFinal>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function write(mixed $source, SpecificationInterface $specification, Compiler $compiler): mixed]]></code>
+    </MissingOverrideAttribute>
     <MixedArgument>
       <code><![CDATA[$this->fetchValue($specification->getValue())]]></code>
     </MixedArgument>
@@ -389,6 +464,12 @@
     </MixedMethodCall>
   </file>
   <file src="src/DataGrid/Writer/QueryWriter.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[QueryWriter]]></code>
+    </ClassMustBeFinal>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function write(mixed $source, SpecificationInterface $specification, Compiler $compiler): mixed]]></code>
+    </MissingOverrideAttribute>
     <MissingParamType>
       <code><![CDATA[$source]]></code>
       <code><![CDATA[$source]]></code>
@@ -405,7 +486,6 @@
     <MixedAssignment>
       <code><![CDATA[$direction]]></code>
       <code><![CDATA[$direction]]></code>
-      <code><![CDATA[$expression]]></code>
       <code><![CDATA[$source]]></code>
       <code><![CDATA[$source]]></code>
       <code><![CDATA[$source]]></code>
@@ -431,11 +511,14 @@
       <code><![CDATA[$property->getType()]]></code>
       <code><![CDATA[$role]]></code>
     </ArgumentTypeCoercion>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function setValue(FilterInterface $filter, \ReflectionProperty $property, mixed $value): void]]></code>
+      <code><![CDATA[public function supports(\ReflectionNamedType $type): bool]]></code>
+    </MissingOverrideAttribute>
     <MixedArgument>
       <code><![CDATA[$value]]></code>
     </MixedArgument>
     <MixedAssignment>
-      <code><![CDATA[$object]]></code>
       <code><![CDATA[$this->orm]]></code>
     </MixedAssignment>
     <MixedReturnStatement>
@@ -455,10 +538,18 @@
       <code><![CDATA[self::$cache]]></code>
     </PropertyTypeCoercion>
   </file>
+  <file src="src/Injector/DatabaseInjector.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function createInjection(\ReflectionClass $class, ?string $context = null): DatabaseInterface]]></code>
+    </MissingOverrideAttribute>
+  </file>
   <file src="src/Injector/RepositoryInjector.php">
     <ArgumentTypeCoercion>
       <code><![CDATA[$role]]></code>
     </ArgumentTypeCoercion>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function createInjection(\ReflectionClass $class, ?string $context = null): RepositoryInterface]]></code>
+    </MissingOverrideAttribute>
     <MixedArgument>
       <code><![CDATA[$role]]></code>
     </MixedArgument>
@@ -472,28 +563,24 @@
       <code><![CDATA[$controller]]></code>
       <code><![CDATA[$role]]></code>
     </ArgumentTypeCoercion>
+    <ClassMustBeFinal>
+      <code><![CDATA[CycleInterceptor]]></code>
+    </ClassMustBeFinal>
     <DeprecatedInterface>
       <code><![CDATA[CoreInterface]]></code>
       <code><![CDATA[CycleInterceptor]]></code>
     </DeprecatedInterface>
-    <LessSpecificReturnStatement>
-      <code><![CDATA[$this->cache[$key]]]></code>
-    </LessSpecificReturnStatement>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function process(string $controller, string $action, array $parameters, CoreInterface $core): mixed]]></code>
+    </MissingOverrideAttribute>
     <MixedAssignment>
       <code><![CDATA[$value]]></code>
     </MixedAssignment>
-    <MixedReturnStatement>
-      <code><![CDATA[$this->orm->getRepository($role)->findByPK($parameter)]]></code>
-      <code><![CDATA[$this->orm->getRepository($role)->findByPK($parameter)]]></code>
-    </MixedReturnStatement>
-    <MoreSpecificReturnType>
-      <code><![CDATA[array<non-empty-string, non-empty-string>]]></code>
-    </MoreSpecificReturnType>
-    <PropertyTypeCoercion>
-      <code><![CDATA[$this->cache]]></code>
-    </PropertyTypeCoercion>
   </file>
   <file src="src/LoggerFactory.php">
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function getLogger(?DriverInterface $driver = null): LoggerInterface]]></code>
+    </MissingOverrideAttribute>
     <MixedArrayAccess>
       <code><![CDATA[$this->config['drivers'][$driver->getName()]]]></code>
       <code><![CDATA[$this->config['drivers'][$driver::class]]]></code>
@@ -512,12 +599,20 @@
     </MixedReturnStatement>
   </file>
   <file src="src/Scaffolder/Declaration/Entity/AnnotatedDeclaration.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[AnnotatedDeclaration]]></code>
+    </ClassMustBeFinal>
     <InvalidClassConstantType>
       <code><![CDATA[TYPE]]></code>
     </InvalidClassConstantType>
     <LessSpecificReturnType>
       <code><![CDATA[?string]]></code>
     </LessSpecificReturnType>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function addField(string $name, string $accessibility, string $type): Property]]></code>
+      <code><![CDATA[public function declare(): void]]></code>
+      <code><![CDATA[public function declareSchema(): void]]></code>
+    </MissingOverrideAttribute>
     <MixedAssignment>
       <code><![CDATA[$entities[$attribute]]]></code>
     </MixedAssignment>
@@ -526,17 +621,29 @@
     </RiskyTruthyFalsyComparison>
   </file>
   <file src="src/Scaffolder/Declaration/MigrationDeclaration.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[MigrationDeclaration]]></code>
+    </ClassMustBeFinal>
     <InvalidClassConstantType>
       <code><![CDATA[TYPE]]></code>
     </InvalidClassConstantType>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function declare(): void]]></code>
+    </MissingOverrideAttribute>
     <MixedAssignment>
       <code><![CDATA[$type]]></code>
     </MixedAssignment>
   </file>
   <file src="src/Scaffolder/Declaration/RepositoryDeclaration.php">
+    <ClassMustBeFinal>
+      <code><![CDATA[RepositoryDeclaration]]></code>
+    </ClassMustBeFinal>
     <InvalidClassConstantType>
       <code><![CDATA[TYPE]]></code>
     </InvalidClassConstantType>
+    <MissingOverrideAttribute>
+      <code><![CDATA[public function declare(): void]]></code>
+    </MissingOverrideAttribute>
   </file>
   <file src="src/Schema/Compiler.php">
     <MissingReturnType>
@@ -555,6 +662,9 @@
       <code><![CDATA[$role]]></code>
       <code><![CDATA[$role]]></code>
     </ArgumentTypeCoercion>
+    <ClassMustBeFinal>
+      <code><![CDATA[EntityChecker]]></code>
+    </ClassMustBeFinal>
     <DeprecatedInterface>
       <code><![CDATA[EntityChecker]]></code>
     </DeprecatedInterface>
