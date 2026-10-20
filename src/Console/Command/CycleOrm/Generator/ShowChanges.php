@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Console\Command\CycleOrm\Generator;
 
+use Cycle\Database\Schema\AbstractTable;
 use Cycle\Database\Schema\ComparatorInterface;
 use Cycle\Schema\GeneratorInterface;
 use Cycle\Schema\Registry;
-use Cycle\Database\Schema\AbstractTable;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**

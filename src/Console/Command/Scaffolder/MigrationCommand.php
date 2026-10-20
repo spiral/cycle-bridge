@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Console\Command\Scaffolder;
 
-use Spiral\Cycle\Scaffolder\Declaration\MigrationDeclaration;
 use Cycle\Migrations\Migrator;
+use Spiral\Cycle\Scaffolder\Declaration\MigrationDeclaration;
 use Spiral\Scaffolder\Command\AbstractCommand;
 use Spiral\Scaffolder\Exception\ScaffolderException;
 use Symfony\Component\Console\Input\InputArgument;

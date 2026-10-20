@@ -7,8 +7,8 @@ namespace Spiral\Cycle\Scaffolder\Declaration\Entity;
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Entity;
 use Doctrine\Inflector\Rules\English\InflectorFactory;
-use Spiral\Reactor\Partial\Property;
 use Spiral\Cycle\Scaffolder\Declaration\AbstractEntityDeclaration;
+use Spiral\Reactor\Partial\Property;
 use Spiral\Scaffolder\Exception\ScaffolderException;
 
 class AnnotatedDeclaration extends AbstractEntityDeclaration

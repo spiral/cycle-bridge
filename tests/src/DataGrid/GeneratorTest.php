@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\DataGrid;
 
+use Spiral\Cycle\DataGrid\Writer\QueryWriter;
 use Spiral\DataGrid\Compiler;
 use Spiral\DataGrid\Grid;
 use Spiral\DataGrid\GridFactory;
@@ -11,7 +12,6 @@ use Spiral\DataGrid\GridSchema;
 use Spiral\DataGrid\Input\ArrayInput;
 use Spiral\DataGrid\Specification\Pagination\PagePaginator;
 use Spiral\DataGrid\Specification\Sorter\Sorter;
-use Spiral\Cycle\DataGrid\Writer\QueryWriter;
 
 final class GeneratorTest extends BaseTest
 {

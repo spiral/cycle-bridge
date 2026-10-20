@@ -7,10 +7,10 @@ namespace Spiral\Cycle\Bootloader;
 use Cycle\Migrations\Migrator;
 use Cycle\ORM\ORMInterface;
 use Psr\Container\ContainerInterface;
+use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Console\Bootloader\ConsoleBootloader;
 use Spiral\Cycle\Console\Command\Scaffolder;
 use Spiral\Cycle\Scaffolder\Declaration;
-use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Scaffolder\Bootloader\ScaffolderBootloader as BaseScaffolderBootloader;
 
 final class ScaffolderBootloader extends Bootloader

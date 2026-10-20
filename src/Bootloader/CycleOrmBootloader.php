@@ -10,6 +10,7 @@ use Cycle\ORM\EntityManager;
 use Cycle\ORM\EntityManagerInterface;
 use Cycle\ORM\Factory;
 use Cycle\ORM\FactoryInterface;
+use Cycle\ORM\Options;
 use Cycle\ORM\ORM;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\Relation\BulkLoader;
@@ -24,7 +25,6 @@ use Spiral\Config\ConfiguratorInterface;
 use Spiral\Core\Container;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Injector\RepositoryInjector;
-use Cycle\ORM\Options;
 
 final class CycleOrmBootloader extends Bootloader
 {

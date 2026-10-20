@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Bootloader;
 
-use Cycle\ORM\Transaction\CommandGeneratorInterface;
 use Cycle\ORM\Entity\Behavior\EventDrivenCommandGenerator;
+use Cycle\ORM\Transaction\CommandGeneratorInterface;
 use Spiral\Boot\Bootloader\Bootloader;
 
 final class EntityBehaviorBootloader extends Bootloader

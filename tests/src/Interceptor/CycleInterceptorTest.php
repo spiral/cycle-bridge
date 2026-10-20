@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Interceptor;
 
+use Spiral\App\Controller\HomeController;
 use Spiral\App\Database\Factory\RoleFactory;
 use Spiral\App\Database\Factory\UserFactory;
+use Spiral\App\Entities\User;
 use Spiral\Core\CoreInterface;
 use Spiral\Core\Exception\ControllerException;
-use Spiral\App\Controller\HomeController;
-use Spiral\App\Entities\User;
 use Spiral\Tests\DatabaseTest;
 
 final class CycleInterceptorTest extends DatabaseTest

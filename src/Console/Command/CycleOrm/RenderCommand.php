@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Console\Command\CycleOrm;
 
 use Cycle\ORM\SchemaInterface;
+use Cycle\Schema\Renderer\MermaidRenderer\MermaidRenderer;
 use Cycle\Schema\Renderer\OutputSchemaRenderer;
 use Cycle\Schema\Renderer\PhpSchemaRenderer;
 use Cycle\Schema\Renderer\SchemaToArrayConverter;
+use Spiral\Console\Attribute\Argument;
+use Spiral\Console\Attribute\AsCommand;
+use Spiral\Console\Attribute\Option;
 use Spiral\Cycle\Console\Command\Migrate\AbstractCommand;
 use Symfony\Component\Console\Output\OutputInterface;
-use Cycle\Schema\Renderer\MermaidRenderer\MermaidRenderer;
-use Spiral\Console\Attribute\AsCommand;
-use Spiral\Console\Attribute\Argument;
-use Spiral\Console\Attribute\Option;
 
 /**
  * Renders Cycle ORM schema in various formats.

@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Spiral\Cycle\Bootloader;
 
 use Spiral\Auth\Config\AuthConfig;
+use Spiral\Boot\Bootloader\Bootloader;
 use Spiral\Boot\EnvironmentInterface;
+use Spiral\Bootloader\Auth\HttpAuthBootloader;
 use Spiral\Config\ConfiguratorInterface;
 use Spiral\Config\Patch\Set;
 use Spiral\Cycle\Auth\Token;
 use Spiral\Cycle\Auth\TokenStorage as CycleStorage;
-use Spiral\Boot\Bootloader\Bootloader;
-use Spiral\Bootloader\Auth\HttpAuthBootloader;
 use Spiral\Tokenizer\Bootloader\TokenizerBootloader;
 
 final class AuthTokensBootloader extends Bootloader

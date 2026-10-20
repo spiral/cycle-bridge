@@ -10,12 +10,12 @@ use Cycle\ORM\RepositoryInterface;
 use Spiral\App\Bootloader\AppBootloader;
 use Spiral\App\Bootloader\SyncTablesBootloader;
 use Spiral\Bootloader as Framework;
-use Spiral\Nyholm\Bootloader as Nyholm;
 use Spiral\Config\Patch\Set;
 use Spiral\Console\Bootloader\ConsoleBootloader;
 use Spiral\Core\ConfigsInterface;
 use Spiral\Cycle\Bootloader as CycleBridge;
 use Spiral\DataGrid\Bootloader\GridBootloader;
+use Spiral\Nyholm\Bootloader as Nyholm;
 use Spiral\Router\Bootloader\AnnotatedRoutesBootloader;
 use Spiral\Testing\TestCase;
 

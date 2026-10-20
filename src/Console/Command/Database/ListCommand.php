@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Console\Command\Database;
 
-use Cycle\Database\DatabaseProviderInterface;
-use Spiral\Console\Command;
 use Cycle\Database\Config\DatabaseConfig;
 use Cycle\Database\Database;
+use Cycle\Database\DatabaseProviderInterface;
 use Cycle\Database\Driver\Driver;
+use Spiral\Console\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputArgument;

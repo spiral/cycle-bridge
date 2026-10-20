@@ -6,8 +6,8 @@ namespace Spiral\Cycle\Auth;
 
 use Cycle\Annotated\Annotation\Column;
 use Cycle\Annotated\Annotation\Entity;
-use Spiral\Auth\TokenInterface;
 use Spiral\Auth\Exception\TokenStorageException;
+use Spiral\Auth\TokenInterface;
 
 #[Entity(table: 'auth_tokens')]
 class Token implements TokenInterface

@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Spiral\Tests\DataGrid\BetweenWriter;
 
 use Spiral\Cycle\DataGrid\Specification\Filter\FragmentInjectionFilter;
+use Spiral\Cycle\DataGrid\Writer\BetweenWriter;
+use Spiral\Cycle\DataGrid\Writer\QueryWriter;
 use Spiral\DataGrid\Compiler;
 use Spiral\DataGrid\Specification\Filter;
 use Spiral\DataGrid\Specification\Value\IntValue;
 use Spiral\DataGrid\Specification\Value\StringValue;
 use Spiral\DataGrid\SpecificationInterface;
-use Spiral\Cycle\DataGrid\Writer\BetweenWriter;
-use Spiral\Cycle\DataGrid\Writer\QueryWriter;
 use Spiral\Tests\DataGrid\BaseTest;
 
 class WriteOriginalTest extends BaseTest
