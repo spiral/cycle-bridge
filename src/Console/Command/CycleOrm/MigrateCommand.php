@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Console\Command\CycleOrm;
 
+use Cycle\Migrations\Migrator;
+use Cycle\Migrations\State;
+use Cycle\Schema\Generator\Migrations\GenerateMigrations;
 use Cycle\Schema\Generator\Migrations\Strategy\GeneratorStrategyInterface;
 use Cycle\Schema\Generator\Migrations\Strategy\MultipleFilesStrategy;
 use Cycle\Schema\Generator\PrintChanges;
+use Cycle\Schema\Registry;
+use Spiral\Boot\MemoryInterface;
+use Spiral\Console\Console;
 use Spiral\Core\BinderInterface;
 use Spiral\Cycle\Bootloader\SchemaBootloader;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Console\Command\Migrate\AbstractCommand;
-use Cycle\Migrations\State;
-use Cycle\Schema\Generator\Migrations\GenerateMigrations;
 use Spiral\Cycle\Schema\Compiler;
-use Cycle\Schema\Registry;
-use Spiral\Boot\MemoryInterface;
-use Spiral\Console\Console;
-use Cycle\Migrations\Migrator;
 use Symfony\Component\Console\Input\InputOption;
 
 final class MigrateCommand extends AbstractCommand

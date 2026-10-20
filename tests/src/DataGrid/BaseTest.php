@@ -6,9 +6,9 @@ namespace Spiral\Tests\DataGrid;
 
 use Cycle\Database\DatabaseInterface;
 use Cycle\Database\Query\SelectQuery;
+use Spiral\Cycle\DataGrid\Writer\QueryWriter;
 use Spiral\DataGrid\Compiler;
 use Spiral\DataGrid\SpecificationInterface;
-use Spiral\Cycle\DataGrid\Writer\QueryWriter;
 
 abstract class BaseTest extends \Spiral\Tests\BaseTest
 {

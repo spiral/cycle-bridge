@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Spiral\App\Entities;
 
-use Cycle\Annotated\Annotation\Embeddable;
 use Cycle\Annotated\Annotation\Column;
+use Cycle\Annotated\Annotation\Embeddable;
 
 #[Embeddable]
 class Address

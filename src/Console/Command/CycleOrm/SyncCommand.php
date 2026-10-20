@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Console\Command\CycleOrm;
 
-use Spiral\Cycle\Bootloader\SchemaBootloader;
 use Cycle\Schema\Generator\PrintChanges;
 use Cycle\Schema\Generator\SyncTables;
 use Cycle\Schema\Registry;
 use Spiral\Boot\MemoryInterface;
+use Spiral\Cycle\Bootloader\SchemaBootloader;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Cycle\Console\Command\Migrate\AbstractCommand;
 use Spiral\Cycle\Schema\Compiler;

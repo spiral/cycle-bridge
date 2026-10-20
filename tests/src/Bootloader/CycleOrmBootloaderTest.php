@@ -103,8 +103,8 @@ final class CycleOrmBootloaderTest extends BaseTest
 
     public function testOrmReceivesOptions(): void
     {
-        $orm = $this->getContainer()->get(\Cycle\ORM\ORMInterface::class);
-        $this->assertInstanceOf(\Cycle\ORM\ORM::class, $orm);
+        $orm = $this->getContainer()->get(ORMInterface::class);
+        $this->assertInstanceOf(ORM::class, $orm);
 
         $rp = new \ReflectionProperty($orm, 'options');
         $rp->setAccessible(true);

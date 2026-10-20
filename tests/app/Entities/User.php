@@ -11,10 +11,8 @@ use Cycle\Annotated\Annotation\Relation\HasMany;
 use Doctrine\Common\Collections\ArrayCollection;
 use Spiral\App\Repositories\UserRepository;
 
-#[
-    Entity(repository: UserRepository::class),
-    \AllowDynamicProperties
-]
+#[Entity(repository: UserRepository::class)]
+#[\AllowDynamicProperties]
 class User
 {
     #[Column(type: 'primary')]

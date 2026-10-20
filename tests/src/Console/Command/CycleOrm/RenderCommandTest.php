@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Spiral\Tests\Console\Command\CycleOrm;
 
+use Cycle\ORM\SchemaInterface;
 use Spiral\Console\Console;
 use Spiral\Tests\ConfigAttribute;
 use Spiral\Tests\ConsoleTest;
-use Cycle\ORM\SchemaInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 final class RenderCommandTest extends ConsoleTest

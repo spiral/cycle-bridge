@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Spiral\Cycle\Console\Command\Migrate;
 
-use Spiral\Console\Command;
 use Cycle\Migrations\Config\MigrationConfig;
 use Cycle\Migrations\Migrator;
+use Spiral\Console\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Question\ConfirmationQuestion;

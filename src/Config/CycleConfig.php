@@ -6,8 +6,8 @@ namespace Spiral\Cycle\Config;
 
 use Cycle\ORM\Collection\ArrayCollectionFactory;
 use Cycle\ORM\Collection\CollectionFactoryInterface;
-use Spiral\Core\InjectableConfig;
 use Cycle\ORM\Options;
+use Spiral\Core\InjectableConfig;
 
 final class CycleConfig extends InjectableConfig
 {
