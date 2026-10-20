@@ -12,12 +12,6 @@ use Spiral\Core\Container;
 use Spiral\Cycle\Config\CycleConfig;
 use Spiral\Tests\BaseTest;
 
-abstract class OrmWithPrepareServicesMockStub implements ORMInterface
-{
-    // `method_exists` must return true
-    public function prepareServices(): void {}
-}
-
 final class CycleOrmWarmedUpBootloaderTest extends BaseTest
 {
     public const ENV = [
